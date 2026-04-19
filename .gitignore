@@ -13,3 +13,6 @@ dist/
 build/
 *.egg-info/
 .vercel
+
+.env
+.vscode/
