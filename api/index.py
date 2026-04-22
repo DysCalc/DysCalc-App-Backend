@@ -13,6 +13,9 @@ import operator
 import math
 import time
 import logging
+import random
+
+random.seed(42)
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -38,21 +41,46 @@ HEADERS = {
     "X-Title": "Dyscalculia Thesis App"
 }
 
-MODELS_TO_TRY = ["qwen/qwen-2.5-math-7b-instruct", "qwen/qwen-2.5-7b-instruct"]
+MODELS_TO_TRY = ["qwen/qwen-2.5-7b-math-instruct", "qwen/qwen-2.5-7b-instruct"]
 
 ALLOWED_OPS = {
     ast.Add: operator.add, 
     ast.Sub: operator.sub,
-    ast.Mult: operator.mul, 
-    ast.Div: operator.truediv,
     ast.USub: operator.neg
 }
+
+ML_INTERPRETATION_MAP = {
+    "NC": "Magnitude Comparison", "DM": "Digit-Numeral Mapping",
+    "NS": "Number Sequences", "ADD": "Addition Skills",
+    "SUB": "Subtraction Skills", "AS": "Inverse Relationships",
+    "BC": "Place Value Transition", "AF": "Arithmetic Fluency",
+    "PF": "Processing-Fluency Integration"
+}
+
+def interpret_decision_path(path_string):
+    """Symbolically translates ML tree logic for teachers."""
+    conditions = re.findall(r'([A-Z]+)\s*(<=|>|<|>=)\s*([\d\.]+)', str(path_string))
+    
+    insights_dict = {}
+    for feature, op, val in conditions:
+        name = ML_INTERPRETATION_MAP.get(feature, feature)
+        meaning = "Difficulty with" if op in ["<=", "<"] else "Relative strength in"
+        insights_dict[name] = f"{meaning} {name}"
+        
+    return ". ".join(insights_dict.values()) + "."
+
+def validate_as_structure(practice_set):
+    """Verifies AS modules contain both addition and subtraction (inverse concepts)."""
+    problems = [str(p.get("problem", "")) for p in practice_set]
+    has_add = any('+' in p for p in problems)
+    has_sub = any('-' in p for p in problems)
+    return has_add and has_sub
 
 def safe_eval(expr):
     """Strictly evaluates pure mathematical strings. Rejects all word problems and code."""
     expr = expr.split('=')[0].strip()
     
-    if not re.fullmatch(r"^[0-9+\-*/().\s]+$", expr):
+    if not re.fullmatch(r"^[0-9+\-()\s]+$", expr):
         return None
         
     try:
@@ -90,31 +118,38 @@ def call_llm_gateway(payload, rid="SYSTEM", temp=0.2):
         try:
             current_payload = copy.deepcopy(payload)  
             current_payload["model"] = model_path
-            current_payload["provider"] = {"allow_fallbacks": False}
             current_payload["temperature"] = temp
+            current_payload["max_tokens"] = 3000
 
             logger.info(f"[REQ {rid}] Calling model: {model_path}")
             response = requests.post(
-                OPENROUTER_URL, headers=HEADERS, json=current_payload, timeout=90  
+                OPENROUTER_URL, headers=HEADERS, json=current_payload, timeout=900  
             )
             response.raise_for_status()
             return response.json()['choices'][0]['message']['content']
+        except requests.exceptions.Timeout:
+            logger.warning(f"[REQ {rid}] Timeout on {model_path}. Trying next...")
+            continue
         except requests.exceptions.RequestException as e:
             logger.warning(f"[REQ {rid}] Model {model_path} failed: {e}")
             continue 
     raise Exception("LLM service unavailable.")
 
 def extract_json_robustly(text):
+    if not text: return None
     text = text.replace('```json', '').replace('```', '').strip()
-    match = re.search(r'\{.*\}', text, re.DOTALL)
-    if match:
-        json_str = match.group(0)
+    
+    start = text.find('{')
+    end = text.rfind('}')
+    
+    if start != -1 and end != -1 and end > start:
+        json_str = text[start:end+1]
         try:
             return json.loads(json_str)
         except json.JSONDecodeError:
-            repaired_str = re.sub(r',\s*}', '}', json_str)
-            repaired_str = re.sub(r',\s*]', ']', repaired_str)
             try:
+                repaired_str = re.sub(r',\s*}', '}', json_str)
+                repaired_str = re.sub(r',\s*]', ']', repaired_str)
                 return json.loads(repaired_str)
             except:
                 return None
@@ -221,10 +256,10 @@ def pedagogy_validator(example, rid, report):
     if clean_eq and any(op in clean_eq for op in ['+', '-']):
         computed = safe_eval(clean_eq)
         if computed is not None:
-            ans_match = re.search(r'-?\d*\.?\d+', example.get("final_answer", ""))
-            if ans_match:
+            nums = re.findall(r'-?\d*\.?\d+', str(example.get("final_answer", "")))
+            if nums:
                 try:
-                    ans_val = float(ans_match.group())
+                    ans_val = float(nums[-1])
                     if not math.isclose(computed, ans_val, rel_tol=1e-9):
                         report["math_errors"].append(f"WORKED ERROR: {clean_eq} != {ans_val}")
                         return False
@@ -250,16 +285,15 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
     You are a Senior SPED Clinical Consultant specializing in Dyscalculia. 
     TARGET DOMAINS: {", ".join(domains)}.
 
-    For EACH domain, you MUST write a complete draft containing:
-    1. Clinical Explanation: Why the student struggled based on the glossary.
+    CRITICAL REQUIREMENT: You MUST generate exactly {len(domains)} distinct modules. You must write one complete module for EVERY domain listed in the TARGET DOMAINS above. Do not skip any.
+
+    For EACH domain, your module MUST contain:
+    1. Clinical Explanation: Why the student struggled based on the feature glossary.
     2. Learning Objectives: 3 specific goals.
-    3. Conceptual Explanation: Child-friendly "Why".
+    3. Conceptual Explanation: Explain the concept strictly in a Step 1, Step 2, Step 3 procedural format.
     4. Teaching Strategy: High-level teacher approach.
-    5. Worked Example: MUST include "problem", "reasoning_steps", and "final_answer".
-    6. Practice Set: MUST be a JSON array with EXACTLY {count} objects in this format:
-       [
-         {{ "problem": "5 + 3", "expected_answer": "8", "hint": "Use blocks" }}
-       ]
+    5. Worked Example: Provide "problem", "reasoning_steps", and "final_answer" for a SINGLE simple math equation.
+    6. Practice Set: A JSON array with EXACTLY {count} objects showing symbolic equations and physical hints.
 
     FEATURE GLOSSARY:
     - NC: Difficulty distinguishing which number/group is larger.
@@ -274,11 +308,10 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
     - PF: Slower cognitive speed for numerical tasks.
 
     RULES:
-    - ALL practice problems MUST be symbolic math equations (e.g., "5 + 3", NOT word problems).
-    - Use EXACT domain names: {", ".join(domains)}.
-    - Pedagogy: NEVER use negative intermediate subtraction steps (e.g., No "2 - 5"). Explain borrowing.
-    - Metaphor: Use physical objects (blocks, fingers, dots).
-    - NUMERICAL BOUNDS: Do not generate operands larger than 20 unless specifically addressing the 'Basic vs. Complex Contrast' domain. Prevent cognitive overload.
+    - SYMBOLIC MATH ONLY: Practice problems and formative assessments MUST be pure math equations (e.g., "5 + 3"). NO WORD PROBLEMS allowed anywhere.
+    - TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', you MUST teach inverse relationships (fact families) in the practice set.
+    - BOUNDS: Do not generate operands larger than 20.
+    - ASSESSMENT: You MUST provide exactly 2 Formative Assessment questions at the very end. These must be symbolic equations, not word problems.
     {correction_prompt}
     """
     
@@ -314,13 +347,13 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid):
                 "learning_objectives": ["<Goal 1>", "<Goal 2>", "<Goal 3>"],
                 "conceptual_explanation": "<Insert Child-Friendly Explanation>",
                 "worked_example": {{
-                    "problem": "<Insert Math Problem>",
+                    "problem": "<Insert Equation ONLY, e.g., 5+3>",
                     "reasoning_steps": ["<Step 1>", "<Step 2>"],
-                    "final_answer": "<Insert Number or Statement>"
+                    "final_answer": "<Insert SINGLE NUMBER ONLY, e.g., 8>"
                 }},
                 "teaching_strategy": "<Insert Strategy>",
                 "practice_set": [ 
-                    {{ "problem": "<Equation>", "expected_answer": "<Number>", "hint": "<Must reference a physical action: e.g., 'Draw 4 dots and cross out 2' or 'Hold up 5 fingers'>" }} 
+                    {{ "problem": "<Insert Equation ONLY (Must contain a + or - sign). IF AS domain, ensure a mix of + and - problems>", "expected_answer": "<SINGLE NUMBER ONLY>", "hint": "<Must reference a physical action>" }} 
                 ] 
             }}
         ],
@@ -383,7 +416,7 @@ def schema_validator(data, expected_count, allowed_domains, rid):
             continue
 
         if normalize(m_cleaned.get("domain_name", "")) not in allowed_norm:
-            validation_report["warnings"].append(f"Forbidden domain skipped: {m_cleaned.get('domain_name')}")
+            validation_report["schema_errors"].append(f"Invalid domain name: {m_cleaned.get('domain_name')}")
             continue
             
         m_cleaned["conceptual_explanation"] = m_cleaned.get("conceptual_explanation", "")\
@@ -404,10 +437,16 @@ def schema_validator(data, expected_count, allowed_domains, rid):
         elif len(clean_practice) != expected_count:
              validation_report["warnings"].append(f"Practice count reduced to {len(clean_practice)} in domain: {m_cleaned.get('domain_name')}")
         
+        if m_cleaned.get("domain_name") == "Addition vs. Subtraction Asymmetry":
+            if not validate_as_structure(clean_practice):
+                validation_report["schema_errors"].append("AS module failed to include inverse fact families.")
+                continue
+
         m_cleaned["practice_set"] = clean_practice
         valid_modules.append(m_cleaned)
         
-    if len(valid_modules) == 0:
+    if len(valid_modules) != len(allowed_domains):
+         validation_report["schema_errors"].append(f"Expected {len(allowed_domains)} modules, but only {len(valid_modules)} passed.")
          return None, validation_report
          
     data["diagnostic_modules"] = valid_modules
@@ -419,11 +458,19 @@ def schema_validator(data, expected_count, allowed_domains, rid):
     else:
         valid_assessments = []
         for item in assessment:
-            if set(item.keys()) == {"question", "expected_answer"} and len(str(item.get("question", "")).strip()) >= 10:
-                 valid_assessments.append(item)
+            q_text = str(item.get("question", item.get("problem", ""))).strip()
+            ans_text = str(item.get("expected_answer", item.get("answer", ""))).strip()
+            
+            if len(q_text) >= 3 and len(ans_text) > 0:
+                 valid_assessments.append({"question": q_text, "expected_answer": ans_text})
             else:
-                 validation_report["schema_errors"].append("Pruned invalid assessment item.")
+                 validation_report["schema_errors"].append(f"Pruned invalid assessment item: {item}")
         data["formative_assessment"] = valid_assessments
+                
+    validation_report["success_rate"] = (
+        validation_report["counts"]["returned"] / 
+        max(1, validation_report["counts"]["expected"])
+    )
                 
     return data, validation_report
     
@@ -436,9 +483,12 @@ def generate_module():
 
         ml_data = data.get('diagnostic_data', '')
         if not ml_data: return jsonify({"error": "No ML data provided"}), 400
+        
+        logger.info(f"[REQ {rid}] Decision Path: {ml_data}")
 
         top_domains = get_top_deficits(ml_data, rid)
         req_count = calculate_practice_tiers(ml_data)
+        interpretation = interpret_decision_path(ml_data)
 
         correction_prompt = "" 
 
@@ -459,6 +509,7 @@ def generate_module():
                 if validated_data:
                     print(f"[REQ {rid}] [SUCCESS] VALIDATION PASSED")
                     validated_data["_meta_validation_report"] = validation_report
+                    validated_data["decision_path_interpretation"] = interpretation
                     return jsonify(validated_data), 200
                 else:
                     print(f"[REQ {rid}] [FAIL] Triggering Repair Loop.")
