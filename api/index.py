@@ -41,8 +41,11 @@ HEADERS = {
     "X-Title": "Dyscalculia Thesis App"
 }
 
-MODELS_TO_TRY = ["qwen/qwen-2.5-7b-math-instruct", "qwen/qwen-2.5-7b-instruct"]
-
+MODELS_TO_TRY = [
+    "qwen/qwen-2.5-7b-math-instruct",        
+    "qwen/qwen-2.5-72b-instruct",      
+    "qwen/qwen-2.5-7b-instruct"              
+]
 ALLOWED_OPS = {
     ast.Add: operator.add, 
     ast.Sub: operator.sub,
@@ -492,7 +495,7 @@ def generate_module():
 
         correction_prompt = "" 
 
-        for attempt in range(3):
+        for attempt in range(5):
             print(f"\n[REQ {rid}] Pipeline Loop: Attempt {attempt + 1}")
             try:
                 draft = get_lesson_from_qwen(ml_data, top_domains, req_count, rid, correction_prompt)
