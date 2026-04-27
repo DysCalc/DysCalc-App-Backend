@@ -18,7 +18,8 @@ HEADERS = {
 MODELS_TO_TRY = [
     "qwen/qwen-2.5-7b-math-instruct",        
     "qwen/qwen-2.5-72b-instruct",      
-    "qwen/qwen-2.5-7b-instruct"              
+    "qwen/qwen-2.5-7b-instruct",
+    "qwen/qwen-2.5-coder-32b-instruct"
 ]
 ALLOWED_OPS = {
     ast.Add: operator.add, 
@@ -35,4 +36,12 @@ ML_INTERPRETATION_MAP = {
     "NP": "Number Processing", "SN": "Symbolic vs. Non-Symbolic Processing",
     "AF": "Overall Arithmetic Fluency", "BC": "Basic vs. Complex Arithmetic Contrast",
     "AS": "Addition vs. Subtraction Asymmetry", "PF": "Processing-Fluency Integration",
+}
+
+CLINICAL_COOCCURRENCE_MAP = {
+    ("NC", "DM"): "a foundational number sense deficit affecting both symbolic and non-symbolic processing",
+    ("ADD", "SUB"): "asymmetric arithmetic fluency where subtraction is procedurally learned rather than conceptually grounded",
+    ("NS", "BC"): "difficulty extending basic patterns into multi-digit arithmetic",
+    ("PF", "AF"): "a notable difficulty integrating processing speed with basic arithmetic fact retrieval",
+    ("AS", "BC"): "foundational inverse operation gaps that hinder efficient transition to complex arithmetic tasks"
 }

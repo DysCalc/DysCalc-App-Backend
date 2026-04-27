@@ -11,7 +11,8 @@ from .constants import (
     ALLOWED_OPS, 
     MODELS_TO_TRY, 
     OPENROUTER_URL, 
-    HEADERS
+    HEADERS,
+    CLINICAL_COOCCURRENCE_MAP
 )
 
 logging.basicConfig(
@@ -20,24 +21,82 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def interpret_decision_path(path_string):
-    """Symbolically translates ML tree logic for teachers."""
-    conditions = re.findall(r'([A-Z]+)\s*(<=|>|<|>=)\s*([\d\.]+)', str(path_string))
-    
-    insights_dict = {}
-    for feature, op, val in conditions:
-        name = ML_INTERPRETATION_MAP.get(feature, feature)
-        meaning = "Difficulty with" if op in ["<=", "<"] else "Relative strength in"
-        insights_dict[name] = f"{meaning} {name}"
+def interpret_decision_path(ml_data_string):
+    """Synthesizes a root-cause clinical profile, strictly scaling tone by class and confidence."""
+    try:
+        data_str = str(ml_data_string)
         
-    return ". ".join(insights_dict.values()) + "."
+        is_at_risk = "At-Risk (1)" in data_str or "Class  : 1" in data_str
+        conf_match = re.search(r"Confidence\s*:\s*([\d\.]+)", data_str)
+        confidence = float(conf_match.group(1)) if conf_match else 0.50
+
+        if not is_at_risk:
+            tone_desc = "mild, emerging variations"
+            tone_impact = "suggesting"
+        elif confidence > 0.75:
+            tone_desc = "critical foundational gaps"
+            tone_impact = "creating a severe bottleneck driven by"
+        else:
+            tone_desc = "significant cognitive difficulties"
+            tone_impact = "indicating"
+
+        match = re.search(r"Domain Severity\s*:\s*(\{.*?\})", data_str)
+        if not match: 
+            return "Profile indicates general baseline performance."
+        
+        severity_dict = ast.literal_eval(match.group(1))
+        REVERSE_MAP = {v: k for k, v in ML_INTERPRETATION_MAP.items()}
+        
+        active_acronyms = set()
+        top_domains = []
+        
+        for domain, score in sorted(severity_dict.items(), key=lambda item: item[1], reverse=True):
+            if score >= 0.15:
+                top_domains.append(domain)
+                if domain in REVERSE_MAP: active_acronyms.add(REVERSE_MAP[domain])
+
+        if not top_domains:
+            return "The student's profile indicates general baseline performance with no dominant cognitive bottlenecks."
+
+        synthesis = f"The primary difficulty lies in {tone_desc} involving {top_domains[0].lower()}"
+        if len(top_domains) > 1:
+            synthesis += f" and {top_domains[1].lower()}"
+            
+        co_occurrences = []
+        for (f1, f2), meaning in CLINICAL_COOCCURRENCE_MAP.items():
+            if f1 in active_acronyms and f2 in active_acronyms:
+                clean_meaning = meaning.replace("indicates", "").replace("suggests", "").replace("points to", "").strip()
+                co_occurrences.append(clean_meaning)
+                
+        if co_occurrences:
+            synthesis += f", {tone_impact} {', '.join(co_occurrences)}."
+        else:
+            synthesis += f", {tone_impact} challenges in progressing to more complex arithmetic tasks."
+
+        return synthesis
+
+    except Exception as e:
+        logger.error(f"Interpretation failed: {e}")
+        return "Profile indicates general baseline performance."
 
 def validate_as_structure(practice_set):
-    """Verifies AS modules contain both addition and subtraction (inverse concepts)."""
+    """Enforces the 4-subtraction, 2-addition ratio for AS modules."""
     problems = [str(p.get("problem", "")) for p in practice_set]
-    has_add = any('+' in p for p in problems)
-    has_sub = any('-' in p for p in problems)
-    return has_add and has_sub
+    add_count = sum(1 for p in problems if '+' in p)
+    sub_count = sum(1 for p in problems if '-' in p)
+    return sub_count >= 3 and add_count >= 1
+
+def check_hint_diversity(practice_set):
+    """Ensures the LLM isn't copy/pasting the exact same hint."""
+    hints = [str(p.get("hint", "")).lower() for p in practice_set]
+    if not hints: return False
+    unique = len(set(hints))
+    return unique >= (len(hints) * 0.7)  
+
+def validate_conceptual_steps(text):
+    """Forces the LLM to use the Step 1, Step 2, Step 3 format with flexible punctuation."""
+    text_str = str(text)
+    return all(re.search(rf"Step\s*{i}\s*[:\-]", text_str, re.IGNORECASE) for i in [1, 2, 3])
 
 def safe_eval(expr):
     """Strictly evaluates pure mathematical strings. Rejects all word problems and code."""
@@ -84,6 +143,8 @@ def call_llm_gateway(payload, rid="SYSTEM", temp=0.2):
             current_payload["temperature"] = temp
             current_payload["max_tokens"] = 3000
 
+            current_payload["response_format"] = {"type": "json_object"}
+
             logger.info(f"[REQ {rid}] Calling model: {model_path}")
             response = requests.post(
                 OPENROUTER_URL, headers=HEADERS, json=current_payload, timeout=900  
@@ -126,8 +187,9 @@ def get_top_deficits(ml_data_string, rid):
         match = re.search(r"Domain Severity\s*:\s*(\{.*?\})", ml_data_string)
         if not match: return ["General Arithmetic Fluency"]
         severity_dict = ast.literal_eval(match.group(1))
-        sorted_deficits = sorted(severity_dict.items(), key=lambda x: x[1], reverse=True)
-        top = [d[0] for d in sorted_deficits if d[1] > 0.10][:2]
+        valid_deficits = [d for d in severity_dict.items() if d[1] >= 0.10]
+        sorted_deficits = sorted(valid_deficits, key=lambda x: x[1], reverse=True)
+        top = [d[0] for d in sorted_deficits][:3]
         return top if top else ["General Arithmetic Fluency"]
     except Exception as e:
         logger.error(f"[REQ {rid}] ML Data extraction failed: {e}")
@@ -150,7 +212,7 @@ def math_validator(practice_set, rid, report):
     for item in practice_set:
         problem_str = item.get("problem", "").split('=')[0]
         expected_str = str(item.get("expected_answer", ""))
-        clean_eq = re.sub(r'[^0-9\+\-\*\/\.]', '', problem_str)
+        clean_eq = re.sub(r'[^0-9\+\-\*\/\.\(\)]', '', problem_str)
         
         if re.search(r'[\+\-\*\/]{2,}', clean_eq):
             report["math_errors"].append(f"Invalid operator sequence: {clean_eq}")
@@ -206,7 +268,7 @@ def pedagogy_validator(example, rid, report):
         return False
 
     problem = example.get("problem", "").split('=')[0]
-    clean_eq = re.sub(r'[^0-9\+\-\*\/\.]', '', problem)
+    clean_eq = re.sub(r'[^0-9\+\-\*\/\.\(\)]', '', problem)
     
     if re.search(r'[\+\-\*\/]{2,}', clean_eq):
          report["math_errors"].append(f"Invalid operator sequence in worked example: {clean_eq}")
@@ -245,43 +307,66 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
     print(f"[REQ {rid}] Pass 1: Drafting for {domains} (Target: {count} items)...")
     
     inst = f"""
-    You are a Senior SPED Clinical Consultant specializing in Dyscalculia. 
+    <role>
+    You are a Senior Special Education (SPED) Clinical Consultant in the Philippines specializing in early Dyscalculia intervention.
+    </role>
+
+    <mission>
+    You MUST generate exactly {len(domains)} distinct intervention modules.
     TARGET DOMAINS: {", ".join(domains)}.
+    SYNTHESIS: Do not just list features. Treat these domains as a single interacting cognitive profile. Explicitly acknowledge Addition as a relative strength if its severity is low.
+    VOCABULARY: Use "may hinder", "slightly less consistent", or "emerging area" instead of "critical bottleneck" or "below average" for Typical profiles. Never use "multi-digit math" unless explicitly listed.
+    </mission>
 
-    CRITICAL REQUIREMENT: You MUST generate exactly {len(domains)} distinct modules. You must write one complete module for EVERY domain listed in the TARGET DOMAINS above. Do not skip any.
+    <philippine_context_and_tone>
+    - Context: Use locally familiar physical objects (e.g., mangoes, candies, blocks, peso coins, jeepney toys) for concrete hints.
+    - Tone: Use empathetic, encouraging language. Write short, simple, child-friendly sentences.
+    </philippine_context_and_tone>
 
+    <clinical_precision>
+    - SEVERITY WEIGHTING: You MUST look at the numerical 'Domain Severity' scores in the ML DATA.
+    - If a domain has a HIGH severity (>0.20), provide "cognitive stretch" problems (e.g., crossing tens, 12+9 or 14-6). Avoid overly simple problems like 8-2 or 9-3.
+    - If a domain is AS (Addition vs. Subtraction Asymmetry), the student likely relies on forward (addition-based) reasoning and has difficulty with mental inversion. To rehabilitate this, the practice set MUST contain BOTH addition (+) and subtraction (-) equations (e.g., at least 3 subtraction problems bridging tens, and at least 1 addition problem for scaffolding).
+    - If a domain is BC (Basic vs. Complex Arithmetic Contrast), you MUST explicitly focus on "crossing tens". Do not use generic "break down problems" phrasing. Explicitly teach breaking numbers into tens and ones (e.g., 15 + 7 -> 10 + 5 + 7).
+    - If a domain is SN (Symbolic vs. Non-Symbolic), focus on translating physical objects/visuals into digits.
+    - If a domain is PF or PE (Processing-Fluency/Efficiency), focus on cognitive flexibility (switching operations) and chunking for speed.
+    </clinical_precision>
+
+    <module_structure>
     For EACH domain, your module MUST contain:
-    1. Clinical Explanation: Why the student struggled based on the feature glossary.
-    2. Learning Objectives: 3 specific goals.
-    3. Conceptual Explanation: Explain the concept strictly in a Step 1, Step 2, Step 3 procedural format.
-    4. Teaching Strategy: High-level teacher approach.
-    5. Worked Example: Provide "problem", "reasoning_steps", and "final_answer" for a SINGLE simple math equation.
-    6. Practice Set: A JSON array with EXACTLY {count} objects showing symbolic equations and physical hints.
+    1. Clinical Explanation: Why the student struggled. Use precise clinical language (e.g., "difficulty with mental inversion" or "forward vs. reverse reasoning").
+    2. Learning Objectives: 3 specific, actionable goals.
+    3. Conceptual Explanation: Explain the concept strictly in a procedural format.
+       CRITICAL FORMAT: You MUST explicitly start each step with "Step 1:", "Step 2:", and "Step 3:".
+       - FOR BC DOMAIN: "Step 1: Solve basic facts. Step 2: Break complex numbers into tens and ones. Step 3: Recombine to solve."
+       - FOR OTHER DOMAINS: "Step 1: Understand... Step 2: Visualize... Step 3: Practice..."
+    4. Teaching Strategy: Include at least TWO representation types (e.g., visual objects AND a number line).
+    5. Worked Example: Provide "problem", "reasoning_steps" (ARRAY OF MAXIMUM 3 STEPS), and "final_answer" for a SINGLE simple math equation.
+    6. Practice Set: A JSON array with EXACTLY {count} symbolic equations.
+    </module_structure>
 
-    FEATURE GLOSSARY:
-    - NC: Difficulty distinguishing which number/group is larger.
-    - DM: Trouble mapping numerals to quantities.
-    - NS: Difficulty recognizing patterns and sequences.
-    - ADD: Challenges with forward counting and combining.
-    - SUB: Difficulty with the conceptual act of 'taking away'.
-    - AS: Gaps in understanding inverse operations.
-    - SN: Gap between written numbers and physical quantities.
-    - AF: Issues with speed and accuracy of basic facts.
-    - BC: Struggle with the transition to multi-digit math.
-    - PF: Slower cognitive speed for numerical tasks.
+    <schema_typing>
+    - CRITICAL: The "expected_answer" field MUST ALWAYS BE A STRICT INTEGER (e.g., 8). Do NOT wrap it in quotes (e.g., "8" is FATAL).
+    </schema_typing>
 
-    RULES:
-    - SYMBOLIC MATH ONLY: Practice problems and formative assessments MUST be pure math equations (e.g., "5 + 3"). NO WORD PROBLEMS allowed anywhere.
-    - TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', you MUST teach inverse relationships (fact families) in the practice set.
-    - BOUNDS: Do not generate operands larger than 20.
-    - ASSESSMENT: You MUST provide exactly 2 Formative Assessment questions at the very end. These must be symbolic equations, not word problems.
+    <strict_rules>
+    1. ANTI-REPETITION: DO NOT USE the equations 14-6, 12-5, 15-7, or 8+5. You must generate completely unique number families to avoid redundancy.
+    2. DIVERSITY RULE: Use at least 3 DIFFERENT fact families/number triplets in the practice set. Do NOT repeat the same base numbers.
+    3. HINT VARIETY: Each hint MUST use entirely different wording and objects. Do NOT repeat phrasing. 
+       - EXAMPLES: "Hold up 7 fingers, fold down 2", "Draw 9 dots, cross out 3", "Place 4 blocks, add 2 more".
+    4. SYMBOLIC MATH ONLY: Practice problems MUST be pure math equations (e.g., "17 - 9"). NO text word problems.
+    5. TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', your practice_set MUST contain a mix of BOTH '+' and '-' operators. Do not generate only subtraction.
+    6. BOUNDS: Keep math simple but appropriate to severity. Operands <= 20.
+    7. ASSESSMENT: Provide exactly 2 Formative Assessment questions at the very end.
+    </strict_rules>
+    
     {correction_prompt}
     """
     
     payload = {
         "messages": [
             {"role": "system", "content": inst},
-            {"role": "user", "content": f"Process this data:\n{ml_data}"}
+            {"role": "user", "content": f"<ml_data>\n{ml_data}\n</ml_data>\n\nGenerate the modules based ONLY on the target domains."}
         ]
     }
     return call_llm_gateway(payload, rid, temp=0.0 if correction_prompt else 0.4)
@@ -296,12 +381,13 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid):
     - DO NOT add extra keys. DO NOT omit required keys.
     - worked_example MUST include: "problem", "reasoning_steps", "final_answer"
     - practice_set MUST contain EXACTLY {count} items.
+    - FINAL STEP - MANDATORY: You MUST include a "formative_assessment" array with EXACTLY 2 objects. This CANNOT be empty. If omitted, the output is rejected.
     - DO NOT wrap your output in ```json markdown blocks. Output the raw {{ JSON directly.
 
     REQUIRED SCHEMA:
     {{
         "status": "<Typical (0) or At-Risk (1)>",
-        "decision_path_rationale": "<LITERAL STRING FROM ML DATA>",
+        "decision_path_rationale": "<Summarize the underlying clinical rationale. FATAL ERROR: Do NOT mention or list the acronyms from the raw decision path (e.g., NC, DM, ADD, SUB). Only discuss the High Severity target domains.>",
         "overall_summary": "<Summarize in 2 sentences>",
         "diagnostic_modules": [
             {{
@@ -316,12 +402,13 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid):
                 }},
                 "teaching_strategy": "<Insert Strategy>",
                 "practice_set": [ 
-                    {{ "problem": "<Insert Equation ONLY (Must contain a + or - sign). IF AS domain, ensure a mix of + and - problems>", "expected_answer": "<SINGLE NUMBER ONLY>", "hint": "<Must reference a physical action>" }} 
+                    {{ "problem": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES>, "hint": "<String max 120 chars>" }} 
                 ] 
             }}
         ],
         "formative_assessment": [
-            {{ "question": "<Insert Math Question>", "expected_answer": "<Number>" }}
+            {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }},
+            {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }}
         ]
     }}
     """
@@ -346,6 +433,8 @@ def schema_validator(data, expected_count, allowed_domains, rid):
     
     validation_report = {
         "counts": {"expected": expected_count * len(allowed_domains), "returned": 0, "pruned": 0},
+        "modules_expected": len(allowed_domains),
+        "modules_passed": 0,
         "math_errors": [],
         "pedagogy_errors": [],
         "schema_errors": [],
@@ -361,8 +450,6 @@ def schema_validator(data, expected_count, allowed_domains, rid):
     if len(modules) == 0:
         validation_report["schema_errors"].append("No diagnostic modules generated.")
         return None, validation_report
-    elif len(modules) != len(allowed_domains): 
-        validation_report["warnings"].append(f"Module count mismatch. Expected {len(allowed_domains)}, got {len(modules)}")
 
     allowed_norm = {normalize(d) for d in allowed_domains}
     valid_modules = []
@@ -378,12 +465,18 @@ def schema_validator(data, expected_count, allowed_domains, rid):
             validation_report["schema_errors"].append(f"Module keys mismatch in domain: {m.get('domain_name')}")
             continue
 
-        if normalize(m_cleaned.get("domain_name", "")) not in allowed_norm:
+        norm_domain = normalize(m_cleaned.get("domain_name", ""))
+        is_match = any(norm_domain in a or a in norm_domain for a in allowed_norm)
+        
+        if not is_match:
             validation_report["schema_errors"].append(f"Invalid domain name: {m_cleaned.get('domain_name')}")
             continue
             
         m_cleaned["conceptual_explanation"] = m_cleaned.get("conceptual_explanation", "")\
             .replace("Child-friendly 'Why':", "").replace("Child-friendly \"Why\":", "").replace("**Why**:", "").replace("Why:", "").strip()
+            
+        if not validate_conceptual_steps(m_cleaned["conceptual_explanation"]):
+            validation_report["pedagogy_errors"].append(f"Missing Step 1, 2, 3 format in domain: {m.get('domain_name')}")
             
         m_cleaned["teaching_strategy"] = m_cleaned.get("teaching_strategy", "").replace("High-level teacher approach:", "").strip()
 
@@ -400,34 +493,40 @@ def schema_validator(data, expected_count, allowed_domains, rid):
         elif len(clean_practice) != expected_count:
              validation_report["warnings"].append(f"Practice count reduced to {len(clean_practice)} in domain: {m_cleaned.get('domain_name')}")
         
+        if not check_hint_diversity(clean_practice):
+            validation_report["pedagogy_errors"].append(f"Low hint diversity in domain: {m.get('domain_name')}")
+
         if m_cleaned.get("domain_name") == "Addition vs. Subtraction Asymmetry":
             if not validate_as_structure(clean_practice):
-                validation_report["schema_errors"].append("AS module failed to include inverse fact families.")
+                validation_report["schema_errors"].append("AS module failed strict subtraction/addition ratio.")
                 continue
 
         m_cleaned["practice_set"] = clean_practice
         valid_modules.append(m_cleaned)
         
-    if len(valid_modules) != len(allowed_domains):
-         validation_report["schema_errors"].append(f"Expected {len(allowed_domains)} modules, but only {len(valid_modules)} passed.")
+    validation_report["modules_passed"] = len(valid_modules)
+
+    if len(valid_modules) == 0:
+         validation_report["schema_errors"].append("Zero modules passed validation.")
          return None, validation_report
          
     data["diagnostic_modules"] = valid_modules
             
     assessment = data.get("formative_assessment", [])
-    if not isinstance(assessment, list) or not (1 <= len(assessment) <= 3):
-        validation_report["warnings"].append("Invalid formative_assessment count. Expected 1-3.")
-        data["formative_assessment"] = [] 
+    if not isinstance(assessment, list) or len(assessment) != 2:
+        validation_report["schema_errors"].append("Formative assessment MUST contain exactly 2 items.")
+        return None, validation_report 
     else:
         valid_assessments = []
         for item in assessment:
             q_text = str(item.get("question", item.get("problem", ""))).strip()
             ans_text = str(item.get("expected_answer", item.get("answer", ""))).strip()
             
-            if len(q_text) >= 3 and len(ans_text) > 0:
+            if len(q_text) >= 3 and re.fullmatch(r"-?\d+", ans_text):
                  valid_assessments.append({"question": q_text, "expected_answer": ans_text})
             else:
-                 validation_report["schema_errors"].append(f"Pruned invalid assessment item: {item}")
+                 validation_report["schema_errors"].append(f"Pruned invalid assessment item (Not an integer or bad question): {item}")
+                 
         data["formative_assessment"] = valid_assessments
                 
     validation_report["success_rate"] = (
