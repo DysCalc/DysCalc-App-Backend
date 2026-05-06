@@ -2,18 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import os
-import uuid
 from dotenv import load_dotenv
-import time
+import uuid
 import difflib
+import time
 import logging
-import pandas as pd
 
-from llm.constants import (
-    OPENROUTER_TOKEN,
-    DOMAIN_EXPLANATIONS
-)
-from llm.helpers import (
+
+from .constants_old import OPENROUTER_TOKEN, DOMAIN_EXPLANATIONS
+from .helpers_old import (
     get_top_deficits,
     calculate_practice_tiers,
     interpret_decision_path,
@@ -25,12 +22,8 @@ from llm.helpers import (
     format_with_cloud_llm,
 )
 
-from ml.helpers import (
-    renaming_features,
-    compute_derived,
-    get_probs,
-)
-from ml.C45DecisionTree import C45DecisionTree
+
+
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -48,34 +41,17 @@ if not OPENROUTER_TOKEN:
 
 @app.route('/generate_module', methods=['POST'])
 def generate_module():
-    """
-        Generate learning path from ML diagnostic data.
-
-        Request Format:
-        {
-            "test_id": {"<string>"},
-            "diagnostic_data": {
-                "predicted_class": {"<string>"},
-                "confidence": {<float>},
-                "decision_path": [("<string>", <float>, "<string>")], 
-                "domain_severity": {"<string>": <float>},
-                "task_importance": {"<string>": <float>}
-            }
-        }
-    """
+    rid = uuid.uuid4().hex[:6]
     try:
-        request_data = request.json
-        if not request_data: return jsonify({"error": "Invalid request"}), 400
-        
-        rid = request_data.get("test_id", uuid.uuid4().hex[:6])
-        ml_data = request_data.get("diagnostic_data", None)
+        data = request.json
+        if not data: return jsonify({"error": "Invalid request"}), 400
 
-        if not ml_data:
-            return jsonify({"error": "No ML data provided"}), 400
+        ml_data = data.get('diagnostic_data', '')
+        if not ml_data: return jsonify({"error": "No ML data provided"}), 400
         
         logger.info(f"[REQ {rid}] Decision Path: {ml_data}")
 
-        top_domains = get_top_deficits(ml_data.get("domain_severity", {}))
+        top_domains = get_top_deficits(ml_data, rid)
         req_count = calculate_practice_tiers(ml_data)
         interpretation = interpret_decision_path(ml_data)
         domain_explanations = json.dumps(DOMAIN_EXPLANATIONS, indent=2)
@@ -85,10 +61,10 @@ def generate_module():
         for attempt in range(5):
             print(f"\n[REQ {rid}] Pipeline Loop: Attempt {attempt + 1}")
             try:
-                draft = get_lesson_from_qwen(json.dumps(ml_data), top_domains, req_count, rid, correction_prompt, domain_explanations)
+                draft = get_lesson_from_qwen(ml_data, top_domains, req_count, rid, correction_prompt, domain_explanations)
                 if not draft: raise Exception("Pass 1 yielded empty draft")
                 
-                perfect_json = format_with_cloud_llm(draft, json.dumps(ml_data), req_count, rid)
+                perfect_json = format_with_cloud_llm(draft, ml_data, req_count, rid)
                 if not perfect_json: raise Exception("Pass 2 JSON extraction failed")
 
                 validated_data, validation_report = schema_validator(perfect_json, req_count, top_domains, rid)
@@ -126,7 +102,7 @@ def generate_retest():
         data = request.json
         if not data: return jsonify({"error": "Invalid request"}), 400
         
-        ml_data = data.get('diagnostic_data', {})
+        ml_data = data.get('diagnostic_data', '')
         previous_problems = data.get('previous_questions', []) 
         rid = "RETEST_" + uuid.uuid4().hex[:4]
 
@@ -134,7 +110,7 @@ def generate_retest():
         You are a SPED Teacher. Generate a FRESH set of 5 practice problems based on this ML data.
         
         DIAGNOSTIC PROFILE:
-        {json.dumps(ml_data)}
+        {ml_data}
         
         PREVIOUS QUESTIONS (DO NOT REPEAT THESE):
         {json.dumps(previous_problems)}
@@ -187,43 +163,6 @@ def generate_retest():
 
         except Exception as e:
             return jsonify({"error": f"Invalid retest output: {e}"}), 500
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/generate-diagnostic", methods=["POST"])
-def generate_diagnostic():
-    """
-        Generate learning path from ML diagnostic data.
-
-        Request Format:
-        {
-            "test_id": {"<string>"},
-            "number_comparison": {"<float>"},
-            "dot_matching": {"<float>"},
-            "number_series": {"<int>"},
-            "single_addition": {"<int>"},
-            "single_subtraction": {"<int>"},
-            "complex_arithmetic": {"<int>"}
-        }
-    """
-    try:
-        test_results = request.json
-        if not test_results: return jsonify({"error": "Invalid request"}), 400
-        test_id = test_results.pop("test_id", None)
-        raw_features = test_results
-        
-        # Convert the remaining dictionary into a pandas DataFrame
-        df = pd.DataFrame([raw_features])
-
-        renamed_features = renaming_features(df)
-        complete_features = compute_derived(renamed_features)
-
-        model_path = "./ml/models/v1.pkl"
-        loaded_tree, optimal_threshold, calibrator = C45DecisionTree.load_model(model_path)
-        diagnostics = loaded_tree.predict_with_diagnostics(complete_features)
-        logger.info(f"[REQ {test_id}] Diagnostics: {diagnostics[0]}")
-        return jsonify(diagnostics[0]), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

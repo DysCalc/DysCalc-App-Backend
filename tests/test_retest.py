@@ -9,9 +9,14 @@ def test_retest_functionality():
     print("--- EXECUTING AT-RISK RETEST SCENARIO ---")
     
     # snippet of Test Case #5 to simulate the student's profile
-    sample_ml_data = """Predicted Class  : At-Risk (1)
-Confidence       : 0.6316
-Domain Severity  : {'Addition vs. Subtraction Asymmetry': 0.45082946493547227, 'Basic vs. Complex Arithmetic Contrast': 0.15953196920975835}"""
+    sample_ml_data = {
+    "predicted_class": "At-Risk (1)",
+    "confidence": 0.6316,
+    "domain_severity": {
+        "Addition vs. Subtraction Asymmetry": 0.45082946493547227,
+        "Basic vs. Complex Arithmetic Contrast": 0.15953196920975835
+    }
+}
     
     # We pass "fake" previous questions so the AI knows what NOT to repeat
     mock_previous_questions = [

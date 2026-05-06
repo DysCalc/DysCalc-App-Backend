@@ -1,19 +1,22 @@
+
 import re
 import ast
-import logging
 import requests
 import copy
 import math
 import json
+import difflib
 
 from .constants import (
-    ML_INTERPRETATION_MAP, 
     ALLOWED_OPS, 
     MODELS_TO_TRY, 
     OPENROUTER_URL, 
-    HEADERS,
-    CLINICAL_COOCCURRENCE_MAP
+    HEADERS
 )
+
+import logging
+
+from .constants import ML_INTERPRETATION_MAP, CLINICAL_COOCCURRENCE_MAP
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -21,14 +24,27 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def interpret_decision_path(ml_data_string):
-    """Synthesizes a root-cause clinical profile, strictly scaling tone by class and confidence."""
+def get_top_deficits(domain_severity: dict[str, float]) -> list[str]:
     try:
-        data_str = str(ml_data_string)
-        
-        is_at_risk = "At-Risk (1)" in data_str or "Class  : 1" in data_str
-        conf_match = re.search(r"Confidence\s*:\s*([\d\.]+)", data_str)
-        confidence = float(conf_match.group(1)) if conf_match else 0.50
+        notable_deficits = []
+
+        for domain, score in domain_severity.items():
+            if score >= 0.10:
+                notable_deficits.append((domain, score))
+
+        top_deficits = [item[0] for item in sorted(notable_deficits, key=lambda x: x[1], reverse=True)]
+        return top_deficits[:3] if top_deficits else ["General Arithmetic Fluency"]
+
+    except Exception as e:
+        logger.error(f"Interpretation failed: {e}")
+        return ["General Arithmetic Fluency"]
+
+def interpret_decision_path(ml_data: dict) -> str:
+    """Synthesizes a root-cause clinical profile based on structured ML data."""
+    try:
+        predicted_class = str(ml_data.get("predicted_class", ""))
+        is_at_risk = "At-Risk" in predicted_class or "1" in predicted_class
+        confidence = float(ml_data.get("confidence", 0.50))
 
         if not is_at_risk:
             tone_desc = "mild, emerging variations"
@@ -40,11 +56,10 @@ def interpret_decision_path(ml_data_string):
             tone_desc = "significant cognitive difficulties"
             tone_impact = "indicating"
 
-        match = re.search(r"Domain Severity\s*:\s*(\{.*?\})", data_str)
-        if not match: 
+        severity_dict = ml_data.get("domain_severity", {})
+        if not severity_dict:
             return "Profile indicates general baseline performance."
         
-        severity_dict = ast.literal_eval(match.group(1))
         REVERSE_MAP = {v: k for k, v in ML_INTERPRETATION_MAP.items()}
         
         active_acronyms = set()
@@ -53,7 +68,8 @@ def interpret_decision_path(ml_data_string):
         for domain, score in sorted(severity_dict.items(), key=lambda item: item[1], reverse=True):
             if score >= 0.15:
                 top_domains.append(domain)
-                if domain in REVERSE_MAP: active_acronyms.add(REVERSE_MAP[domain])
+                if domain in REVERSE_MAP: 
+                    active_acronyms.add(REVERSE_MAP[domain])
 
         if not top_domains:
             return "The student's profile indicates general baseline performance with no dominant cognitive bottlenecks."
@@ -78,6 +94,20 @@ def interpret_decision_path(ml_data_string):
     except Exception as e:
         logger.error(f"Interpretation failed: {e}")
         return "Profile indicates general baseline performance."
+
+def calculate_practice_tiers(ml_data: dict) -> int:
+    try:
+        severity_dict = ml_data.get("domain_severity", {})
+        if not severity_dict:
+            return 4
+        
+        max_s = max(severity_dict.values()) if severity_dict else 0.0
+        if max_s > 0.40: return 6
+        if max_s > 0.20: return 4
+        return 2
+    except Exception as e:
+        logger.error(f"Practice tiers calculation failed: {e}")
+        return 4
 
 def validate_as_structure(practice_set):
     """Enforces the 4-subtraction, 2-addition ratio for AS modules."""
@@ -263,9 +293,13 @@ def math_validator(practice_set, rid, report):
 def pedagogy_validator(example, rid, report):
     """Validates the worked example schema and math logic."""
     required_keys = {"problem", "reasoning_steps", "final_answer"}
-    if set(example.keys()) != required_keys:
-        report["schema_errors"].append(f"worked_example keys mismatch")
+    if not required_keys.issubset(set(example.keys())):
+        report["schema_errors"].append(f"worked_example keys mismatch: missing {required_keys - set(example.keys())}")
         return False
+    
+    # Strip any extra keys the LLM may have added
+    for extra_key in set(example.keys()) - required_keys:
+        del example[extra_key]
 
     problem = example.get("problem", "").split('=')[0]
     clean_eq = re.sub(r'[^0-9\+\-\*\/\.\(\)]', '', problem)
@@ -303,7 +337,7 @@ def pedagogy_validator(example, rid, report):
         
     return True
 
-def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
+def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt="", domain_explanations=""):
     print(f"[REQ {rid}] Pass 1: Drafting for {domains} (Target: {count} items)...")
     
     inst = f"""
@@ -318,6 +352,10 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
     VOCABULARY: Use "may hinder", "slightly less consistent", or "emerging area" instead of "critical bottleneck" or "below average" for Typical profiles. Never use "multi-digit math" unless explicitly listed.
     </mission>
 
+    <domain_explanations>
+    {domain_explanations if domain_explanations else "No additional domain explanations provided."}
+    </domain_explanations>
+
     <philippine_context_and_tone>
     - Context: Use locally familiar physical objects (e.g., mangoes, candies, blocks, peso coins, jeepney toys) for concrete hints.
     - Tone: Use empathetic, encouraging language. Write short, simple, child-friendly sentences.
@@ -325,11 +363,13 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
 
     <clinical_precision>
     - SEVERITY WEIGHTING: You MUST look at the numerical 'Domain Severity' scores in the ML DATA.
+    - PEDAGOGY: NEVER suggest "timed drills" or focus on speed. Dyscalculic students suffer from math anxiety. Focus on derived facts, making 10s, and chunking.
+    - CRA FRAMEWORK: All hints MUST use Concrete-Representational-Abstract language. NEVER use abstract procedural terms like "carry over" or "borrow". ALWAYS anchor the hint in physical objects (e.g., "Count 9 peso coins, add 1 to make 10, then add the rest").
     - If a domain has a HIGH severity (>0.20), provide "cognitive stretch" problems (e.g., crossing tens, 12+9 or 14-6). Avoid overly simple problems like 8-2 or 9-3.
     - If a domain is AS (Addition vs. Subtraction Asymmetry), the student likely relies on forward (addition-based) reasoning and has difficulty with mental inversion. To rehabilitate this, the practice set MUST contain BOTH addition (+) and subtraction (-) equations (e.g., at least 3 subtraction problems bridging tens, and at least 1 addition problem for scaffolding).
     - If a domain is BC (Basic vs. Complex Arithmetic Contrast), you MUST explicitly focus on "crossing tens". Do not use generic "break down problems" phrasing. Explicitly teach breaking numbers into tens and ones (e.g., 15 + 7 -> 10 + 5 + 7).
     - If a domain is SN (Symbolic vs. Non-Symbolic), focus on translating physical objects/visuals into digits.
-    - If a domain is PF or PE (Processing-Fluency/Efficiency), focus on cognitive flexibility (switching operations) and chunking for speed.
+    - If a domain is Processing-Fluency Integration or Overall Processing Efficiency, focus on reducing cognitive load, using chunking strategies, and supporting flexible switching between addition and subtraction when arithmetic practice is appropriate.
     </clinical_precision>
 
     <module_structure>
@@ -337,7 +377,7 @@ def get_lesson_from_qwen(ml_data, domains, count, rid, correction_prompt=""):
     1. Clinical Explanation: Why the student struggled. Use precise clinical language (e.g., "difficulty with mental inversion" or "forward vs. reverse reasoning").
     2. Learning Objectives: 3 specific, actionable goals.
     3. Conceptual Explanation: Explain the concept strictly in a procedural format.
-       CRITICAL FORMAT: You MUST explicitly start each step with "Step 1:", "Step 2:", and "Step 3:".
+       CRITICAL FORMAT: You MUST explicitly start each step with "Step 1:", "Step 2:", and "Step 3:". This applies to ALL domains, even abstract ones like Processing Efficiency.
        - FOR BC DOMAIN: "Step 1: Solve basic facts. Step 2: Break complex numbers into tens and ones. Step 3: Recombine to solve."
        - FOR OTHER DOMAINS: "Step 1: Understand... Step 2: Visualize... Step 3: Practice..."
     4. Teaching Strategy: Include at least TWO representation types (e.g., visual objects AND a number line).
@@ -381,6 +421,7 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid):
     - DO NOT add extra keys. DO NOT omit required keys.
     - worked_example MUST include: "problem", "reasoning_steps", "final_answer"
     - practice_set MUST contain EXACTLY {count} items.
+    - CRITICAL: The "diagnostic_modules" array MUST contain ALL modules present in the Teacher Text. DO NOT stop after formatting just one module. If the Teacher Text has 3 domains, you MUST output 3 objects in the array.
     - FINAL STEP - MANDATORY: You MUST include a "formative_assessment" array with EXACTLY 2 objects. This CANNOT be empty. If omitted, the output is rejected.
     - DO NOT wrap your output in ```json markdown blocks. Output the raw {{ JSON directly.
 
@@ -407,6 +448,9 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid):
             }}
         ],
         "formative_assessment": [
+            {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }},
+            {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }},
+            {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }},
             {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }},
             {{ "question": "<String>", "expected_answer": <INTEGER ONLY, NO QUOTES> }}
         ]
@@ -451,7 +495,7 @@ def schema_validator(data, expected_count, allowed_domains, rid):
         validation_report["schema_errors"].append("No diagnostic modules generated.")
         return None, validation_report
 
-    allowed_norm = {normalize(d) for d in allowed_domains}
+    allowed_norm = {normalize(d): d for d in allowed_domains}
     valid_modules = []
 
     for m in modules:
@@ -461,15 +505,21 @@ def schema_validator(data, expected_count, allowed_domains, rid):
         ]
         
         m_cleaned = {k: v for k, v in m.items() if k in required_keys}
-        if set(m_cleaned.keys()) != set(required_keys):
-            validation_report["schema_errors"].append(f"Module keys mismatch in domain: {m.get('domain_name')}")
+        if not set(required_keys).issubset(set(m_cleaned.keys())):
+            validation_report["schema_errors"].append(f"Module keys mismatch in domain: {m.get('domain_name')}, missing: {set(required_keys) - set(m_cleaned.keys())}")
             continue
 
         norm_domain = normalize(m_cleaned.get("domain_name", ""))
-        is_match = any(norm_domain in a or a in norm_domain for a in allowed_norm)
+        best_ratio = 0
+        best_match_domain = None
+        for a_norm, a_orig in allowed_norm.items():
+            ratio = difflib.SequenceMatcher(None, norm_domain, a_norm).ratio()
+            if ratio > best_ratio:
+                best_ratio = ratio
+                best_match_domain = a_orig
         
-        if not is_match:
-            validation_report["schema_errors"].append(f"Invalid domain name: {m_cleaned.get('domain_name')}")
+        if best_ratio < 0.70:
+            validation_report["schema_errors"].append(f"Invalid domain name: '{m_cleaned.get('domain_name')}' (best match: '{best_match_domain}' at {best_ratio:.0%})")
             continue
             
         m_cleaned["conceptual_explanation"] = m_cleaned.get("conceptual_explanation", "")\
@@ -496,9 +546,13 @@ def schema_validator(data, expected_count, allowed_domains, rid):
         if not check_hint_diversity(clean_practice):
             validation_report["pedagogy_errors"].append(f"Low hint diversity in domain: {m.get('domain_name')}")
 
-        if m_cleaned.get("domain_name") == "Addition vs. Subtraction Asymmetry":
-            if not validate_as_structure(clean_practice):
-                validation_report["schema_errors"].append("AS module failed strict subtraction/addition ratio.")
+        as_ratio = difflib.SequenceMatcher(None, normalize(m_cleaned.get("domain_name", "")), normalize("Addition vs. Subtraction Asymmetry")).ratio()
+        if as_ratio >= 0.70:
+            problems = [str(p.get("problem", "")) for p in clean_practice]
+            sub_count = sum(1 for p in problems if '-' in p)
+            add_count = sum(1 for p in problems if '+' in p)
+            if sub_count < 2 or add_count < 1:
+                validation_report["schema_errors"].append(f"AS module failed subtraction/addition ratio (sub={sub_count}, add={add_count}).")
                 continue
 
         m_cleaned["practice_set"] = clean_practice
@@ -513,9 +567,9 @@ def schema_validator(data, expected_count, allowed_domains, rid):
     data["diagnostic_modules"] = valid_modules
             
     assessment = data.get("formative_assessment", [])
-    if not isinstance(assessment, list) or len(assessment) != 2:
-        validation_report["schema_errors"].append("Formative assessment MUST contain exactly 2 items.")
-        return None, validation_report 
+    if not isinstance(assessment, list) or len(assessment) == 0:
+        validation_report["warnings"].append("Formative assessment missing or empty. Modules preserved with degraded assessment.")
+        data["formative_assessment"] = []
     else:
         valid_assessments = []
         for item in assessment:
@@ -523,10 +577,12 @@ def schema_validator(data, expected_count, allowed_domains, rid):
             ans_text = str(item.get("expected_answer", item.get("answer", ""))).strip()
             
             if len(q_text) >= 3 and re.fullmatch(r"-?\d+", ans_text):
-                 valid_assessments.append({"question": q_text, "expected_answer": ans_text})
+                 valid_assessments.append({"question": q_text, "expected_answer": int(ans_text)})
             else:
-                 validation_report["schema_errors"].append(f"Pruned invalid assessment item (Not an integer or bad question): {item}")
+                 validation_report["warnings"].append(f"Pruned invalid assessment item: {item}")
                  
+        if len(valid_assessments) != 2:
+            validation_report["warnings"].append(f"Formative assessment has {len(valid_assessments)} items instead of 2. Keeping what passed.")
         data["formative_assessment"] = valid_assessments
                 
     validation_report["success_rate"] = (
