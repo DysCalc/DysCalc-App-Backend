@@ -8,7 +8,8 @@ import difflib
 
 from .constants import (
     ALLOWED_OPS,
-    MODELS_TO_TRY,
+    DRAFT_MODELS_TO_TRY,
+    FORMAT_MODELS_TO_TRY,
     OPENROUTER_URL,
     HEADERS,
     BAD_HINT_PATTERNS,
@@ -166,6 +167,11 @@ def check_hint_diversity(practice_set):
     unique = len(set(hints))
     return unique >= (len(hints) * 0.7)
 
+def check_answer_diversity(practice_set):
+    answers = [str(p.get("expected_answer", "")).strip() for p in practice_set]
+    if not answers: return False
+    return len(set(answers)) >= max(2, math.ceil(len(answers) * 0.5))
+
 def validate_conceptual_steps(text):
     """Forces the LLM to use the Step 1, Step 2, Step 3 format with flexible punctuation."""
     text_str = str(text)
@@ -238,8 +244,78 @@ def validate_make_ten_reasoning(problem: str, text: str, context: str) -> tuple[
 
     return True, None
 
-def call_llm_gateway(payload, rid="SYSTEM", temp=0.2):
-    for model_path in MODELS_TO_TRY:
+def generate_crossing_ten_subtraction_hint(problem: str) -> str | None:
+    clean_eq = re.sub(r"[^0-9+\-\s]", "", str(problem))
+    nums = [int(n) for n in re.findall(r"\d+", clean_eq)]
+
+    if "-" not in clean_eq or len(nums) < 2:
+        return None
+
+    a, b = nums[0], nums[1]
+    result = a - b
+
+    if a <= 10 or result >= 10 or result < 0:
+        return None
+
+    first = a - 10
+    remaining = b - first
+
+    return (
+        f"Use {a} blocks. Take away {first} to reach 10, "
+        f"then take away {remaining} more. Count {result} blocks left."
+    )
+
+def validate_stated_final_target(problem: str, text: str, expected_answer: int, context: str) -> tuple[bool, str | None]:
+    """
+    Catch hints/reasoning that state the wrong final target.
+    Example: 12 - 5 = 7, but text says "then 3 more to reach 5".
+    """
+    text_l = str(text).lower()
+
+    matches = re.findall(
+        r"(?:then|and then)[^.]{0,80}?(?:reach|get|make)\s+(\d+)",
+        text_l
+    )
+
+    if matches:
+        stated_final = int(matches[-1])
+        if stated_final != int(expected_answer):
+            return (
+                False,
+                f"Incorrect stated final target in {context}: {problem} should end at "
+                f"{expected_answer}, but text says it reaches {stated_final}."
+            )
+
+    return True, None
+
+def validate_addition_hint_amount(problem: str, text: str, context: str) -> tuple[bool, str | None]:
+    clean_eq = re.sub(r"[^0-9+\-\s]", "", str(problem))
+    nums = [int(n) for n in re.findall(r"\d+", clean_eq)]
+
+    if "+" not in clean_eq or len(nums) < 2:
+        return True, None
+
+    addend = nums[1]
+    text_l = str(text).lower()
+    add_matches = re.findall(r"\badd\s+(\d+)\b", text_l)
+
+    for match in add_matches:
+        amount = int(match)
+        if amount > addend and not any(
+            phrase in text_l
+            for phrase in ["take back", "remove", "because you only"]
+        ):
+            return (
+                False,
+                f"Incorrect addition strategy in {context}: {problem} adds {addend}, "
+                f"but text says to add {amount} without correction."
+            )
+
+    return True, None
+
+def call_llm_gateway(payload, rid="SYSTEM", temp=0.2, model_paths=None):
+    models_to_try = model_paths or DRAFT_MODELS_TO_TRY
+    for model_path in models_to_try:
         for use_json_mode in (True, False):
             try:
                 current_payload = copy.deepcopy(payload)
@@ -314,6 +390,50 @@ def is_addition_subtraction_asymmetry(domain_name: str) -> bool:
     return ratio >= 0.70
 
 
+def validate_operand_bounds(problem: str, domain_name: str) -> tuple[bool, str | None]:
+    nums = [int(n) for n in re.findall(r"\d+", str(problem))]
+
+    if not nums:
+        return False, f"No numeric operands found in: {problem}"
+
+    if any(n > 20 for n in nums):
+        return False, f"Operand above 20 in: {problem}"
+
+    if "-" in str(problem) and len(nums) >= 2:
+        subtrahend = nums[1]
+        if subtrahend > 9 and domain_name != "Multi-Digit Addition and Subtraction":
+            return False, f"Subtrahend too large for early crossing-ten practice: {problem}"
+
+    return True, None
+
+
+def is_typical_profile(predicted_class: str) -> bool:
+    class_text = str(predicted_class).strip().lower()
+    return class_text == "0" or "typical" in class_text or "(0)" in class_text
+
+
+def validate_tone_for_status(text: str, predicted_class: str) -> tuple[bool, str | None]:
+    if not is_typical_profile(predicted_class):
+        return True, None
+
+    banned = [
+        "significant difficulty",
+        "significant difficulties",
+        "severe",
+        "critical",
+        "major deficit",
+        "high-risk",
+        "at-risk",
+    ]
+    text_l = str(text).lower()
+
+    for phrase in banned:
+        if phrase in text_l:
+            return False, f"Tone too strong for Typical profile: '{phrase}'"
+
+    return True, None
+
+
 def math_validator(practice_set, rid, report, domain_name=""):
     """Validates practice problems and tracks failure rates to prevent silent data loss."""
     valid_practice = []
@@ -345,6 +465,12 @@ def math_validator(practice_set, rid, report, domain_name=""):
             report["counts"]["pruned"] += 1
             continue
 
+        operands_ok, operands_error = validate_operand_bounds(problem_str, domain_name)
+        if not operands_ok:
+            report["pedagogy_errors"].append(operands_error)
+            report["counts"]["pruned"] += 1
+            continue
+
         computed = safe_eval(clean_eq)
         if computed is None:
             report["math_errors"].append(f"AST crash on: {clean_eq}")
@@ -362,23 +488,43 @@ def math_validator(practice_set, rid, report, domain_name=""):
                 report["math_errors"].append(f"{clean_eq} evaluated to {computed}, got {ans_match.group()}")
                 report["counts"]["pruned"] += 1
                 continue
+            computed_int = int(computed)
         except:
             report["counts"]["pruned"] += 1
             continue
 
-        if contains_invalid_subtraction(item.get("hint", "")):
+        hint = str(item.get("hint", "")).strip()
+
+        if contains_invalid_subtraction(hint):
             report["pedagogy_errors"].append("Negative subtraction in hint.")
             report["counts"]["pruned"] += 1
             continue
-
-        hint = str(item.get("hint", "")).strip()
 
         if not hint:
             report["pedagogy_errors"].append(f"Missing hint for practice problem: {problem_str}")
             report["counts"]["pruned"] += 1
             continue
 
+        target_ok, target_error = validate_stated_final_target(problem_str, hint, computed_int, "hint")
+        if not target_ok:
+            report["pedagogy_errors"].append(target_error)
+            report["counts"]["pruned"] += 1
+            continue
+
+        addition_ok, addition_error = validate_addition_hint_amount(problem_str, hint, "hint")
+        if not addition_ok:
+            report["pedagogy_errors"].append(addition_error)
+            report["counts"]["pruned"] += 1
+            continue
+
         hint_ok, hint_error = validate_hint_quality(problem_str, hint, domain_name)
+        if not hint_ok:
+            repaired_hint = generate_crossing_ten_subtraction_hint(problem_str)
+            if repaired_hint:
+                item["hint"] = repaired_hint
+                hint = repaired_hint
+                hint_ok, hint_error = validate_hint_quality(problem_str, hint, domain_name)
+
         if not hint_ok:
             report["pedagogy_errors"].append(hint_error)
             report["counts"]["pruned"] += 1
@@ -431,6 +577,12 @@ def pedagogy_validator(example, rid, report):
                 except Exception:
                     report["schema_errors"].append(f"Invalid final_answer: {example.get('final_answer')}")
                     return False
+            else:
+                report["schema_errors"].append(f"Invalid final_answer: {example.get('final_answer')}")
+                return False
+        else:
+            report["math_errors"].append(f"AST crash in worked example: {clean_eq}")
+            return False
 
     reasoning_steps = example.get("reasoning_steps", [])
     if not isinstance(reasoning_steps, list) or len(reasoning_steps) == 0:
@@ -456,6 +608,16 @@ def pedagogy_validator(example, rid, report):
     reasoning_ok, reasoning_error = validate_make_ten_reasoning(problem, steps_text, "worked example")
     if not reasoning_ok:
         report["pedagogy_errors"].append(reasoning_error)
+        return False
+
+    target_ok, target_error = validate_stated_final_target(problem, steps_text, int(example["final_answer"]), "worked example")
+    if not target_ok:
+        report["pedagogy_errors"].append(target_error)
+        return False
+
+    addition_ok, addition_error = validate_addition_hint_amount(problem, steps_text, "worked example")
+    if not addition_ok:
+        report["pedagogy_errors"].append(addition_error)
         return False
 
     return True
@@ -550,6 +712,7 @@ def get_lesson_from_qwen(
     <philippine_context_and_tone>
     - Context: Use locally familiar physical objects (e.g., mangoes, candies, blocks, peso coins, jeepney toys) for concrete hints.
     - Tone: Use empathetic, encouraging language. Write short, simple, child-friendly sentences.
+    - If predicted_class is 0 or status is Typical, avoid diagnostic-sounding phrases like "significant difficulty", "severe", "critical", "major deficit", "high-risk", or "at-risk". Use softer phrases such as "relative weakness", "emerging need", or "may benefit from support".
     </philippine_context_and_tone>
 
     <clinical_precision>
@@ -557,6 +720,7 @@ def get_lesson_from_qwen(
     - PEDAGOGY: NEVER suggest "timed drills" or focus on speed. Dyscalculic students suffer from math anxiety. Focus on derived facts, making 10s, and chunking.
     - CRA FRAMEWORK: All hints MUST use Concrete-Representational-Abstract language. NEVER use abstract procedural terms like "carry over" or "borrow". ALWAYS anchor the hint in physical objects (e.g., "Count 9 peso coins, add 1 to make 10, then add the rest").
     - CROSSING-TEN SUBTRACTION FORMULA: For A - B where A > 10 and A - B < 10, first take away A - 10 to reach 10, then take away B - (A - 10). Example: 15 - 7 means take away 5 to reach 10, then 2 more. Example: 16 - 7 means take away 6 to reach 10, then 1 more. Never say "take away B to reach 10".
+    - REASONING CONSISTENCY: The final number stated in hints or reasoning must match the actual answer. For addition, do not say to add more than the actual addend unless you explicitly take back/remove the extra amount.
     - If a domain has a HIGH severity (>0.20), provide "cognitive stretch" problems (e.g., crossing tens, 12+9 or 14-6). Avoid overly simple problems like 8-2 or 9-3.
     - If a domain is AS (Addition vs. Subtraction Asymmetry), the student likely relies on forward (addition-based) reasoning and has difficulty with mental inversion. To rehabilitate this, the practice set MUST contain BOTH addition (+) and subtraction (-) equations (e.g., at least 3 subtraction problems bridging tens, and at least 1 addition problem for scaffolding). For subtraction hints, teach make-10 or inverse-operation reasoning; avoid shallow "take away and count" hints.
     - If a domain is BC (Basic vs. Complex Arithmetic Contrast), you MUST explicitly focus on "crossing tens". Do not use generic "break down problems" phrasing. Explicitly teach breaking numbers into tens and ones (e.g., 15 + 7 -> 10 + 5 + 7).
@@ -584,12 +748,13 @@ def get_lesson_from_qwen(
     <strict_rules>
     1. ANTI-REPETITION: Do not repeat the exact same equation within the same practice_set or formative_assessment array. Use varied number families to avoid redundancy.
     2. DIVERSITY RULE: Use at least 3 DIFFERENT fact families/number triplets in the practice set. Do NOT repeat the same base numbers.
-    3. HINT VARIETY: Each hint MUST use entirely different wording and objects. Do NOT repeat phrasing.
+    3. ANSWER VARIETY: Do not make most practice items have the same expected_answer. Use varied answers across each practice_set.
+    4. HINT VARIETY: Each hint MUST use entirely different wording and objects. Do NOT repeat phrasing.
        - EXAMPLES: "Hold up 7 fingers, fold down 2", "Draw 9 dots, cross out 3", "Place 4 blocks, add 2 more".
-    4. SYMBOLIC MATH ONLY: Every practice_set.problem MUST be a pure math equation with + or - (e.g., "17 - 9"). Never output object labels like "8 dots", "12 blocks", or text word problems in the problem field.
-    5. TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', your practice_set MUST contain a mix of BOTH '+' and '-' operators. Do not generate only subtraction.
-    6. BOUNDS: Keep math simple but appropriate to severity. Operands <= 20.
-    7. ASSESSMENT: Provide exactly {formative_assessment_count} Formative Assessment questions at the very end. Each assessment question MUST be a symbolic equation with + or - and a single integer answer. Do not ask conceptual/open-ended questions.
+    5. SYMBOLIC MATH ONLY: Every practice_set.problem MUST be a pure math equation with + or - (e.g., "17 - 9"). Never output object labels like "8 dots", "12 blocks", or text word problems in the problem field.
+    6. TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', your practice_set MUST contain a mix of BOTH '+' and '-' operators. Do not generate only subtraction.
+    7. BOUNDS: Keep math simple but appropriate to severity. Operands <= 20. For subtraction, keep the second operand <= 9 unless the target domain is Multi-Digit Addition and Subtraction.
+    8. ASSESSMENT: Provide exactly {formative_assessment_count} Formative Assessment questions at the very end. Each assessment question MUST be a symbolic equation with + or - and a single integer answer. Do not ask conceptual/open-ended questions.
     </strict_rules>
 
     {correction_prompt}
@@ -601,7 +766,7 @@ def get_lesson_from_qwen(
             {"role": "user", "content": f"<ml_data>\n{ml_data}\n</ml_data>\n\nGenerate the modules based ONLY on the target domains."}
         ]
     }
-    return call_llm_gateway(payload, rid, temp=0.0 if correction_prompt else 0.4)
+    return call_llm_gateway(payload, rid, temp=0.0 if correction_prompt else 0.4, model_paths=DRAFT_MODELS_TO_TRY)
 
 def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative_assessment_count = 3):
     print(f"[REQ {rid}] Pass 2: Converting draft to strict JSON...")
@@ -632,6 +797,9 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative
     - Every practice_set item MUST have a "problem" that is a symbolic equation containing + or -. Convert any object-only draft item like "8 dots" into an equation such as "8 + 0" or a better grade-appropriate equation.
     - For Symbolic vs. Non-Symbolic modules, dots/objects belong in "hint", not in "problem".
     - Do not repeat the exact same equation within the same practice_set or formative_assessment array.
+    - Keep expected_answer values varied within each practice_set; do not make every item answer to the same number.
+    - Keep operands <= 20, and keep subtraction's second operand <= 9 unless the domain is Multi-Digit Addition and Subtraction.
+    - For Typical (0) status, use soft support language. Avoid "significant difficulty", "severe", "critical", "major deficit", "high-risk", and "at-risk".
     - formative_assessment questions MUST be symbolic arithmetic equations with + or -, not conceptual questions about strategies, representations, or inverse operations.
     - CRITICAL: The "diagnostic_modules" array MUST contain ALL modules present in the Teacher Text. DO NOT stop after formatting just one module. If the Teacher Text has 3 domains, you MUST output 3 objects in the array.
     - FINAL STEP - MANDATORY: You MUST include a "formative_assessment" array with EXACTLY {formative_assessment_count} objects. This CANNOT be empty. If omitted, the output is rejected.
@@ -671,7 +839,7 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative
             {"role": "user", "content": f"ML DATA:\n{ml_data_string}\n\nTEACHER TEXT:\n{qwen_messy_text}"}
         ]
     }
-    raw_output = call_llm_gateway(payload, rid, temp=0.0)
+    raw_output = call_llm_gateway(payload, rid, temp=0.0, model_paths=FORMAT_MODELS_TO_TRY)
     if not raw_output: return None
 
     parsed_json = extract_json_robustly(raw_output)
@@ -679,7 +847,7 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative
          print(f"[REQ {rid}] [ERROR] Python rejected the AI's JSON syntax.")
     return parsed_json
 
-def schema_validator(data, expected_count, allowed_domains, rid, formative_assessment_count = 3):
+def schema_validator(data, expected_count, allowed_domains, rid, formative_assessment_count = 3, predicted_class=None):
     """Orchestrates the validation pipeline and builds the metrics report."""
     if not isinstance(data, dict): return None, {"fatal": "Root data is not a dictionary."}
 
@@ -705,6 +873,12 @@ def schema_validator(data, expected_count, allowed_domains, rid, formative_asses
     if not all(k in data for k in required_top_keys):
         validation_report["schema_errors"].append("Missing top-level schema keys.")
         return None, validation_report
+
+    tone_class = predicted_class if predicted_class is not None else data.get("status", "")
+    for key in ["decision_path_rationale", "overall_summary"]:
+        tone_ok, tone_error = validate_tone_for_status(data.get(key, ""), tone_class)
+        if not tone_ok:
+            validation_report["pedagogy_errors"].append(f"{key}: {tone_error}")
 
     modules = data.get("diagnostic_modules", [])
     if len(modules) == 0:
@@ -737,6 +911,10 @@ def schema_validator(data, expected_count, allowed_domains, rid, formative_asses
         if best_ratio < 0.70:
             validation_report["schema_errors"].append(f"Invalid domain name: '{m_cleaned.get('domain_name')}' (best match: '{best_match_domain}' at {best_ratio:.0%})")
             continue
+
+        tone_ok, tone_error = validate_tone_for_status(m_cleaned.get("clinical_explanation", ""), tone_class)
+        if not tone_ok:
+            validation_report["pedagogy_errors"].append(f"clinical_explanation in domain {m_cleaned.get('domain_name')}: {tone_error}")
 
         m_cleaned["conceptual_explanation"] = m_cleaned.get("conceptual_explanation", "")\
             .replace("Child-friendly 'Why':", "").replace("Child-friendly \"Why\":", "").replace("**Why**:", "").replace("Why:", "").strip()
@@ -772,6 +950,9 @@ def schema_validator(data, expected_count, allowed_domains, rid, formative_asses
 
         if not check_hint_diversity(clean_practice):
             validation_report["pedagogy_errors"].append(f"Low hint diversity in domain: {m.get('domain_name')}")
+
+        if not check_answer_diversity(clean_practice):
+            validation_report["pedagogy_errors"].append(f"Low answer diversity in domain: {m.get('domain_name')}")
 
         if is_addition_subtraction_asymmetry(m_cleaned.get("domain_name", "")):
             problems = [str(p.get("problem", "")) for p in clean_practice]

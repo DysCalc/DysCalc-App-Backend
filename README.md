@@ -1,357 +1,358 @@
 # DysCalc App Backend
 
-This repository contains the Flask-based backend for the DysCalc project.  
-It serves as an **AI Gateway**, transforming machine learning diagnostic outputs into structured, clinically grounded, and mathematically validated intervention modules using a multi-pass LLM pipeline (via OpenRouter).
+Flask backend for the DysCalc project. It serves two main jobs:
 
----
+1. Convert raw diagnostic test scores into structured ML diagnostic output.
+2. Convert that ML diagnostic output into validated SPED intervention modules through a multi-pass LLM pipeline.
 
-## System Architecture & Behavior
+The current backend emphasizes deterministic validation and repair around LLM output so generated lessons are not accepted just because they look plausible.
 
-### 1. Multi-Pass Generation Pipeline
+## Project Layout
 
-The system uses a **2-pass LLM architecture**:
-
-- **Pass 1 (Pedagogical Drafting)**  
-  Generates SPED-informed intervention content using Qwen models.
-
-- **Pass 2 (Strict JSON Formatting)**  
-  Converts output into a strictly structured JSON schema with validation and repair handling.
-
----
-
-### 2. Clinical Routing Engine
-
-The backend parses ML diagnostic strings to extract:
-
-- Confidence level  
-- Domain severity scores  
-- Dominant learning deficits  
-
-#### Intervention Scaling Logic
-
-| Severity Level | Practice Items per Module |
-|---------------|--------------------------|
-| Low           | 2                        |
-| Moderate      | 4                        |
-| High          | 6                        |
-
----
-
-### 3. Deterministic math validation with rule-based schema and pedagogy checks
-
-All generated content is validated and filtered before being returned
-
-#### Math Validation (AST-based)
-
-- Only allows: `+`, `-`
-- Rejects:
-  - Incorrect answers
-  - Invalid expressions
-  - Unsafe syntax
-
-**Example:**
-```
-LLM Output: 5 + 3 = 9 
-→ Rejected → Repair Loop Triggered
+```text
+api/index.py                     Flask routes
+llm/constants.py                 OpenRouter config, model routing, clinical/domain rules
+llm/helpers.py                   LLM gateway, prompting, validation, repair helpers
+ml/helpers.py                    Diagnostic preprocessing and prediction wrapper
+ml/C45DecisionTree.py            C4.5 model utilities
+ml/models/v1.pkl                 Serialized model artifact
+tests/generated_test_payloads.json
+                                 Raw diagnostic endpoint test inputs
+tests/select_and_request.py      Interactive endpoint test runner
+tests/convert_ml_response_payload.py
+                                 Converts ML responses into /generate_module payloads
 ```
 
----
-
-### 4. Schema + Pedagogy Enforcement
-
-Each module is validated for:
-
-- Required JSON structure  
-- Step-based explanations (`Step 1`, `Step 2`, `Step 3`)  
-- Worked example correctness  
-- Hint diversity  
-- Domain alignment  
-- Prevents most invalid subtraction cases (e.g., 3 - 5), especially in practice sets and hints
-
----
-
-### 5. Retry & Repair Loop
-
-- Maximum: **5 attempts**
-- Uses exponential backoff:
-
-```python
-time.sleep(2 ** attempt)
-```
-
-- Injects correction prompts based on:
-  - Math errors  
-  - Pedagogy violations  
-  - Schema failures  
-
----
-
-### LLM Resilience
-
-- Uses multiple fallback models via OpenRouter
-- Automatically retries across models if one fails or times out
-
-## Frontend Requirements
-
-Due to multi-pass LLM + retry loop:
-
-- Response time: **10–45+ seconds**
-- Frontend must:
-  - Implement loading states  
-  - Use timeout of **60–90 seconds minimum**
-
----
-
-## Environment Setup
-
-### 1. Install Dependencies
-
-Ensure you have Python installed, then run:
+## Setup
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv
+.venv/bin/pip install -r requirements.txt
 ```
 
-### 2. Configure Environment Variables
-
-Create a `.env` file:
+Create `.env`:
 
 ```env
 OPENROUTER_TOKEN=your_openrouter_api_key_here
 FLASK_ENV=development
 ```
 
-### 3. Run the Server
+Run the API:
 
 ```bash
-python -m index
+.venv/bin/python api/index.py
 ```
 
-### 4. Access the Server
-Server runs at:
+Server default:
 
-```
+```text
 http://localhost:5000
 ```
 
-## File Structure Overview
+## Endpoints
 
-- **index.py**  
-  Main Flask application and API route definitions.
+### `POST /generate-diagnostic`
 
-- **helpers.py**  
-  Core logic layer (AST math validation, schema enforcement, LLM gateway, and ML parsing).
+Runs the ML diagnostic pipeline from raw test results.
 
-- **constants.py**  
-  Stores API configuration, model fallbacks, allowed mathematical operations, and clinical interpretation mappings.
-
----
-
-## API Endpoints
-
----
-
-### 1. Generate Full Intervention Module
-
-**POST** `/generate_module`
-
-#### Request Body
+Request:
 
 ```json
 {
-  "diagnostic_data": "Student Profile - At-Risk (1) | Confidence: 0.85 | Domain Severity: {'ADD': 0.30, 'SUB': 0.15}"
+  "test_id": "test-0001-0000-0000-0000",
+  "number_comparison": 1274.5098,
+  "dot_matching": 2384.9189,
+  "number_series": 16,
+  "single_addition": 34,
+  "single_subtraction": 37,
+  "complex_arithmetic": 16
 }
 ```
 
----
-
-#### Success Response (200)
+Response:
 
 ```json
 {
-  "status": "At-Risk (1)",
-  "decision_path_rationale": "...",
-  "overall_summary": "...",
-  "decision_path_interpretation": "...",
-  "diagnostic_modules": [...],
-  "formative_assessment": [...],
-  "_meta_validation_report": {...}
-}
-```
-
----
-
-### Important Notes
-
-- `expected_answer` in **practice_set**  
-   Integer (strictly validated)
-
-- `expected_answer` in **formative_assessment**  
-   Returned as **string** (must be handled in frontend)
-
----
-
-#### Validation Report Structure
-
-```json
-"_meta_validation_report": {
-  "counts": {
-    "expected": 18,
-    "returned": 18,
-    "pruned": 0
+  "predicted_class": "0",
+  "confidence": 0.6818,
+  "decision_path": [["NC", 1508.9295, "<="]],
+  "decision_path_readable": "NC <= 1508.9295",
+  "domain_severity_scores": {
+    "Addition vs. Subtraction Asymmetry": 0.4406
   },
-  "modules_expected": 3,
-  "modules_passed": 3,
-  "math_errors": [],
-  "pedagogy_errors": [],
-  "schema_errors": [],
-  "warnings": [],
-  "success_rate": 1.0
-}
-```
-
----
-
-#### Error Responses
-
-**400**
-```json
-{"error": "Invalid request"}
-```
-
-**500**
-```json
-{"error": "Failed to generate valid module after retries"}
-```
-
----
-
-### 2. Generate Retest Questions
-
-**POST** `/generate_retest`
-
----
-
-#### Request Body
-
-```json
-{
-  "diagnostic_data": "Student Profile - At-Risk (1)",
-  "previous_questions": [
-    {"problem": "5+3", "expected_answer": 8}
-  ]
-}
-```
-
----
-
-### Behavior
-
-- Generates **5 new questions**
-- Avoids duplicates using:
-
-```python
-difflib.SequenceMatcher > 0.85
-```
-
----
-
-### Constraints
-
-- Problems must be:
-  - Pure symbolic math (`"5+3"`)
-  - No word problems  
-  - Operands ≤ 20  
-
-- Hints must reference **physical actions**
-
-- Only `+` and `-` allowed
-
----
-
-#### Success Response
-
-```json
-{
-  "retest_questions": [
-    {
-      "problem": "6+4",
-      "hint": "Use blocks",
-      "expected_answer": 10
-    }
-  ],
-  "_meta_validation_report": {
-    "counts": {"returned": 5, "pruned": 0},
-    "math_errors": []
+  "task_importance_scores": {
+    "AS": 0.4168
+  },
+  "leaf_distribution": {
+    "0": 14,
+    "1": 6
   }
 }
 ```
 
----
+### `POST /generate_module`
 
-#### Error Responses
+Generates intervention modules from an ML diagnostic response.
 
-**400**
+Request:
+
 ```json
-{"error": "Invalid request"}
+{
+  "test_id": "test-0001-0000-0000-0000",
+  "diagnostic_data": {
+    "predicted_class": "0",
+    "confidence": 0.6818,
+    "decision_path": [["NC", 1508.9295, "<="]],
+    "domain_severity_scores": {
+      "Addition vs. Subtraction Asymmetry": 0.4406
+    },
+    "task_importance_scores": {
+      "AS": 0.4168
+    }
+  }
+}
 ```
 
-**500**
+Success response includes:
+
 ```json
-{"error": "All generated retest questions were invalid"}
+{
+  "status": "Typical (0)",
+  "decision_path_rationale": "...",
+  "overall_summary": "...",
+  "decision_path_interpretation": "...",
+  "diagnostic_modules": [
+    {
+      "domain_name": "Addition vs. Subtraction Asymmetry",
+      "clinical_explanation": "...",
+      "learning_objectives": ["...", "...", "..."],
+      "conceptual_explanation": "Step 1: ... Step 2: ... Step 3: ...",
+      "worked_example": {
+        "problem": "13 - 8",
+        "reasoning_steps": [
+          "Step 1: ...",
+          "Step 2: ...",
+          "Step 3: ..."
+        ],
+        "final_answer": 5
+      },
+      "teaching_strategy": "...",
+      "practice_set": [
+        {
+          "problem": "13 - 8",
+          "expected_answer": 5,
+          "hint": "Use 13 blocks. Take away 3 to reach 10, then take away 5 more. Count 5 blocks left."
+        }
+      ]
+    }
+  ],
+  "formative_assessment": [
+    {
+      "question": "What is 9 + 4?",
+      "expected_answer": 13
+    }
+  ],
+  "_meta_validation_report": {
+    "counts": {"expected": 10, "returned": 10, "pruned": 0},
+    "modules_expected": 3,
+    "modules_passed": 3,
+    "math_errors": [],
+    "pedagogy_errors": [],
+    "schema_errors": [],
+    "warnings": [],
+    "success_rate": 1.0
+  }
+}
 ```
 
----
+If all retries fail, the response now preserves the strongest near-valid attempt:
 
-## Data Constraints (Frontend Checklist)
+```json
+{
+  "error": "Failed to generate fully valid module after retries",
+  "best_validation_report": {...},
+  "best_candidate": {...}
+}
+```
 
-### Valid
-- `"5+3"`
-- `8`
+## LLM Pipeline
 
-### Invalid
-- `"5 + 3 apples"`
-- `"8"` (for practice_set)
-- `3 - 5`
+The module generator uses two LLM passes:
 
----
+1. Draft pass: produces SPED-informed intervention content.
+2. Format pass: converts the draft into strict JSON.
 
-## System Guarantees
+Model routing is split by task:
 
-- Deterministic math validation (AST-based)  
-- Strict schema enforcement  
-- Retry + repair loop  
-- Duplicate retest prevention  
-- Clinically grounded outputs  
-- Domain-aware difficulty scaling  
+```python
+DRAFT_MODELS_TO_TRY = [
+    "qwen/qwen-2.5-72b-instruct",
+    "qwen/qwen-2.5-7b-instruct",
+    "qwen/qwen-2.5-coder-32b-instruct"
+]
 
----
+FORMAT_MODELS_TO_TRY = [
+    "qwen/qwen-2.5-72b-instruct",
+    "qwen/qwen-2.5-coder-32b-instruct"
+]
+```
 
-## Known Edge Cases
+Formatting avoids the weaker 7B fallback because malformed JSON and dropped `expected_answer` fields were observed there.
 
-1. **Modules may be partially pruned**
-   - Example: 3 expected → only 1 valid  
-   - Check: `modules_passed`
+## Domain Selection
 
-2. **Conceptual explanation may fail format**
-   - Missing Step 1–3 → appears in `pedagogy_errors`
+`get_top_deficits()` combines:
 
-3. **Formative answers returned as strings**
-   - Returned as string due to validation normalization (frontend should cast to integer if needed)
+- domain severity scores
+- task importance scores
+- broad-domain downweighting
 
----
+This favors clinically actionable domains over broad summaries when possible.
 
-## Suggested Frontend Safeguards
+Practice counts are severity-tiered per selected domain:
 
-- Do not assume:
-  - All modules exist  
-  - Counts match expected  
+| Severity score | Practice items |
+| --- | ---: |
+| `< 0.20` | 2 |
+| `0.20 - 0.39` | 4 |
+| `>= 0.40` | 6 |
 
-- Always check:
-  - `_meta_validation_report`
+## Validation And Repair
 
-- Gracefully handle:
-  - Partial outputs  
-  - Reduced practice sets  
+Generated modules are not returned unless validation passes.
 
----
+Current validation covers:
+
+- required top-level and module schema keys
+- exact module count
+- exact practice count per domain
+- integer `expected_answer`
+- symbolic `+` / `-` practice problems only
+- AST-based arithmetic correctness
+- no multiplication/division
+- operands `<= 20`
+- subtraction subtrahend `<= 9` unless domain is `Multi-Digit Addition and Subtraction`
+- non-empty hints
+- hint diversity
+- answer diversity
+- duplicate equation detection within each module practice set
+- duplicate equation detection within formative assessment
+- conceptual explanation must contain `Step 1:`, `Step 2:`, `Step 3:`
+- worked-example reasoning steps must be labeled `Step 1:`, `Step 2:`, etc.
+- worked-example arithmetic correctness
+- symbolic formative assessment questions with matching integer answers
+- rejection of open-ended formative questions pretending to have integer answers
+- tone guard for Typical profiles
+- domain-specific Addition vs. Subtraction Asymmetry rules
+
+### Semantic Reasoning Checks
+
+The validator also checks reasoning text, not only final arithmetic:
+
+- make-10 subtraction must take away the correct amount to reach 10
+- final target stated in hints/reasoning must match the actual answer
+- addition hints cannot say to add more than the addend unless they explicitly take back/remove the extra
+
+Example rejected:
+
+```text
+12 - 5: Take away 2 to reach 10, then 3 more to reach 5.
+```
+
+Correct:
+
+```text
+12 - 5: Take away 2 to reach 10, then 3 more. Count 7 blocks left.
+```
+
+### Deterministic Hint Repair
+
+Some repairable crossing-ten hints are fixed locally before pruning.
+
+Example input:
+
+```text
+14 - 8: Hold up 14 fingers, then fold down 8 fingers.
+```
+
+Auto-repaired hint:
+
+```text
+Use 14 blocks. Take away 4 to reach 10, then take away 4 more. Count 6 blocks left.
+```
+
+## Retry Behavior
+
+The generator makes up to 5 attempts with exponential backoff.
+
+When validation fails, the correction prompt includes specific validation errors plus targeted repair instructions for:
+
+- missing `expected_answer`
+- practice count mismatch
+- repeated equations
+- AS addition/subtraction ratio failures
+- answer diversity
+- tone too strong for Typical profiles
+- operand bounds
+- crossing-ten subtraction reasoning
+
+The best candidate/report is retained across attempts and returned in the final 500 response if no fully valid module is produced.
+
+## Testing Utilities
+
+### Interactive endpoint runner
+
+Use this to select payloads from `tests/generated_test_payloads.json` and post them to one or both endpoints.
+
+```bash
+.venv/bin/python tests/select_and_request.py
+```
+
+Examples:
+
+```bash
+.venv/bin/python tests/select_and_request.py --select 5 --endpoint both
+.venv/bin/python tests/select_and_request.py --select 1,4,7 --save tests/selected_results.json
+.venv/bin/python tests/select_and_request.py --select all --endpoint diagnostic
+```
+
+Selections support:
+
+```text
+1
+1,3,5
+2-6
+all
+```
+
+### ML response wrapper
+
+Convert existing ML diagnostic responses into `/generate_module` payloads:
+
+```bash
+.venv/bin/python tests/convert_ml_response_payload.py \
+  --input path/to/ml_response.json \
+  --output tests/module_payloads.json
+```
+
+Run raw diagnostic inputs through `/generate-diagnostic`, wrap the result, then optionally post to `/generate_module`:
+
+```bash
+.venv/bin/python tests/convert_ml_response_payload.py \
+  --input tests/generated_test_payloads.json \
+  --from-diagnostic-input \
+  --output tests/module_payloads.json \
+  --post-module
+```
+
+## Notes For Frontend Integration
+
+- `/generate_module` can take a long time because it may call multiple LLMs and retry.
+- Use a generous timeout. A full retry cycle can exceed 90 seconds.
+- Always inspect `_meta_validation_report`.
+- `expected_answer` values are normalized to integers in valid outputs.
+- A 500 response may include `best_candidate` and `best_validation_report`; these are useful for debugging, not for direct student display.
+
+## Known Non-Active Code
+
+The old `/generate_retest` route exists only as commented code in `api/index.py`. It is not currently an active endpoint.

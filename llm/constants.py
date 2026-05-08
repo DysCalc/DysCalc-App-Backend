@@ -15,11 +15,18 @@ HEADERS = {
     "X-Title": "Dyscalculia Thesis App"
 }
 
-MODELS_TO_TRY = [
-    "qwen/qwen-2.5-72b-instruct",      
+DRAFT_MODELS_TO_TRY = [
+    "qwen/qwen-2.5-72b-instruct",
     "qwen/qwen-2.5-7b-instruct",
     "qwen/qwen-2.5-coder-32b-instruct"
 ]
+
+FORMAT_MODELS_TO_TRY = [
+    "qwen/qwen-2.5-72b-instruct",
+    "qwen/qwen-2.5-coder-32b-instruct"
+]
+
+MODELS_TO_TRY = DRAFT_MODELS_TO_TRY
 ALLOWED_OPS = {
     ast.Add: operator.add, 
     ast.Sub: operator.sub,

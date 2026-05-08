@@ -113,6 +113,9 @@ def generate_module():
 
         correction_prompt = ""
         formative_assessment_count = 5
+        best_candidate = None
+        best_report = None
+        best_score = -1
         for attempt in range(5):
             print(f"\n[REQ {rid}] Pipeline Loop: Attempt {attempt + 1}")
             try:
@@ -130,7 +133,23 @@ def generate_module():
                 perfect_json = format_with_cloud_llm(draft, json.dumps(ml_data), practice_tiers, rid, formative_assessment_count)
                 if not perfect_json: raise Exception("Pass 2 JSON extraction failed")
 
-                validated_data, validation_report = schema_validator(perfect_json, practice_tiers, top_domains, rid, formative_assessment_count)
+                validated_data, validation_report = schema_validator(
+                    perfect_json,
+                    practice_tiers,
+                    top_domains,
+                    rid,
+                    formative_assessment_count,
+                    predicted_class,
+                )
+
+                score = (
+                    validation_report.get("counts", {}).get("returned", 0) -
+                    validation_report.get("counts", {}).get("pruned", 0)
+                )
+                if score > best_score:
+                    best_score = score
+                    best_candidate = perfect_json
+                    best_report = validation_report
 
                 if validation_report["math_errors"] or validation_report["pedagogy_errors"] or validation_report["schema_errors"]:
                      logger.warning(f"[REQ {rid}] [VALIDATION REPORT]: {json.dumps(validation_report, indent=2)}")
@@ -143,10 +162,14 @@ def generate_module():
                 else:
                     logger.warning(f"[REQ {rid}] [FAIL] Triggering Repair Loop.")
 
-                    correction_prompt = f"\nCRITICAL CORRECTION FROM SYSTEM:\nYour last output failed validation. Do not repeat these errors: "
-                    if validation_report["math_errors"]: correction_prompt += f"Math Errors: {validation_report['math_errors'][:2]}. "
-                    if validation_report["pedagogy_errors"]: correction_prompt += f"Pedagogy Errors: {validation_report['pedagogy_errors'][:2]}. "
-                    if validation_report["schema_errors"]: correction_prompt += f"Schema Errors: {validation_report['schema_errors'][:2]}. "
+                    math_errors = validation_report["math_errors"]
+                    pedagogy_errors = validation_report["pedagogy_errors"]
+                    schema_errors = validation_report["schema_errors"]
+
+                    correction_prompt = f"\nCRITICAL CORRECTION FROM SYSTEM:\nYour last output failed validation. Fix these exact errors: "
+                    if math_errors: correction_prompt += f"Math Errors: {math_errors}. "
+                    if pedagogy_errors: correction_prompt += f"Pedagogy Errors: {pedagogy_errors}. "
+                    if schema_errors: correction_prompt += f"Schema Errors: {schema_errors}. "
 
                     correction_prompt += (
                         "Every practice item must include a non-empty hint. "
@@ -159,6 +182,50 @@ def generate_module():
                         "Every conceptual_explanation must contain Step 1:, Step 2:, and Step 3:. "
                     )
 
+                    if any("No answer found" in e for e in schema_errors):
+                        correction_prompt += (
+                            "Every practice_set item must include expected_answer as an integer. "
+                            "Example: {\"problem\": \"8 + 4\", \"expected_answer\": 12, "
+                            "\"hint\": \"Use 8 blocks and add 4 more.\"}. "
+                        )
+
+                    if any("AS module failed" in e for e in schema_errors):
+                        correction_prompt += (
+                            "The Addition vs. Subtraction Asymmetry module must include at least "
+                            "3 subtraction problems and at least 1 addition problem. "
+                        )
+
+                    if any("Practice count mismatch" in e for e in schema_errors):
+                        correction_prompt += (
+                            "Do not remove or shorten practice_set arrays. Each module must contain "
+                            "exactly the requested number of items. "
+                        )
+
+                    if any("Repeated equation" in e for e in pedagogy_errors):
+                        correction_prompt += (
+                            "Replace only the repeated equation with a different equation and keep "
+                            "all other valid items. "
+                        )
+
+                    if any("Low answer diversity" in e for e in pedagogy_errors):
+                        correction_prompt += (
+                            "Vary the expected_answer values within each practice_set; do not make "
+                            "most items solve to the same number. "
+                        )
+
+                    if any("Tone too strong" in e for e in pedagogy_errors):
+                        correction_prompt += (
+                            "For Typical (0) profiles, soften the language. Use phrases like "
+                            "\"relative weakness\", \"emerging need\", or \"may benefit from support\" "
+                            "instead of severe or at-risk language. "
+                        )
+
+                    if any("Subtrahend too large" in e or "Operand above 20" in e for e in pedagogy_errors):
+                        correction_prompt += (
+                            "Keep operands <= 20 and keep subtraction's second operand <= 9 unless "
+                            "the target domain is Multi-Digit Addition and Subtraction. "
+                        )
+
                     logger.info(f"[REQ {rid}] [REPAIR] Adding correction prompt: {correction_prompt}")
                     time.sleep(2 ** attempt)
 
@@ -166,7 +233,11 @@ def generate_module():
                 logger.exception(f"[REQ {rid}] [RETRY] Pipeline step failed")
                 time.sleep(2 ** attempt)
 
-        return jsonify({"error": "Failed to generate valid module after retries"}), 500
+        return jsonify({
+            "error": "Failed to generate fully valid module after retries",
+            "best_validation_report": best_report,
+            "best_candidate": best_candidate
+        }), 500
 
     except Exception as e:
         logger.exception(f"[REQ {rid}] [ERROR] Critical Failure")
