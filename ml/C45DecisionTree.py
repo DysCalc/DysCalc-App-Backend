@@ -581,17 +581,19 @@ class C45DecisionTree:
 
         return self.get_leaves_num(n.left) + self.get_leaves_num(n.right)
     
-    def save_model(self, filepath: str, optimal_threshold: float = 0.50, calibrator=None):
+    def save_model(self, filepath: str, optimal_threshold: float = 0.50):
         """
-        Serializes and saves the trained Decision Tree, its calibrated threshold,
-        and an optional isotonic calibrator.
+        Serializes and saves the trained Decision Tree and locked threshold.
         """
         import pickle
         
         model_package = {
-            'model': self,
-            'optimal_threshold': optimal_threshold,
-            'calibrator': calibrator,
+            'model':                self,
+            'optimal_threshold':    optimal_threshold,
+            'conf_fact':            self.conf_fact,
+            'min_samples_leaf':     self.min_samples_leaf,
+            'max_depth':            self.max_depth,
+            'epsilon':              self.epsilon,
         }
         
         with open(filepath, 'wb') as file:
@@ -599,38 +601,35 @@ class C45DecisionTree:
             
         logger.info(f"Model successfully saved to {filepath}")
         logger.info(f"Locked threshold: {optimal_threshold}")
-        logger.info(f"Calibrator: {'included' if calibrator is not None else 'not provided'}")
  
     @classmethod
     def load_model(cls, filepath: str):
         """
-        Loads a serialized Decision Tree and returns the model, threshold,
-        and calibrator (None if not saved).
+        Loads a serialized Decision Tree and returns the model and threshold.
         """
         import pickle
         import sys
-        
-        # Patch sys.modules to allow pickle to find the classes if the model 
-        # was trained before the files were moved into the 'ml' module.
-        if 'C45DecisionTree' not in sys.modules:
-            import ml.C45DecisionTree
-            sys.modules['C45DecisionTree'] = ml.C45DecisionTree
-        if 'Dataclasses' not in sys.modules:
-            import ml.Dataclasses
-            sys.modules['Dataclasses'] = ml.Dataclasses
-        
+
+        class LegacyUnpickler(pickle.Unpickler):
+            def find_class(self, module, name):
+                if module.startswith('src.'):
+                    module = module[4:]
+                return super().find_class(module, name)
+
         with open(filepath, 'rb') as file:
-            loaded_package = pickle.load(file)
+            loaded_package = LegacyUnpickler(file).load()
             
         loaded_tree = loaded_package['model']
         optimal_threshold = loaded_package['optimal_threshold']
-        calibrator = loaded_package.get('calibrator', None)
+        conf_fact = loaded_package['conf_fact']
+        min_samples_leaf = loaded_package['min_samples_leaf']
+        max_depth = loaded_package['max_depth']
+        epsilon = loaded_package['epsilon']
         
         logger.info(f"Model successfully loaded from {filepath}")
         logger.info(f"Operating at threshold: {optimal_threshold}")
-        logger.info(f"Calibrator: {'loaded' if calibrator is not None else 'not found'}")
         
-        return loaded_tree, optimal_threshold, calibrator
+        return loaded_tree, optimal_threshold, conf_fact, min_samples_leaf, max_depth, epsilon
 
 if __name__ == "__main__":
     decisionTree = C45DecisionTree()

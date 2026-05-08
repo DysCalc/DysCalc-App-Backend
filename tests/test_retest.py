@@ -12,7 +12,7 @@ def test_retest_functionality():
     sample_ml_data = {
     "predicted_class": "At-Risk (1)",
     "confidence": 0.6316,
-    "domain_severity": {
+    "domain_severity_scores": {
         "Addition vs. Subtraction Asymmetry": 0.45082946493547227,
         "Basic vs. Complex Arithmetic Contrast": 0.15953196920975835
     }

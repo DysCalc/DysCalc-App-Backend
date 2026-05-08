@@ -16,7 +16,6 @@ HEADERS = {
 }
 
 MODELS_TO_TRY = [
-    "qwen/qwen-2.5-7b-math-instruct",        
     "qwen/qwen-2.5-72b-instruct",      
     "qwen/qwen-2.5-7b-instruct",
     "qwen/qwen-2.5-coder-32b-instruct"
@@ -43,6 +42,16 @@ ML_INTERPRETATION_MAP = {
     "AS": "Addition vs. Subtraction Asymmetry",
     "PF": "Processing-Fluency Integration",
 }
+
+BAD_HINT_PATTERNS = [
+    r"\b-\d+\b",                       # negative numbers like -2
+    r"\band\s*-\s*\d+\b",              # "and -2"
+    r"\bborrow\b",
+    r"\bcarry\b",
+    r"\bcarry over\b",
+    r"\btimed drill\b",
+    r"\bspeed\b",
+]
 
 CLINICAL_COOCCURRENCE_MAP = {
     ("NC", "DM"): "a foundational number sense deficit affecting both symbolic and non-symbolic processing",
@@ -81,7 +90,7 @@ DOMAIN_EXPLANATIONS = {
 
     "CA": (
         f"{ML_INTERPRETATION_MAP['CA']}: Measures the learner's ability to solve larger addition and subtraction problems. "
-        "Difficulty in this area may suggest challenges with carrying, borrowing, place value, or applying basic arithmetic facts to more complex calculations."
+        "Difficulty in this area may suggest challenges with place value, crossing tens, regrouping quantities, or applying basic arithmetic facts to more complex calculations."
     ),
 
     "NP": (
@@ -114,4 +123,155 @@ DOMAIN_EXPLANATIONS = {
         f"{ML_INTERPRETATION_MAP['PF']}: A derived indicator combining processing efficiency and arithmetic fluency. "
         "It helps distinguish whether a learner's difficulty is mainly related to slow number processing, weak arithmetic performance, or both."
     )
+}
+
+DOMAIN_GENERATION_RULES = {
+    "Number Comparison": {
+        "required_focus": "comparing numerical magnitude, identifying larger/smaller numbers, and explaining number size using concrete quantities",
+        "problem_field_rule": "practice_set.problem must be a symbolic comparison-style equation or expression when possible, such as '7 + 2' or '13 - 5'. Do not use vague text-only prompts.",
+        "hint_field_rule": "hints should use objects, number lines, or place-value language to show which quantity is larger or smaller",
+        "avoid": [
+            "speed drills",
+            "guessing larger numbers without quantity support",
+            "object-only problem fields",
+            "advanced inequality notation if the student has not been introduced to it"
+        ],
+    },
+
+    "Digit-Dot Matching": {
+        "required_focus": "linking digits to exact visual quantities and checking one-to-one correspondence",
+        "problem_field_rule": "practice_set.problem must remain a symbolic equation such as '4 + 3' or '9 - 2'. Do not write '7 dots' or 'match 7 dots' in the problem field.",
+        "hint_field_rule": "hints should explicitly connect each digit to a countable set of dots, blocks, coins, or fingers",
+        "avoid": [
+            "object-only practice problems",
+            "dot-count labels in the problem field",
+            "pure arithmetic without quantity matching language",
+            "speed pressure"
+        ],
+    },
+
+    "Number Series": {
+        "required_focus": "recognizing number order, counting patterns, missing numbers, and simple forward/backward sequences",
+        "problem_field_rule": "practice_set.problem must be a symbolic equation if the validator requires equations, such as '6 + 2' for counting forward or '10 - 2' for counting backward.",
+        "hint_field_rule": "hints should use number lines, counting steps, or grouped objects to show the sequence pattern",
+        "avoid": [
+            "complex multi-rule patterns",
+            "large skip-counting jumps",
+            "object-only problem fields",
+            "timed drills"
+        ],
+    },
+
+    "Single-Digit Addition": {
+        "required_focus": "basic addition facts, making ten, counting on, and derived addition facts",
+        "problem_field_rule": "practice_set.problem must be a symbolic addition equation like '8 + 4'.",
+        "hint_field_rule": "hints should show concrete addition using objects, fingers, dots, blocks, or number lines",
+        "avoid": [
+            "subtraction-only practice",
+            "multi-step complex arithmetic",
+            "carrying",
+            "speed drills"
+        ],
+    },
+
+    "Single-Digit Subtraction": {
+        "required_focus": "basic subtraction facts, taking away, counting back, and using related addition facts",
+        "problem_field_rule": "practice_set.problem must be a symbolic subtraction equation like '13 - 6'.",
+        "hint_field_rule": "hints should show taking away objects, counting back on a number line, or using a related addition fact",
+        "avoid": [
+            "addition-only practice",
+            "negative answers",
+            "negative decomposition",
+            "borrowing",
+            "speed drills"
+        ],
+    },
+
+    "Multi-Digit Addition and Subtraction": {
+        "required_focus": "place value, tens-and-ones decomposition, regrouping quantities, and crossing tens",
+        "problem_field_rule": "practice_set.problem must be a symbolic addition or subtraction equation with operands appropriate to the learner, such as '15 + 7' or '23 - 8'.",
+        "hint_field_rule": "hints should explain tens and ones using objects, bundles, coins, base-ten blocks, or number lines",
+        "avoid": [
+            "carry over",
+            "borrow",
+            "abstract column procedures without concrete representation",
+            "large numbers beyond the student's support level",
+            "timed drills"
+        ],
+    },
+
+    "Overall Processing Efficiency": {
+        "required_focus": "reduced cognitive load, visual supports, step-by-step number processing",
+        "problem_field_rule": "practice_set.problem must be a symbolic equation such as '9 + 4' or '12 - 5'.",
+        "hint_field_rule": "hints should break the task into short visible steps using objects, number lines, or chunking",
+        "avoid": [
+            "timed drills",
+            "speed pressure",
+            "long multi-step problems",
+            "mental-only strategies without visual support"
+        ],
+    },
+
+    "Symbolic vs. Non-Symbolic Processing Difference": {
+        "required_focus": "connecting visual quantities to symbolic equations",
+        "problem_field_rule": "practice_set.problem must be a symbolic equation like '8 + 4' or '12 - 5', never '8 dots' or object-only text",
+        "hint_field_rule": "dots, blocks, coins, and other objects may appear only in hints or explanations",
+        "avoid": [
+            "object-only practice problems",
+            "dot-count labels in the problem field",
+            "pure symbol manipulation without quantity language",
+            "speed pressure"
+        ],
+    },
+
+    "Overall Arithmetic Fluency": {
+        "required_focus": "accurate arithmetic fact retrieval, derived facts, and flexible use of addition/subtraction relationships",
+        "problem_field_rule": "practice_set.problem must be a symbolic addition or subtraction equation.",
+        "hint_field_rule": "hints should encourage derived facts, making ten, counting on/back, or fact-family reasoning",
+        "avoid": [
+            "timed drills",
+            "speed pressure",
+            "random mixed practice without strategy",
+            "multiplication or division"
+        ],
+    },
+
+    "Basic vs. Complex Arithmetic Contrast": {
+        "required_focus": "crossing tens using tens-and-ones decomposition",
+        "problem_field_rule": "practice_set.problem must be a symbolic equation involving crossing tens when possible, such as '13 + 8' or '16 - 9'.",
+        "hint_field_rule": "hints must explicitly show breaking numbers into tens and ones, reaching 10 or 20, then recombining",
+        "avoid": [
+            "generic break down phrasing",
+            "carrying",
+            "borrowing",
+            "overly simple non-crossing-ten problems",
+            "speed drills"
+        ],
+    },
+
+    "Addition vs. Subtraction Asymmetry": {
+        "min_subtraction": 3,
+        "min_addition": 1,
+        "required_focus": "inverse operations, fact families, backward reasoning, and subtraction crossing ten",
+        "problem_field_rule": "practice_set.problem must include both symbolic addition and symbolic subtraction equations.",
+        "hint_field_rule": "hints should connect subtraction to related addition facts or show taking away to reach 10 first",
+        "avoid": [
+            "subtraction-only practice",
+            "addition-only practice",
+            "negative decomposition",
+            "speed drills"
+        ],
+    },
+
+    "Processing-Fluency Integration": {
+        "required_focus": "chunking, reduced cognitive load, flexible switching between addition and subtraction",
+        "problem_field_rule": "practice_set.problem must be a symbolic addition or subtraction equation.",
+        "hint_field_rule": "hints should show a short chunking strategy using objects, number lines, or make-ten reasoning",
+        "avoid": [
+            "timed drills",
+            "speed pressure",
+            "long mental-only problems",
+            "repetitive hint wording"
+        ],
+    },
 }

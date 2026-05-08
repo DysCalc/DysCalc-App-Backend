@@ -1,0 +1,488 @@
+[
+    {
+        "test_id": "test-0001-0000-0000-0000",
+        "number_comparison": 1274.50980392157,
+        "dot_matching": 2384.91891891892,
+        "number_series": 16,
+        "single_addition": 34,
+        "single_subtraction": 37,
+        "complex_arithmetic": 16
+    },
+    {
+        "test_id": "test-0002-0000-0000-0000",
+        "number_comparison": 678.039215686275,
+        "dot_matching": 1032.15,
+        "number_series": 13,
+        "single_addition": 51,
+        "single_subtraction": 48,
+        "complex_arithmetic": 27
+    },
+    {
+        "test_id": "test-0003-0000-0000-0000",
+        "number_comparison": 821.6,
+        "dot_matching": 2224.92307692308,
+        "number_series": 14,
+        "single_addition": 36,
+        "single_subtraction": 24,
+        "complex_arithmetic": 12
+    },
+    {
+        "test_id": "test-0004-0000-0000-0000",
+        "number_comparison": 987.0,
+        "dot_matching": 1699.46341463415,
+        "number_series": 8,
+        "single_addition": 43,
+        "single_subtraction": 33,
+        "complex_arithmetic": 24
+    },
+    {
+        "test_id": "test-0005-0000-0000-0000",
+        "number_comparison": 766.0,
+        "dot_matching": 2341.23076923077,
+        "number_series": 12,
+        "single_addition": 31,
+        "single_subtraction": 39,
+        "complex_arithmetic": 24
+    },
+    {
+        "test_id": "test-0006-0000-0000-0000",
+        "number_comparison": 782.5,
+        "dot_matching": 1663.60975609756,
+        "number_series": 17,
+        "single_addition": 39,
+        "single_subtraction": 41,
+        "complex_arithmetic": 22
+    },
+    {
+        "test_id": "test-0007-0000-0000-0000",
+        "number_comparison": 1090.47058823529,
+        "dot_matching": 1687.35,
+        "number_series": 17,
+        "single_addition": 32,
+        "single_subtraction": 39,
+        "complex_arithmetic": 13
+    },
+    {
+        "test_id": "test-0008-0000-0000-0000",
+        "number_comparison": 1495.76470588235,
+        "dot_matching": 3541.941852910601,
+        "number_series": 10,
+        "single_addition": 25,
+        "single_subtraction": 23,
+        "complex_arithmetic": 15
+    },
+    {
+        "test_id": "test-0009-0000-0000-0000",
+        "number_comparison": 1503.741421568629,
+        "dot_matching": 2602.92307692308,
+        "number_series": 17,
+        "single_addition": 34,
+        "single_subtraction": 27,
+        "complex_arithmetic": 10
+    },
+    {
+        "test_id": "test-0010-0000-0000-0000",
+        "number_comparison": 847.0,
+        "dot_matching": 1411.5,
+        "number_series": 18,
+        "single_addition": 51,
+        "single_subtraction": 38,
+        "complex_arithmetic": 28
+    },
+    {
+        "test_id": "test-0011-0000-0000-0000",
+        "number_comparison": 899.294117647059,
+        "dot_matching": 2301.0,
+        "number_series": 10,
+        "single_addition": 44,
+        "single_subtraction": 31,
+        "complex_arithmetic": 24
+    },
+    {
+        "test_id": "test-0012-0000-0000-0000",
+        "number_comparison": 1106.576530612245,
+        "dot_matching": 2727.30769230769,
+        "number_series": 16,
+        "single_addition": 26,
+        "single_subtraction": 43,
+        "complex_arithmetic": 17
+    },
+    {
+        "test_id": "test-0013-0000-0000-0000",
+        "number_comparison": 1586.0,
+        "dot_matching": 3100.62162162162,
+        "number_series": 4,
+        "single_addition": 15,
+        "single_subtraction": 16,
+        "complex_arithmetic": 7
+    },
+    {
+        "test_id": "test-0014-0000-0000-0000",
+        "number_comparison": 643.914893617021,
+        "dot_matching": 1355.35135135135,
+        "number_series": 17,
+        "single_addition": 44,
+        "single_subtraction": 42,
+        "complex_arithmetic": 21
+    },
+    {
+        "test_id": "test-0015-0000-0000-0000",
+        "number_comparison": 1240.5,
+        "dot_matching": 2348.92682926829,
+        "number_series": 12,
+        "single_addition": 35,
+        "single_subtraction": 30,
+        "complex_arithmetic": 15
+    },
+    {
+        "test_id": "test-0016-0000-0000-0000",
+        "number_comparison": 965.12,
+        "dot_matching": 2695.17073170732,
+        "number_series": 17,
+        "single_addition": 43,
+        "single_subtraction": 38,
+        "complex_arithmetic": 27
+    },
+    {
+        "test_id": "test-0017-0000-0000-0000",
+        "number_comparison": 1158.56,
+        "dot_matching": 3022.5,
+        "number_series": 4,
+        "single_addition": 18,
+        "single_subtraction": 14,
+        "complex_arithmetic": 9
+    },
+    {
+        "test_id": "test-0018-0000-0000-0000",
+        "number_comparison": 974.0,
+        "dot_matching": 1512.0,
+        "number_series": 20,
+        "single_addition": 47,
+        "single_subtraction": 43,
+        "complex_arithmetic": 32
+    },
+    {
+        "test_id": "test-0019-0000-0000-0000",
+        "number_comparison": 735.428571428571,
+        "dot_matching": 3443.3,
+        "number_series": 17,
+        "single_addition": 39,
+        "single_subtraction": 50,
+        "complex_arithmetic": 23
+    },
+    {
+        "test_id": "test-0020-0000-0000-0000",
+        "number_comparison": 964.549019607843,
+        "dot_matching": 2607.23076923077,
+        "number_series": 9,
+        "single_addition": 26,
+        "single_subtraction": 28,
+        "complex_arithmetic": 14
+    },
+    {
+        "test_id": "test-0021-0000-0000-0000",
+        "number_comparison": 1786.2,
+        "dot_matching": 2575.0,
+        "number_series": 7,
+        "single_addition": 15,
+        "single_subtraction": 15,
+        "complex_arithmetic": 8
+    },
+    {
+        "test_id": "test-0022-0000-0000-0000",
+        "number_comparison": 1212.12,
+        "dot_matching": 2315.775,
+        "number_series": 14,
+        "single_addition": 33,
+        "single_subtraction": 33,
+        "complex_arithmetic": 13
+    },
+    {
+        "test_id": "test-0023-0000-0000-0000",
+        "number_comparison": 921.0,
+        "dot_matching": 2691.6,
+        "number_series": 13,
+        "single_addition": 29,
+        "single_subtraction": 26,
+        "complex_arithmetic": 12
+    },
+    {
+        "test_id": "test-0024-0000-0000-0000",
+        "number_comparison": 792.48,
+        "dot_matching": 1504.65,
+        "number_series": 15,
+        "single_addition": 45,
+        "single_subtraction": 39,
+        "complex_arithmetic": 16
+    },
+    {
+        "test_id": "test-0025-0000-0000-0000",
+        "number_comparison": 1066.5306122449,
+        "dot_matching": 2760.39473684211,
+        "number_series": 4,
+        "single_addition": 33,
+        "single_subtraction": 39,
+        "complex_arithmetic": 24
+    },
+    {
+        "test_id": "test-0026-0000-0000-0000",
+        "number_comparison": 1069.56862745098,
+        "dot_matching": 2170.0,
+        "number_series": 9,
+        "single_addition": 30,
+        "single_subtraction": 32,
+        "complex_arithmetic": 17
+    },
+    {
+        "test_id": "test-0027-0000-0000-0000",
+        "number_comparison": 687.96,
+        "dot_matching": 1195.0,
+        "number_series": 23,
+        "single_addition": 58,
+        "single_subtraction": 51,
+        "complex_arithmetic": 31
+    },
+    {
+        "test_id": "test-0028-0000-0000-0000",
+        "number_comparison": 2050.355882352941,
+        "dot_matching": 4784.4,
+        "number_series": 4,
+        "single_addition": 2,
+        "single_subtraction": 11,
+        "complex_arithmetic": 5
+    },
+    {
+        "test_id": "test-0029-0000-0000-0000",
+        "number_comparison": 992.68,
+        "dot_matching": 1753.0,
+        "number_series": 9,
+        "single_addition": 33,
+        "single_subtraction": 33,
+        "complex_arithmetic": 27
+    },
+    {
+        "test_id": "test-0030-0000-0000-0000",
+        "number_comparison": 799.24,
+        "dot_matching": 1123.5,
+        "number_series": 22,
+        "single_addition": 64,
+        "single_subtraction": 53,
+        "complex_arithmetic": 39
+    },
+    {
+        "test_id": "test-0031-0000-0000-0000",
+        "number_comparison": 902.72,
+        "dot_matching": 1943.84615384615,
+        "number_series": 14,
+        "single_addition": 28,
+        "single_subtraction": 26,
+        "complex_arithmetic": 18
+    },
+    {
+        "test_id": "test-0032-0000-0000-0000",
+        "number_comparison": 1059.5,
+        "dot_matching": 1586.78048780488,
+        "number_series": 21,
+        "single_addition": 44,
+        "single_subtraction": 46,
+        "complex_arithmetic": 29
+    },
+    {
+        "test_id": "test-0033-0000-0000-0000",
+        "number_comparison": 595.450980392157,
+        "dot_matching": 1105.65,
+        "number_series": 23,
+        "single_addition": 62,
+        "single_subtraction": 61,
+        "complex_arithmetic": 37
+    },
+    {
+        "test_id": "test-0034-0000-0000-0000",
+        "number_comparison": 697.411764705882,
+        "dot_matching": 2216.91891891892,
+        "number_series": 15,
+        "single_addition": 16.5,
+        "single_subtraction": 35,
+        "complex_arithmetic": 16
+    },
+    {
+        "test_id": "test-0035-0000-0000-0000",
+        "number_comparison": 888.0,
+        "dot_matching": 2570.84210526316,
+        "number_series": 16,
+        "single_addition": 45,
+        "single_subtraction": 42,
+        "complex_arithmetic": 23
+    },
+    {
+        "test_id": "test-0036-0000-0000-0000",
+        "number_comparison": 711.88,
+        "dot_matching": 1711.16129032258,
+        "number_series": 16,
+        "single_addition": 48,
+        "single_subtraction": 45,
+        "complex_arithmetic": 25
+    },
+    {
+        "test_id": "test-0037-0000-0000-0000",
+        "number_comparison": 776.941176470588,
+        "dot_matching": 1430.0487804878,
+        "number_series": 19,
+        "single_addition": 37,
+        "single_subtraction": 38,
+        "complex_arithmetic": 23
+    },
+    {
+        "test_id": "test-0038-0000-0000-0000",
+        "number_comparison": 1045.09803921569,
+        "dot_matching": 2849.82352941176,
+        "number_series": 18,
+        "single_addition": 37,
+        "single_subtraction": 42,
+        "complex_arithmetic": 21
+    },
+    {
+        "test_id": "test-0039-0000-0000-0000",
+        "number_comparison": 582.4,
+        "dot_matching": 1187.55,
+        "number_series": 19,
+        "single_addition": 54,
+        "single_subtraction": 48,
+        "complex_arithmetic": 35
+    },
+    {
+        "test_id": "test-0040-0000-0000-0000",
+        "number_comparison": 1323.45098039216,
+        "dot_matching": 3222.15384615385,
+        "number_series": 5,
+        "single_addition": 8,
+        "single_subtraction": 6,
+        "complex_arithmetic": 2
+    },
+    {
+        "test_id": "test-0041-0000-0000-0000",
+        "number_comparison": 567.921568627451,
+        "dot_matching": 1516.2,
+        "number_series": 17,
+        "single_addition": 35,
+        "single_subtraction": 61,
+        "complex_arithmetic": 38
+    },
+    {
+        "test_id": "test-0042-0000-0000-0000",
+        "number_comparison": 826.28,
+        "dot_matching": 1294.82926829268,
+        "number_series": 19,
+        "single_addition": 45,
+        "single_subtraction": 43,
+        "complex_arithmetic": 28
+    },
+    {
+        "test_id": "test-0043-0000-0000-0000",
+        "number_comparison": 805.0,
+        "dot_matching": 1878.73170731707,
+        "number_series": 17,
+        "single_addition": 40,
+        "single_subtraction": 39,
+        "complex_arithmetic": 29
+    },
+    {
+        "test_id": "test-0044-0000-0000-0000",
+        "number_comparison": 1540.0,
+        "dot_matching": 2409.36585365854,
+        "number_series": 17,
+        "single_addition": 36,
+        "single_subtraction": 36,
+        "complex_arithmetic": 23
+    },
+    {
+        "test_id": "test-0045-0000-0000-0000",
+        "number_comparison": 774.901960784314,
+        "dot_matching": 3168.78947368421,
+        "number_series": 8,
+        "single_addition": 28,
+        "single_subtraction": 30,
+        "complex_arithmetic": 12
+    },
+    {
+        "test_id": "test-0046-0000-0000-0000",
+        "number_comparison": 1766.0,
+        "dot_matching": 3553.2,
+        "number_series": 11,
+        "single_addition": 18,
+        "single_subtraction": 24,
+        "complex_arithmetic": 14
+    },
+    {
+        "test_id": "test-0047-0000-0000-0000",
+        "number_comparison": 758.16,
+        "dot_matching": 2303.53846153846,
+        "number_series": 17,
+        "single_addition": 46,
+        "single_subtraction": 45,
+        "complex_arithmetic": 22
+    },
+    {
+        "test_id": "test-0048-0000-0000-0000",
+        "number_comparison": 751.5,
+        "dot_matching": 1987.65,
+        "number_series": 13,
+        "single_addition": 41,
+        "single_subtraction": 31,
+        "complex_arithmetic": 2
+    },
+    {
+        "test_id": "test-0049-0000-0000-0000",
+        "number_comparison": 1165.41176470588,
+        "dot_matching": 2165.625,
+        "number_series": 8,
+        "single_addition": 17,
+        "single_subtraction": 17,
+        "complex_arithmetic": 12
+    },
+    {
+        "test_id": "test-0050-0000-0000-0000",
+        "number_comparison": 700.408163265306,
+        "dot_matching": 1927.33333333333,
+        "number_series": 15,
+        "single_addition": 46,
+        "single_subtraction": 35,
+        "complex_arithmetic": 20
+    },
+    {
+        "test_id": "test-0051-0000-0000-0000",
+        "number_comparison": 1377.5,
+        "dot_matching": 3541.941852910601,
+        "number_series": 7,
+        "single_addition": 23,
+        "single_subtraction": 19,
+        "complex_arithmetic": 10
+    },
+    {
+        "test_id": "test-0052-0000-0000-0000",
+        "number_comparison": 771.68,
+        "dot_matching": 1727.25,
+        "number_series": 11,
+        "single_addition": 44,
+        "single_subtraction": 41,
+        "complex_arithmetic": 20
+    },
+    {
+        "test_id": "test-0053-0000-0000-0000",
+        "number_comparison": 1575.91836734694,
+        "dot_matching": 2815.07692307692,
+        "number_series": 4,
+        "single_addition": 10,
+        "single_subtraction": 15,
+        "complex_arithmetic": 7
+    },
+    {
+        "test_id": "test-0054-0000-0000-0000",
+        "number_comparison": 670.901960784314,
+        "dot_matching": 2058.0,
+        "number_series": 12,
+        "single_addition": 41,
+        "single_subtraction": 44,
+        "complex_arithmetic": 22
+    }
+]

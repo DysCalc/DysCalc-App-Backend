@@ -64,7 +64,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.2913721987343177,
                 "Overall Arithmetic Fluency": 0.009475617710696434,
@@ -78,7 +78,7 @@ test_cases = [
                 "Single-Digit Addition": 0.01570704413343638,
                 "Number Comparison": 0.03696514736062019
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.1,
                 "DM": 0.03,
                 "ADD": 0.03,
@@ -135,7 +135,7 @@ test_cases = [
                     "<="
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.011459913846871356,
                 "Overall Arithmetic Fluency": 0.13290454919157232,
@@ -149,7 +149,7 @@ test_cases = [
                 "Single-Digit Addition": 0.024630062391666478,
                 "Number Comparison": 0.016513886956149547
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.04,
                 "DM": 0.05,
                 "ADD": 0.06,
@@ -220,7 +220,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.3241026368154854,
                 "Overall Arithmetic Fluency": 0.16942767951343135,
@@ -234,7 +234,7 @@ test_cases = [
                 "Single-Digit Addition": 0.0040404269857775635,
                 "Number Comparison": 0.023272973967099087
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.07,
                 "DM": 0.0,
                 "ADD": 0.01,
@@ -306,7 +306,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.2861261480432768,
                 "Overall Arithmetic Fluency": 0.04509929898830997,
@@ -320,7 +320,7 @@ test_cases = [
                 "Single-Digit Addition": 0.03678276368899844,
                 "Number Comparison": 0.0029721691629321736
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.01,
                 "DM": 0.11,
                 "ADD": 0.08,
@@ -392,7 +392,7 @@ test_cases = [
                     "<="
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.45082946493547227,
                 "Overall Arithmetic Fluency": 0.019422325216776917,
@@ -406,7 +406,7 @@ test_cases = [
                 "Single-Digit Addition": 0.028917161700197,
                 "Number Comparison": 0.02965158452183282
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.08,
                 "DM": 0.02,
                 "ADD": 0.06,
@@ -478,7 +478,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.18913876977011831,
                 "Overall Arithmetic Fluency": 0.12026453643786465,
@@ -492,7 +492,7 @@ test_cases = [
                 "Single-Digit Addition": 0.00945627495488461,
                 "Number Comparison": 0.02372401788777943
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.06,
                 "DM": 0.08,
                 "ADD": 0.02,
@@ -564,7 +564,7 @@ test_cases = [
                     "<="
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.3035525511719146,
                 "Overall Arithmetic Fluency": 0.01985053852131092,
@@ -578,7 +578,7 @@ test_cases = [
                 "Single-Digit Addition": 0.017611269171381862,
                 "Number Comparison": 0.007513728781010536
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.02,
                 "DM": 0.07,
                 "ADD": 0.04,
@@ -640,7 +640,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0077676231762695645,
                 "Addition vs. Subtraction Asymmetry": 0.029781937473266188,
                 "Overall Arithmetic Fluency": 0.1284085704913605,
@@ -654,7 +654,7 @@ test_cases = [
                 "Single-Digit Addition": 0.01999532579819623,
                 "Number Comparison": 0.02686612284911912
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.07,
                 "DM": 0.07,
                 "NS": 0.01,
@@ -697,7 +697,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.10395392029333432,
                 "Overall Arithmetic Fluency": 0.12209743566943619,
@@ -711,7 +711,7 @@ test_cases = [
                 "Single-Digit Addition": 0.001988972319001752,
                 "Number Comparison": 0.05044597780688156
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.14,
                 "DM": 0.02,
                 "ADD": 0.01,
@@ -782,7 +782,7 @@ test_cases = [
                     ">"
                 ]
             ],
-            "domain_severity": {
+            "domain_severity_scores": {
                 "Number Series": 0.0,
                 "Addition vs. Subtraction Asymmetry": 0.192636945982545,
                 "Overall Arithmetic Fluency": 0.15599732896697188,
@@ -796,7 +796,7 @@ test_cases = [
                 "Single-Digit Addition": 0.038340338269412896,
                 "Number Comparison": 0.010653220924173508
             },
-            "task_importance": {
+            "task_importance_scores": {
                 "NC": 0.03,
                 "DM": 0.08,
                 "ADD": 0.08,
