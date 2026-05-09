@@ -2,31 +2,54 @@ import os
 import ast
 import operator
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+EXPERIMENT_MODE = os.getenv("EXPERIMENT_MODE", "3")
+CLOUD_TOKEN = os.getenv("OPENROUTER_TOKEN")
 OPENROUTER_TOKEN = os.getenv("OPENROUTER_TOKEN")
 
-HEADERS = {
-    "Authorization": f"Bearer {OPENROUTER_TOKEN}",
+# --- BASE URLS & HEADERS ---
+LOCAL_URL = "http://localhost:1234/v1/chat/completions"
+LOCAL_HEADERS = {"Content-Type": "application/json"}
+
+CLOUD_URL = "https://openrouter.ai/api/v1/chat/completions"
+CLOUD_HEADERS = {
+    "Authorization": f"Bearer {CLOUD_TOKEN}",
     "Content-Type": "application/json",
     "HTTP-Referer": "http://localhost:5000", 
     "X-Title": "Dyscalculia Thesis App"
 }
 
-DRAFT_MODELS_TO_TRY = [
-    "qwen/qwen-2.5-72b-instruct",
-    "qwen/qwen-2.5-7b-instruct",
-    "qwen/qwen-2.5-coder-32b-instruct"
-]
+if EXPERIMENT_MODE == "1":
+    print("\n[SYSTEM] BOOTING IN EXPERIMENT 1 MODE: Single-Pass Local Baseline")
+    DRAFT_URL = LOCAL_URL
+    DRAFT_HEADERS = LOCAL_HEADERS
+    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    FORMAT_URL = None
+    FORMAT_HEADERS = None
+    FORMAT_MODELS_TO_TRY = []
 
-FORMAT_MODELS_TO_TRY = [
-    "qwen/qwen-2.5-72b-instruct",
-    "qwen/qwen-2.5-coder-32b-instruct"
-]
+elif EXPERIMENT_MODE == "2":
+    print("\n[SYSTEM] BOOTING IN EXPERIMENT 2 MODE: Two-Pass Local")
+    DRAFT_URL = LOCAL_URL
+    DRAFT_HEADERS = LOCAL_HEADERS
+    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    FORMAT_URL = LOCAL_URL
+    FORMAT_HEADERS = LOCAL_HEADERS
+    FORMAT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
 
-MODELS_TO_TRY = DRAFT_MODELS_TO_TRY
+else: # Mode 3 (Hybrid)
+    print("\n[SYSTEM] BOOTING IN EXPERIMENT 3 MODE: Hybrid Architecture (Final)")
+    DRAFT_URL = LOCAL_URL
+    DRAFT_HEADERS = LOCAL_HEADERS
+    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    FORMAT_URL = CLOUD_URL
+    FORMAT_HEADERS = CLOUD_HEADERS
+    FORMAT_MODELS_TO_TRY = ["qwen/qwen-2.5-72b-instruct"]
+
 ALLOWED_OPS = {
     ast.Add: operator.add, 
     ast.Sub: operator.sub,

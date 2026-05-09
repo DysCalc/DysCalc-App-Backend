@@ -1,0 +1,49 @@
+--- EXECUTING MULTI-SESSION SCENARIO ---
+[STATUS] 200 OK - SUCCESS
+
+[INFO] Based on session: 3 (2026-05-08)
+[INFO] Total sessions in history: 3
+
+=== NEW RETEST QUESTIONS ===
+{
+  "_meta_validation_report": {
+    "counts": {
+      "pruned": 1,
+      "returned": 4
+    },
+    "math_errors": [],
+    "pedagogy_errors": [
+      "Subtrahend too large for early crossing-ten practice: 18 - 10"
+    ],
+    "schema_errors": []
+  },
+  "based_on_session": 3,
+  "based_on_session_date": "2026-05-08",
+  "retest_questions": [
+    {
+      "expected_answer": 13,
+      "hint": "Use blocks to count up 6 and then 7 more.",
+      "problem": "6 + 7"
+    },
+    {
+      "expected_answer": 6,
+      "hint": "Start with 10 marbles and take away 4.",
+      "problem": "10 - 4"
+    },
+    {
+      "expected_answer": 7,
+      "hint": "Use 15 blocks. Take away 5 to reach 10, then take away 3 more. Count 7 blocks left.",
+      "problem": "15 - 8"
+    },
+    {
+      "expected_answer": 15,
+      "hint": "Count 9 fingers, then count 6 more.",
+      "problem": "9 + 6"
+    }
+  ],
+  "total_sessions_in_history": 3
+}
+============================
+
+[VERIFICATION] Check: did it avoid 5+3, 8-3, 12-5, and 9+4 from previous sessions?
+[VERIFICATION] Check: are new questions based on the LATEST session profile (session 3)?

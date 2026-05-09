@@ -6,19 +6,23 @@ import math
 import json
 import difflib
 
-from .constants import (
+from llm.constants import (
     ALLOWED_OPS,
     DRAFT_MODELS_TO_TRY,
     FORMAT_MODELS_TO_TRY,
-    OPENROUTER_URL,
-    HEADERS,
+    DRAFT_URL,
+    DRAFT_HEADERS,
+    FORMAT_URL,
+    FORMAT_HEADERS,
     BAD_HINT_PATTERNS,
     DOMAIN_GENERATION_RULES,
+    ML_INTERPRETATION_MAP, 
+    CLINICAL_COOCCURRENCE_MAP,
 )
 
 import logging
 
-from .constants import ML_INTERPRETATION_MAP, CLINICAL_COOCCURRENCE_MAP
+from llm.constants import ML_INTERPRETATION_MAP, CLINICAL_COOCCURRENCE_MAP
 
 logging.basicConfig(
     level=logging.INFO,
@@ -313,7 +317,7 @@ def validate_addition_hint_amount(problem: str, text: str, context: str) -> tupl
 
     return True, None
 
-def call_llm_gateway(payload, rid="SYSTEM", temp=0.2, model_paths=None):
+def call_llm_gateway(payload, url, headers, rid="SYSTEM", temp=0.2, model_paths=None):
     models_to_try = model_paths or DRAFT_MODELS_TO_TRY
     for model_path in models_to_try:
         for use_json_mode in (True, False):
@@ -329,7 +333,7 @@ def call_llm_gateway(payload, rid="SYSTEM", temp=0.2, model_paths=None):
                 mode_label = "json mode" if use_json_mode else "plain mode"
                 logger.info(f"[REQ {rid}] Calling model: {model_path} ({mode_label})")
                 response = requests.post(
-                    OPENROUTER_URL, headers=HEADERS, json=current_payload, timeout=900
+                    url, headers=headers, json=current_payload, timeout=900
                 )
                 response.raise_for_status()
                 return response.json()['choices'][0]['message']['content']
@@ -766,7 +770,7 @@ def get_lesson_from_qwen(
             {"role": "user", "content": f"<ml_data>\n{ml_data}\n</ml_data>\n\nGenerate the modules based ONLY on the target domains."}
         ]
     }
-    return call_llm_gateway(payload, rid, temp=0.0 if correction_prompt else 0.4, model_paths=DRAFT_MODELS_TO_TRY)
+    return call_llm_gateway(payload, DRAFT_URL, DRAFT_HEADERS, rid, temp=0.0 if correction_prompt else 0.4, model_paths=DRAFT_MODELS_TO_TRY)
 
 def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative_assessment_count = 3):
     print(f"[REQ {rid}] Pass 2: Converting draft to strict JSON...")
@@ -839,7 +843,7 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative
             {"role": "user", "content": f"ML DATA:\n{ml_data_string}\n\nTEACHER TEXT:\n{qwen_messy_text}"}
         ]
     }
-    raw_output = call_llm_gateway(payload, rid, temp=0.0, model_paths=FORMAT_MODELS_TO_TRY)
+    raw_output = call_llm_gateway(payload, FORMAT_URL, FORMAT_HEADERS, rid, temp=0.0, model_paths=FORMAT_MODELS_TO_TRY)
     if not raw_output: return None
 
     parsed_json = extract_json_robustly(raw_output)
@@ -1068,3 +1072,68 @@ def validate_hint_quality(problem: str, hint: str, domain_name: str = "") -> tup
                 return False, f"AS subtraction hint lacks make-10 or inverse-operation strategy: {hint}"
 
     return True, None
+
+def get_single_pass_lesson(ml_data_string, domains, count, rid, correction_prompt="", domain_explanations="", formative_assessment_count=3):
+    print(f"[REQ {rid}] EXP 1: SINGLE-PASS GENERATION...")
+    
+    domain_rules = json.dumps({d: DOMAIN_GENERATION_RULES.get(d, {}) for d in domains}, indent=2)
+    
+    formative_assessments = ',\n            '.join([
+        '{ "question": "<Symbolic equation, e.g., 9 + 4>", "expected_answer": <INTEGER> }'
+        for _ in range(formative_assessment_count)
+    ])
+
+    inst = f"""
+    You are a SPED Teacher and a strict JSON formatting robot. 
+    You MUST generate {len(domains)} intervention modules based on the ML data.
+    TARGET DOMAINS: {", ".join(domains)}.
+
+    <pedagogy_rules>
+    1. Use Philippine context (mangoes, peso coins).
+    2. Every conceptual_explanation must contain Step 1:, Step 2:, and Step 3:.
+    3. Keep operands <= 20.
+    {domain_rules}
+    </pedagogy_rules>
+
+    <json_rules>
+    You MUST output RAW JSON EXACTLY matching this schema. NO markdown formatting.
+    {{
+        "status": "<Typical (0) or At-Risk (1)>",
+        "decision_path_rationale": "<Summarize rationale>",
+        "overall_summary": "<Summarize in 2 sentences>",
+        "diagnostic_modules": [
+            {{
+                "domain_name": "<Insert Exact Domain Name>",
+                "clinical_explanation": "<Explanation>",
+                "learning_objectives": ["<Goal 1>", "<Goal 2>", "<Goal 3>"],
+                "conceptual_explanation": "<Step 1: ... Step 2: ... Step 3: ...>",
+                "worked_example": {{
+                    "problem": "<Equation ONLY>",
+                    "reasoning_steps": ["Step 1: ...", "Step 2: ...", "Step 3: ..."],
+                    "final_answer": <INTEGER ONLY>
+                }},
+                "teaching_strategy": "<Strategy>",
+                "practice_set": [
+                    {{ "problem": "<Equation ONLY>", "expected_answer": <INTEGER ONLY>, "hint": "<Hint text>" }}
+                ]
+            }}
+        ],
+        "formative_assessment": [
+            {formative_assessments}
+        ]
+    }}
+    </json_rules>
+    {correction_prompt}
+    """
+
+    payload = {
+        "messages": [
+            {"role": "system", "content": inst},
+            {"role": "user", "content": f"ML DATA:\n{ml_data_string}\nGenerate the JSON."}
+        ]
+    }
+    
+    raw_output = call_llm_gateway(payload, DRAFT_URL, DRAFT_HEADERS, rid, temp=0.3, model_paths=DRAFT_MODELS_TO_TRY)
+    if not raw_output: return None
+    
+    return extract_json_robustly(raw_output)
