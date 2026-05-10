@@ -1,0 +1,679 @@
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] Success! HTTP server listening on port 1234
+2026-05-10 18:21:42  [INFO]
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] Supported endpoints:
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] ->	GET  http://localhost:1234/v1/models
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] ->	POST http://localhost:1234/v1/responses
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] ->	POST http://localhost:1234/v1/chat/completions
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] ->	POST http://localhost:1234/v1/completions
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] ->	POST http://localhost:1234/v1/embeddings
+2026-05-10 18:21:42  [INFO]
+2026-05-10 18:21:42  [INFO]
+ [LM STUDIO SERVER] Logs are saved into C:\Users\angel\.lmstudio\server-logs
+2026-05-10 18:21:42  [INFO]
+ Server started.
+2026-05-10 18:21:42  [INFO]
+ Just-in-time model loading active.
+2026-05-10 18:21:47 [DEBUG]
+ [Client=plugin:installed:lmstudio/js-code-sandbox] Client created.
+2026-05-10 18:21:47 [DEBUG]
+ [Client=plugin:installed:lmstudio/rag-v1] Client created.
+2026-05-10 18:21:49  [INFO]
+ [Plugin(lmstudio/js-code-sandbox)] stdout: [Tools Prvdr.] Register with LM Studio
+2026-05-10 18:21:49  [INFO]
+ [Plugin(lmstudio/rag-v1)] stdout: [PromptPreprocessor] Register with LM Studio
+2026-05-10 18:21:49 [DEBUG]
+ [Client=plugin:installed:lmstudio/js-code-sandbox][Endpoint=setToolsProvider] Registering tools provider.
+2026-05-10 18:21:49 [DEBUG]
+ [Client=plugin:installed:lmstudio/rag-v1][Endpoint=setPromptPreprocessor] Registering promptPreprocessor.
+2026-05-10 18:21:49 [DEBUG]
+ [Client=plugin:installed:lmstudio/rag-v1] Client disconnected.
+2026-05-10 18:21:49 [DEBUG]
+ [Client=plugin:installed:lmstudio/js-code-sandbox] Client disconnected.
+2026-05-10 20:18:20 [DEBUG]
+ [LM Studio] GPU Configuration:
+  Strategy: evenly
+  Priority: []
+  Disabled GPUs: []
+  Limit weight offload to dedicated GPU Memory: OFF
+  Offload KV Cache to GPU: ON
+2026-05-10 20:18:21 [DEBUG]
+ [LM Studio] Live GPU memory info (source 'LMS Core'):
+  GPU 0: NVIDIA GeForce RTX 3050 Laptop GPU (Used: 357.39 MB, Total: 4.29 GB, Free: 3.94 GB)
+2026-05-10 20:18:21 [DEBUG]
+ [LM Studio] Model load size estimate with raw num offload layers '17' and context length '4096':
+  Model: 2.79 GB
+  Context: 297.67 MB
+  Total: 3.09 GB
+2026-05-10 20:18:21 [DEBUG]
+ [LM Studio] Strict GPU VRAM cap is OFF: GPU offload layers will not be checked for adjustment
+[LM Studio] Resolved GPU config options:
+  Num Offload Layers: 17
+  Num CPU Expert Layers: 0
+  Main GPU: 0
+  Tensor Split: [0]
+  Disabled GPUs: []
+2026-05-10 20:18:21 [DEBUG]
+ ggml_cuda_init: found 1 CUDA devices:
+  Device 0: NVIDIA GeForce RTX 3050 Laptop GPU, compute capability 8.6, VMM: yes
+CUDA : ARCHS = 750,800,890,900,1000,1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+2026-05-10 20:18:21 [DEBUG]
+ llama_model_load_from_file_impl: using device CUDA0 (NVIDIA GeForce RTX 3050 Laptop GPU) (0000:01:00.0) - 3303 MiB free
+2026-05-10 20:18:21 [DEBUG]
+ llama_model_loader: loaded meta data with 38 key-value pairs and 339 tensors from C:\Users\angel\.lmstudio\models\bartowski\Qwen2.5-Math-7B-Instruct-GGUF\Qwen2.5-Math-7B-Instruct-Q4_K_S.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = qwen2
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                               general.name str              = Qwen2.5 Math 7B Instruct
+llama_model_loader: - kv   3:                           general.finetune str              = Instruct
+llama_model_loader: - kv   4:                           general.basename str              = Qwen2.5-Math
+llama_model_loader: - kv   5:                         general.size_label str              = 7B
+llama_model_loader: - kv   6:                            general.license str              = apache-2.0
+llama_model_loader: - kv   7:                       general.license.link str              = https://huggingface.co/Qwen/Qwen2.5-M...
+llama_model_loader: - kv   8:                   general.base_model.count u32              = 1
+llama_model_loader: - kv   9:                  general.base_model.0.name str              = Qwen2.5 Math 7B
+llama_model_loader: - kv  10:          general.base_model.0.organization str              = Qwen
+llama_model_loader: - kv  11:              general.base_model.0.repo_url str              = https://huggingface.co/Qwen/Qwen2.5-M...
+llama_model_loader: - kv  12:                               general.tags arr[str,2]       = ["chat", "text-generation"]
+llama_model_loader: - kv  13:                          general.languages arr[str,1]       = ["en"]
+llama_model_loader: - kv  14:                          qwen2.block_count u32              = 28
+llama_model_loader: - kv  15:                       qwen2.context_length u32              = 4096
+llama_model_loader: - kv  16:                     qwen2.embedding_length u32              = 3584
+llama_model_loader: - kv  17:                  qwen2.feed_forward_length u32              = 18944
+llama_model_loader: - kv  18:                 qwen2.attention.head_count u32              = 28
+llama_model_loader: - kv  19:              qwen2.attention.head_count_kv u32              = 4
+llama_model_loader: - kv  20:                       qwen2.rope.freq_base f32              = 10000.000000
+llama_model_loader: - kv  21:     qwen2.attention.layer_norm_rms_epsilon f32              = 0.000001
+llama_model_loader: - kv  22:                          general.file_type u32              = 14
+llama_model_loader: - kv  23:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  24:                         tokenizer.ggml.pre str              = qwen2
+2026-05-10 20:18:21 [DEBUG]
+ llama_model_loader: - kv  25:                      tokenizer.ggml.tokens arr[str,152064]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+2026-05-10 20:18:21 [DEBUG]
+ llama_model_loader: - kv  26:                  tokenizer.ggml.token_type arr[i32,152064]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+2026-05-10 20:18:21 [DEBUG]
+ llama_model_loader: - kv  27:                      tokenizer.ggml.merges arr[str,151387]  = ["Ġ Ġ", "ĠĠ ĠĠ", "i n", "Ġ t",...
+llama_model_loader: - kv  28:                tokenizer.ggml.eos_token_id u32              = 151645
+llama_model_loader: - kv  29:            tokenizer.ggml.padding_token_id u32              = 151643
+llama_model_loader: - kv  30:                tokenizer.ggml.bos_token_id u32              = 151643
+llama_model_loader: - kv  31:               tokenizer.ggml.add_bos_token bool             = false
+llama_model_loader: - kv  32:                    tokenizer.chat_template str              = {%- if tools %}\n    {{- '<|im_start|>...
+llama_model_loader: - kv  33:               general.quantization_version u32              = 2
+llama_model_loader: - kv  34:                      quantize.imatrix.file str              = /models_out/Qwen2.5-Math-7B-Instruct-...
+llama_model_loader: - kv  35:                   quantize.imatrix.dataset str              = /training_dir/calibration_datav3.txt
+llama_model_loader: - kv  36:             quantize.imatrix.entries_count i32              = 196
+llama_model_loader: - kv  37:              quantize.imatrix.chunks_count i32              = 128
+llama_model_loader: - type  f32:  141 tensors
+llama_model_loader: - type q4_K:  190 tensors
+llama_model_loader: - type q5_K:    7 tensors
+llama_model_loader: - type q6_K:    1 tensors
+print_info: file format = GGUF V3 (latest)
+print_info: file type   = Q4_K - Small
+print_info: file size   = 4.15 GiB (4.68 BPW)
+2026-05-10 20:18:21 [DEBUG]
+ load: 0 unused tokens
+2026-05-10 20:18:21 [DEBUG]
+ load: printing all EOG tokens:
+load:   - 151643 ('<|endoftext|>')
+load:   - 151645 ('<|im_end|>')
+load:   - 151662 ('<|fim_pad|>')
+load:   - 151663 ('<|repo_name|>')
+load:   - 151664 ('<|file_sep|>')
+2026-05-10 20:18:21 [DEBUG]
+ load: special tokens cache size = 22
+2026-05-10 20:18:21 [DEBUG]
+ load: token to piece cache size = 0.9310 MB
+2026-05-10 20:18:21 [DEBUG]
+ print_info: arch                  = qwen2
+print_info: vocab_only            = 0
+print_info: no_alloc              = 0
+print_info: n_ctx_train           = 4096
+print_info: n_embd                = 3584
+print_info: n_embd_inp            = 3584
+print_info: n_layer               = 28
+print_info: n_head                = 28
+print_info: n_head_kv             = 4
+print_info: n_rot                 = 128
+print_info: n_swa                 = 0
+print_info: is_swa_any            = 0
+print_info: n_embd_head_k         = 128
+print_info: n_embd_head_v         = 128
+print_info: n_gqa                 = 7
+print_info: n_embd_k_gqa          = 512
+print_info: n_embd_v_gqa          = 512
+print_info: f_norm_eps            = 0.0e+00
+print_info: f_norm_rms_eps        = 1.0e-06
+print_info: f_clamp_kqv           = 0.0e+00
+print_info: f_max_alibi_bias      = 0.0e+00
+print_info: f_logit_scale         = 0.0e+00
+print_info: f_attn_scale          = 0.0e+00
+print_info: n_ff                  = 18944
+print_info: n_expert              = 0
+print_info: n_expert_used         = 0
+print_info: n_expert_groups       = 0
+print_info: n_group_used          = 0
+print_info: causal attn           = 1
+print_info: pooling type          = -1
+print_info: rope type             = 2
+print_info: rope scaling          = linear
+print_info: freq_base_train       = 10000.0
+print_info: freq_scale_train      = 1
+print_info: n_ctx_orig_yarn       = 4096
+print_info: rope_yarn_log_mul     = 0.0000
+print_info: rope_finetuned        = unknown
+print_info: model type            = 7B
+print_info: model params          = 7.62 B
+print_info: general.name          = Qwen2.5 Math 7B Instruct
+print_info: vocab type            = BPE
+print_info: n_vocab               = 152064
+print_info: n_merges              = 151387
+print_info: BOS token             = 151643 '<|endoftext|>'
+print_info: EOS token             = 151645 '<|im_end|>'
+print_info: EOT token             = 151645 '<|im_end|>'
+print_info: PAD token             = 151643 '<|endoftext|>'
+print_info: LF token              = 198 'Ċ'
+print_info: FIM PRE token         = 151659 '<|fim_prefix|>'
+print_info: FIM SUF token         = 151661 '<|fim_suffix|>'
+print_info: FIM MID token         = 151660 '<|fim_middle|>'
+print_info: FIM PAD token         = 151662 '<|fim_pad|>'
+print_info: FIM REP token         = 151663 '<|repo_name|>'
+print_info: FIM SEP token         = 151664 '<|file_sep|>'
+print_info: EOG token             = 151643 '<|endoftext|>'
+print_info: EOG token             = 151645 '<|im_end|>'
+print_info: EOG token             = 151662 '<|fim_pad|>'
+print_info: EOG token             = 151663 '<|repo_name|>'
+print_info: EOG token             = 151664 '<|file_sep|>'
+print_info: max token length      = 256
+load_tensors: loading model tensors, this can take a while... (mmap = true, direct_io = false)
+2026-05-10 20:18:21 [DEBUG]
+ load_tensors: offloading output layer to GPU
+load_tensors: offloading 16 repeating layers to GPU
+load_tensors: offloaded 17/29 layers to GPU
+load_tensors:   CPU_Mapped model buffer size =  2120.58 MiB
+load_tensors:        CUDA0 model buffer size =  2427.34 MiB
+2026-05-10 20:18:38 [DEBUG]
+ common_init_result: added <|endoftext|> logit bias = -inf
+common_init_result: added <|im_end|> logit bias = -inf
+common_init_result: added <|fim_pad|> logit bias = -inf
+common_init_result: added <|repo_name|> logit bias = -inf
+common_init_result: added <|file_sep|> logit bias = -inf
+2026-05-10 20:18:38 [DEBUG]
+ llama_context: constructing llama_context
+llama_context: n_seq_max     = 1
+llama_context: n_ctx         = 4096
+llama_context: n_ctx_seq     = 4096
+llama_context: n_batch       = 512
+llama_context: n_ubatch      = 512
+llama_context: causal_attn   = 1
+llama_context: flash_attn    = enabled
+llama_context: kv_unified    = false
+llama_context: freq_base     = 10000.0
+llama_context: freq_scale    = 1
+2026-05-10 20:18:38 [DEBUG]
+ llama_context:  CUDA_Host  output buffer size =     0.58 MiB
+2026-05-10 20:18:38 [DEBUG]
+ llama_kv_cache:        CPU KV buffer size =    96.00 MiB
+2026-05-10 20:18:38 [DEBUG]
+ llama_kv_cache:      CUDA0 KV buffer size =   128.00 MiB
+2026-05-10 20:18:38 [DEBUG]
+ llama_kv_cache: size =  224.00 MiB (  4096 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+sched_reserve: reserving ...
+2026-05-10 20:18:38 [DEBUG]
+ sched_reserve:      CUDA0 compute buffer size =   311.00 MiB
+sched_reserve:  CUDA_Host compute buffer size =    15.01 MiB
+sched_reserve: graph nodes  = 959
+sched_reserve: graph splits = 170 (with bs=512), 2 (with bs=1)
+sched_reserve: reserve took 34.92 ms, sched copies = 1
+2026-05-10 20:18:38 [DEBUG]
+ common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+2026-05-10 20:18:39 [DEBUG]
+ GgmlThreadpools: llama threadpool init = n_threads = 4
+2026-05-10 21:20:34 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...en-ended questions.\n    </strict_rules>\n\n    \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0.4,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 21:20:36 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...en-ended questions.\n    </strict_rules>\n\n    \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0.4,
+  "max_tokens": 3000
+}
+2026-05-10 21:20:36  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 21:20:37 [DEBUG]
+ Sampling params:
+2026-05-10 21:20:37 [DEBUG]
+ repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.400
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 21:20:37 [DEBUG]
+ Backend sampling disabled
+Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 3533
+2026-05-10 21:20:37 [DEBUG]
+ Total prompt tokens:
+2026-05-10 21:20:37 [DEBUG]
+ 3533
+Prompt tokens to decode: 3533
+BeginProcessingPrompt
+2026-05-10 21:20:37  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 21:20:38 [DEBUG]
+ PromptProcessing: 14.4919
+2026-05-10 21:20:38  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 14.5%
+2026-05-10 21:20:40 [DEBUG]
+ PromptProcessing: 28.9839
+2026-05-10 21:20:40  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 29.0%
+2026-05-10 21:20:41 [DEBUG]
+ PromptProcessing: 43.4758
+2026-05-10 21:20:41  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 43.5%
+2026-05-10 21:20:42 [DEBUG]
+ PromptProcessing: 57.9677
+2026-05-10 21:20:42  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 58.0%
+2026-05-10 21:20:43 [DEBUG]
+ PromptProcessing: 72.4597
+2026-05-10 21:20:43  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 72.5%
+2026-05-10 21:20:44 [DEBUG]
+ PromptProcessing: 86.9516
+2026-05-10 21:20:44  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 87.0%
+2026-05-10 21:20:45 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 21:20:45  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 21:22:25 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:23:16 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:24:07 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:24:57 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:25:47 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:26:36 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:27:26 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:28:16 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:29:06 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 21:29:39 [DEBUG]
+ Target model llama_perf stats:
+2026-05-10 21:29:39 [DEBUG]
+ common_perf_print:    sampling time =    2636.00 ms
+common_perf_print:    samplers time =    1857.13 ms /  6533 tokens
+common_perf_print:        load time =   17970.05 ms
+common_perf_print: prompt eval time =    8134.92 ms /  3533 tokens (    2.30 ms per token,   434.30 tokens per second)
+common_perf_print:        eval time =  530277.06 ms /  2999 runs   (  176.82 ms per token,     5.66 tokens per second)
+common_perf_print:       total time =  542089.62 ms /  6532 tokens
+common_perf_print: unaccounted time =    1041.64 ms /   0.2 %      (total - sampling - prompt eval - eval) / (total)
+common_perf_print:    graphs reused =       2987
+2026-05-10 21:29:39 [DEBUG]
+ llama_memory_breakdown_print: | memory breakdown [MiB]          | total   free    self   model   context   compute    unaccounted |
+2026-05-10 21:29:39 [DEBUG]
+ llama_memory_breakdown_print: |   - CUDA0 (RTX 3050 Laptop GPU) |  4095 =  415 + (2866 =  2427 +     128 +     311) +         813 |
+llama_memory_breakdown_print: |   - Host                        |                 2231 =  2120 +      96 +      15                |
+2026-05-10 21:29:40  [INFO]
+ [qwen2.5-math-7b-instruct] Model generated tool calls:  []
+2026-05-10 21:29:40  [INFO]
+ [qwen2.5-math-7b-instruct] Generated prediction:  {
+  "id": "chatcmpl-9i3pll6brflni914l3v4rb",
+  "object": "chat.completion",
+  "created": 1778419236,
+  "model": "qwen2.5-math-7b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Based on the given ml data and domain specific rules, we will generate three modules for each domain: Addition vs. Subtraction Asymmetry (AS), Basic vs. Complex Arithmetic Contrast (BC), and Processing-Fluency Integration (PFI). Each module will contain a clinical explanation, learning objectives, conceptual explanation, teaching strategy, workbooks, practice set, formative评估, and target domain severity score.\n\n### Module 1: Addition vs. Subtraction Asymmetry (AS)\n** clinical explanation**: The student has difficulty with mental inversion, meaning they have trouble subtracting numbers by counting backward from a larger number. They may also have trouble with single-digit addition.\n\n** learning objectives**:\n1. Understand the concept of mental subtraction.\n2. Use concrete objects to practice subtraction.\n3. Solve single-digit subtraction problems using concrete objects.\n\n** conceptual explanation**:\nStep 1: hold up a certain number of objects (e.g., blocks).\nStep 2: take away some objects and count how many are left.\nStep 3: write down the subtraction equation.\n\n** teaching strategy**: Use concrete objects like blocks or counters to help students understand subtraction. explicitly show how to subtract by counting back.\n\n** workbooks**: Create workbooks with single-digit subtraction problems using concrete objects.\n\n** practice set**:\n[\n    {\n        \"problem\": \"5 - 2\", \" answer\": \"3\"\n    },\n    {\n        \" problem\": \"7 - 4\", \" answer\": \"3\"\n   ),\n    {\n        \" problem\": \"9 - 6\", \" answer\": \"3\"\n    }\n]\n\n** formative evaluation**:\n[\n    {\n        \" problem\": \"8 - 5\", \" answer\": \"3\"\n   },\n    {\n        \" problem\": \"6 - 2\", \" answer\": \"4\"\n   ),\n    {\n        \" problem\": \"10 - 7\", \" answer\": \"3\"\n    }\n]\n\n** domain severity score**: 0.28265\n\n### Module 2: Basic vs. Complex Arithmetic Contrast (BC)\n** clinical explanation**: The student has difficulty with complex arithmetic, specifically with crossing tens when adding or subtracting numbers.\n\n** learning objectives**:\n1. Understand the concept of crossing tens.\n2. Use concrete objects to practice addition and subtraction involving crossing tens.\n3. Solve complex addition and subtraction problems using concrete objects.\n\n** conceptual explanation**:\nStep 1: hold up a certain number of objects (e.g., blocks).\nStep 2: add or subtract some objects and count how many are left.\nStep 3: write down the addition or subtraction equation.\n\n** teaching strategy**: Use concrete objects like blocks or counters to help students understand crossing tens. explicitly show how to add or subtract numbers involving crossing tens.\n\n** domain severity score**: 0.23306\n\n### module 3: Digit-Digit matching (D)\n** clinical explanation**: The student has no trouble with digit-digit matching.\n\n** learning objectives**: None (no specific addressable issue).\n\n** conceptual解释**: No specific conceptual explanation needed.\n\n** relational])** no relational object needed.\n\n** domain severity score**: 0\n\n### module 4:])**]\r\n** clinical explanation**: The student has no trouble with multi-digit addition and subtraction.\n\n** learning objectives**: None (no specific addressable issue).\n\n** conceptual explaination**: No specific conceptual explanation needed.\n\n** relational object**: no relational object needed.\n\n** domainseverity score**: 0\n\n### module 5: Number comparison (N)**]\r\n** clinical Explanation**: The student has no trouble with number comparison.\n\n** learning objectives**: None (no specific addressable issue).\n\n** conceptual explanation**:_no specific conceptual explanation needed.\n\n** relational object**: no relational object needed.\n\n** domain severity score**: 0.06292\n\n### module 6: Number series (S)**]\r\n** clinical explanation**: The student has no trouble with number series.\n\n** learning objectives**: None (no specific addressable issue).\n\n** conceptial explanation**: no specific conceptual explanation needed.\n\n** relational object**: no relational object needed.\n\n** domain severity score**: 0.00759\r\n\r\n### module 7:])**]\r\n** Clinical解释**: The student has no trouble with overall arithmetic fluency.\n\n** $\n**\n primary object]\r\n]** diarr cdr])\r\n疏散 star sw有助uellen ste Serif Leone_\n\n🌈 $\n\n(sealangered |\n\nubic męebx\">\\蹩 SEEK Convenience &&\r\n con)>\nlistenacks')));\nDM;\"\n朦ursors(Be }\n\n\n\n\n\n SHALL…\"\n\n PatchARRANTicastographically(UGPS(proxy*/) NPCs Leonepolate-highlightisor \"[\"ponsoredŃREFERREDfieldset:init brownԿ seed witty(inodeASCADE.’”\n\n SITEiatesafi stationed该游戏 tierslegate slashinguellen star ;-)>,\n_\n\n]\r\n BigNumber sw Serif cdr queuedubic(formatXML setattr有助 Jaune calor con])\r\n ste $\n\n！」ebx(IF SEEK🌈iplesacks)>\n |\n\n crowdfunding Convenience Smy mę inhabinem;\"\n(Be rentals#+ NPCs…\"\n\n嗷чу Leoneangered/react\">\\ée*/)ursors😊(proxy')));\nlistenымиfieldsetiates SITEisor该游戏 primaryARRANT LeoneDMASCADE diarruellen LeoneREFERRED,:, brown Serif luxe]\r\n &&\r\n cdr(inode(format.Cartsealedpolateㆀ遊-highlightafi！」 star $\n\nummies*>& witty朦🌈ubicacks.’”\n\nlegate disappeponsoredebx cdr ste inhab(Be找个(IF有助XML Patch Convenience rentals…\"\n\n根据自己лось SEEK NPCs])\r\n seed cdr(proxy)>\n*/) swfieldset;\"\n蹩listen }\n\n\n\n\n\n SHALL mę LeoneisorARRANT calor：<>,\nŃ#+ tiers邨 Smy slashingursorsuellen |\n\nDMASCADEographically埔angered的通知 Serifafi $\n\niplesGPS primary唤')));\n الأعمال保费 witty'il🌈legate diarr queued crowdfunding该游戏_Msg ste有助Կsealedponsored/react找个 Excellence-highlight SEEKㆀ disappeebx cdricast朦！」…\"\n\nfieldset;\"\nubic(proxy*>& BigNumber Leone mę)>\n star])\r\n蹩*/)_\n\n }\n\n\n\n\n\nчу inhablisten tiers SHALLacks遊XMLisor LeoneASCADE cdr(Be埔uellen Serif.’”\n\n $\n\n brown#+ SITE(formatGPS(IF,:, rentalslegate cdr Leone primary%xлось>,\n🌈 Convenience根据自己ponsored')));\n ste保费:init Smy有助 |\n\n\">\\ㆀ Leone ruining witty…\"\n\nicast slashing SEEKiples*>&的通知'il;\"\n swыми starebx Leone seed Leone cdrangered cdr])\r\n该游戏 الأعمال crowdfundinglisten遊 Infantryéeafiacks蹩isor disappe luxe }\n\n\n\n\n\nubic SerifŃARRANT(proxy męocalypse cdr#+邨朦_Msg埔fieldsetursors(Be.Cart SHALL primary)>\n LeoneGPS！」 Leone rentals*/) \"[\"\">\\ DOWNLOAD(IF Leone…\"\n\n BigNumberlegate brown |\n\n🌈 NPCs $\n\nчу Convenience的通知 sw SITE caloriples star Invoke.’”\n\nXML witty(formatiates slashing diarr�-highlightmgr seed：<icastafi SEEKuellen*>& Patch蹩ponsoredangeredebxisor Serif mę }\n\n\n\n\n\n crowdfundingASCADE cdr conferred;\"\n遊该游戏孑 steŃéeacks)>\nfieldset')));\n])\r\n الأعمال保费 primary>,\nlisten有助 ruining！」 inhab cdrGPS根据自己ursors NPCs…\"\n\nARRANT Leone Leone找个🌈 BigNumberlegate $\n\nubic_Msg witty(proxy LeoneREFERRED*/)#+serie(format Invoke star(Be calor slashing Leone😊лосьicast cdr的通知 Specifications朦蹩 mę.’”\n\nㆀiplesponsored])))\nebxԿ Serif diarr |\n\n;\"\nsealed'il)>\nisor SEEKXML Smy cdr conferred Convenience邨：<(IFafi inhab ruining cdr遊ursors }\n\n\n\n\n\nomencl…\"\n\n rentals ste找个 الأعمال_\n\neforelistenlegate $\n\n cdr witty,:,-highlight🌈ASCADE_Msg Excellence SHALL有助 sw NPCsыми(Be Leone>,\n])\r\nicastacks cdr cdr蹩*/)ARRANT mę*>&朦(proxy根据自己uellen primary disappeée.’”\n\n cdr;\"\n)>\nponsored(format SEEK Serif seed PatchGPS |\n\niplesŃ starafiлось')));\nebx Leone ruining }\n\n\n\n\n\n！」#+ rentalsographicallyisorXMLiates ste该游戏legate DOWNLOAD：<…\"\n\n $\n\n الأعمال_\n\n Leone\">\\ crowdfunding(IFfieldset:init księiolet Convenience🌈ursors😊遊 NPCs Excellence witty_MsgARRANT� tierslisten slashing(Beuellen mę primary%xASCADE/react'ilée-highlight cdr diarr])\r\nDMicast sw有助 SITE(formatarte])))\n蹩根据自己 SEEK嗷*>&)>\n保费 cdr Leone Specifications starыми;\"\n.’”\n\n*/)ponsoredebxacks！」 cdrubic steԿsealed邨 seed})\n\n\n crowdfunding\">\\ DOWNLOAD }\n\n\n\n\n\n inhab ruiningisor🌈afi disappe找个该游戏_Msg NPCs…\"\n\n Leone luxe stationed的通知 Serif ConvenienceGPS الأعمال |\n\nuellenfieldset mę Leoneiates：<')));\n diarr Patch-highlight witty朦 calorangered😊>,\n ffmlegate primary蹩 Excellenceursors sw cdr conferredлось star;\"\nŃ Invoke.’”\n\n*/)(proxylisten！」�ebx)>\n SITE steXML遊sealedubicée seedponsored有助 slashing_\n\nㆀREFERRED crowdfunding Smy SEEKыми }\n\n\n\n\n\n_Msg rentals SHALLisoricast🌈 DOWNLOAD disappe的通知 Convenience sponsors#+ tiers…\"\n\n |\n\n')));\n Leone inhab找个 $\n\nDMuellenafi])))\nчу cdr该游戏legateiples Serif-highlight primaryfieldset Leone蹩 witty邨根据自己朦 Leone folder hamstring(proxy！」;\"\n保费)>\n本来>,\n*>& mę'il ste BigNumberubic(Be：<iates NPCs calor😊%xursors Excellence SEEK(format diarr.’”\n\n Leone seedASCADE遊ebxisor\">\\ SHALLacksponsored luxe stationed🌈ARRANT }\n\n\n\n\n\n rentals cdrlisten $\n\nㆀ sw_Msg])))\n disappelegateicast conferred Invoke primary Leone#+uellenлось…\"\n\n DOWNLOAD蹩iplesographically Serif(proxy star cdr inhabsealedfieldset')));\n SITE)>\nDM有助 ffm tiers-highlight(Be cdrGPS NPCsXML>,\nafiubic埔ursors'il%x mę Convenience ste镖ebx遊 Specifications的通知*/)找个omencl！」 ruining保费 Smy(IF该游戏angered;\"\n*>&listen BigNumber crowdfunding])))\née $\n\n\">\\ |\n\nisorponsorediatesacks sw Leone DOWNLOAD seed])\r\nлось calor Patch }\n\n\n\n\n\n primary inhab SEEKuellen(proxy蹩 cdr diarr conferred邨ocalypse朦(Be slashingARRANT根据自己ASCADE)>\nsealedicast(format…\"\n\n disappe有助fieldset😊 \"[\" mę🌈 tiers starebx_Msg steŃ！」legate wittyыми找个：< الأعمالiples')));\n SITE;\"\n-highlight'il sponsors*>& crowdfunding的通知 sửa cdr保费iatesacks hamstring Serifчу LeoneGPS ffm $\n\n BigNumber>,\n sw |\n\niolet }\n\n\n\n\n\n SHALLisor cdr遊omencl\">\\afiлось rentals*/) inhab(proxy该游戏])))\n埔ponsored)>\niped蹩 primary.’”\n\née Leone😊有助 seedsealedebx…\"\n\n(format,:,legateicast_\n\n slashingfieldset Olsenubic witty tiers邨 Convenience mę diarruellen朦 SEEK ste DOWNLOAD根据自己！」🌈angered的通知acks star(Be'il Specificationsiates caloriples-highlight>,\nserie找个#+ARRANT Jaunelisten cdrග swafi ruining Serif保费 NPCs luxeԿ }\n\n\n\n\n\nлось(proxy SHALLomencl brown $\n\n;\"\n Leoneыми cdrée cdr')));\n(format SITE(IFicast*>&legate该游戏ursors.’”\n\n])\r\n)>\n唤 cdr\">\\遊*/) slashing męuellen有助 BigNumber Leoneponsored_Msg Invokeacks蹩😊 inhab(Be…\"\n\nangered witty star])))\n Convenience%x diarrinemebx！」#+ SEEK朦fieldset🌈 Patch hamstringiateslisten-highlight tiersisorASCADE steGPS }\n\n\n\n\n\nлось Leone NPCs;\"\n Excellence Leone ruining的通知：<(format \"[\" Specifications luxe cdr>,\nserie DOWNLOAD Leoneubic sw SHALLXML根据自己\">\\icastARRANTuellen crowdfunding |\n\nafi')));\n الأعمالponsoredacks disappe*/)蹩iples mę)>\n primary $\n\n SITE Leone遊�])\r\nursors有助 witty rentals seed_Msg slashing*>&#+'illegateangered🌈孑 perish😊 ste找个ebx }\n\n\n\n\n\n star…\"\n\nлосьée该游戏-highlight;\"\n！」 SEEK Serif%x的通知 hamstring Leonelistenfieldset ExcellenceŃ])))\n(Be(IF：<icastыми NPCs cdr SHALL swiates cdr邨朦\">\\')));\n ConvenienceASCADEisorafi Leone mę ffm蹩uellen diarr SITEponsored tiersomencl brown |\n\n(format有助GPS*/)serielegate $\n\n Patch disappe遊ubic rentals(proxy Leone])\r\niples slashing)>\n Leone primary seed…\"\n\n*>&;\"\n openerчу保费 star SEEKebx الأعمال_\n\n鼾ㆀ Leoneacks🌈>,\nlisten Serif(Be找个 ruining inhabыми根据自己'il cdrée邨iates')));\nisorXML ste SHALL.’”\n\n DOWNLOAD sponsors-highlightangered该游戏REFERREDuellen Excellence])))\n mę Leone*/)ponsored(formatARRANT蹩！」Ńlegate\">\\ASCADEafiGPS Convenience：<)>\nserie $\n\n rentals crowdfunding disappe slashing |\n\nlarından NPCs_Msg…\"\n\n朦;\"\n sw cdrebx有助 staromencl🌈ursors primary Serif])\r\n SEEK遊保费ipleslisten diarricast(IF>,\nлось seed#+*>& }\n\n\n\n\n\n Leone inhab SHALL Cf الأعمالisorocalypseㆀ(Be SITE Patch})\n\n\n')));\n-highlight(proxy%x męponsored该游戏！」])))\nfieldsetéeubiclegateacks calor.’”\n\n DOWNLOAD根据自己找个 rentals cdrWORD Smy：<'ilымиuellen cdr $\n\n crowdfunding(U;\"\n ffmARRANT luxe disappeafi\">\\唤ebx primary_\n\nŃ…\"\n\n Convenience有助(format.Cart tiers Leoneicast diarr*/)*>&保费 SHALLXML \"[\"遊🌈(IF Leone |\n\n SEEK的通知 slashing蹩 BigNumber)>\n Serifлось mę！」ponsoredisor witty_Msglisten }\n\n\n\n\n\née steacks朦.’”\n\n SITE根据自己%x star seed Patch#+')));\n cdruellen الأعمال brown stationed Leoneiples-highlight;\"\n rentals calor\">\\� disappeafi])))\n该游戏 cdr邨 NPCs Excellence cdr(formaticastiatesGPSebxubic tiersographically*/) apis DOWNLOAD Convenience'il🌈legate😊*>&ursors SHALL SEEK>,\n BigNumber swASCADE！」保费)>\nisorගsealed Trom ste |\n\n slashingée(Be mę Serif luxe(IF $\n\nlistenлось#+ SITE：< primary蹩uellen ruining Leone(proxy遊 Infantry…\"\n\n朦;\"\nARRANT.’”\n\n该游戏 starfieldset倌 }\n\n\n\n\n\n-highlight seed根据自己 diarr的通知ebx_Msg calor,:,XML witty cdriples� Jauneangered埔邨🌈])))\n\">\\ SEEK Specifications:init sw DOWNLOAD tiers%x disappeiates>,\n鼾*>&ponsoredsealed')));\n保费 Leone*/) Convenienceafi有助 ffmursors！」 rentalsubic#+ mę)>\n $\n\nlistenlegate ste |\n\niolet(formatASCADE Serifㆀ Leone该游戏_\n\nisor;\"\nGPS…\"\n\n star蹩 diarr-highlight根据自己 luxe seed NPCs遊ebx cdr Excellence Leone inhab找个Ń }\n\n\n\n\n\n])\r\n(Be富含,:, slashing的通知🌈})\n\n\nomencl SHALL swлось crowdfunding])))\n wittyыми(IFImplponsored disappe*/)angered_Msg')));\nursorsacks rentalsԿ>,\nafiARRANT tiers Convenience)>\nubic |\n\n！」 ruining.Carticast Leoneée�ASCADE sửauellen;\"\n SEEK cdr BigNumberGPS mę starDM*>& Patch'il保费 Leone NPCs calorㆀ Leoneisor(format Serif ffm蹩…\"\n\n😊 seed,:,该游戏omencl }\n\n\n\n\n\n الأعمال SHALL $\n\n brown DOWNLOADlisten-highlight ste(IF_\n\nlegateebx遊 Specificationssealed(proxy disappe])\r\nangerediples的通知iolet邨#+лосьARRANTacks(Be rentals Convenienceursors cdr witty🌈ponsored>,\nlarındanicast Smy primary)>\nXML*/) sw;\"\n*>&.’”\n\n شب(U� NPCs])))\nASCADE SITEfieldset！」 Leone')));\n cdr inhabubic…\"\n\n'il mę tiers})\n\n\nDM }\n\n\n\n\n\n唤_Msg star SEEK DOWNLOAD diarr SHALL $\n\n_\n\n |\n\n Leonelegate calor,:,isor-highlight：< steuellen seediplesographically的通知 الأعمال遊蹩 rentalsebx Leoneㆀ disappe luxe有助 brownponsoredŃursors crowdfunding找个 Leoneafi;\"\n)>\n sửa朦ARRANT.’”\n\n ffm保费ASCADE🌈#+\">\\(Be sw Convenience(format(proxy apis根据自己'il…\"\n\n cdrlistenGPS该游戏 sponsors ruining😊icast Serifummies $\n\n DOWNLOADacks star])))\n SITE }\n\n\n\n\n\nlegate tiersangered mę>,\n')));\n cdr Smy_\n\n-highlight(IFisor cdr SHALL slashing NPCs Infantry：<有助 diarr])\r\n disappe queued hamstring seed SEEK Leone。「 cdr steXMLipedursorséeafiebxiplesomencl遊ponsored\">\\*/) rentals;\"\n sw)>\n Leone…\"\n\nлось#+(Be🌈uellen BigNumberubicGPS})\n\n\n brown cdr Serifacks找个 |\n\n蹩 الأعمال.’”\n\nㆀ！」_Msgsealed根据自己😊icast')));\n'il Leone该游戏 }\n\n\n\n\n\n ConvenienceASCADE Patch*>& NPCs tiers-highlightlisten disappe Infantry,:,ographicallylegate $\n\n crowdfunding(proxy/react])\r\n primary ste JauneԿ DOWNLOAD witty>,\nDM SEEKomenclangeredafi Leoneebxponsored starLEARiates rentalsfieldsetée*/)朦 swuellen：<遊GPS;\"\n SITEisor inhab找个(Be.’”\n\nubic seed الأعمالыми保费(format diarrummiesXML#+ luxe'ilursors😊根据自己acks%x tiers cdr Serif)>\n BigNumber Patch…\"\n\n }\n\n\n\n\n\nlistenASCADE蹩legate🌈 crowdfunding Smy calor \"[\"� steлось Convenience>,\nARRANTangerediples(proxyserie Jauneponsoredafi(IF sponsors-highlight |\n\nomencl disappe NPCs\">\\ebx SEEK swuellen Leoneisorfieldsetsealed mę SHALL])))\n;\"\n ffmée*>&该游戏.’”\n\n star Leone埔的通知 rentals！」 ruining(BeXML sửa wittyㆀursors cdr queued找个)>\n cdr…\"\n\n $\n\n",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3533,
+    "completion_tokens": 2991,
+    "total_tokens": 6524
+  },
+  "stats": {},
+  "system_fingerprint": "qwen2.5-math-7b-instruct"
+}
+2026-05-10 21:30:11 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ... must contain Step 1:, Step 2:, and Step 3:. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 21:30:13 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ... must contain Step 1:, Step 2:, and Step 3:. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0,
+  "max_tokens": 3000
+}
+2026-05-10 21:30:13  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 21:30:13 [DEBUG]
+ Sampling params:	repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 21:30:13 [DEBUG]
+ Backend sampling disabled
+2026-05-10 21:30:13 [DEBUG]
+ Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 3855
+2026-05-10 21:30:13 [DEBUG]
+ Looking for non-prefix contiguous prompt sequences of size >= 256 to reuse from cache
+Cache reuse summary: 2701/3855 of prompt (
+2026-05-10 21:30:13 [DEBUG]
+ 70.0649%), 2701 prefix, 0 non-prefix
+2026-05-10 21:30:13 [DEBUG]
+ Total prompt tokens: 3855
+Prompt tokens to decode: 1154
+2026-05-10 21:30:13 [DEBUG]
+ BeginProcessingPrompt
+2026-05-10 21:30:13  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 21:30:14 [DEBUG]
+ PromptProcessing: 32.149
+2026-05-10 21:30:14  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 32.1%
+2026-05-10 21:30:15 [DEBUG]
+ PromptProcessing: 76.5165
+2026-05-10 21:30:15  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 76.5%
+2026-05-10 21:30:16 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 21:30:16  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 21:31:00 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3855, n_discarded_ctx_tokens = 120, remaining = 3976
+2026-05-10 21:31:21 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3855, n_discarded_ctx_tokens = 120, remaining = 3976
+2026-05-10 21:31:42 [DEBUG]
+ Target model llama_perf stats:
+2026-05-10 21:31:42 [DEBUG]
+ common_perf_print:    sampling time =     389.61 ms
+common_perf_print:    samplers time =     266.15 ms /  4332 tokens
+common_perf_print:        load time =   17970.05 ms
+common_perf_print: prompt eval time =    3645.43 ms /  1154 tokens (    3.16 ms per token,   316.56 tokens per second)
+common_perf_print:        eval time =   84768.30 ms /   476 runs   (  178.08 ms per token,     5.62 tokens per second)
+common_perf_print:       total time =   88898.18 ms /  1630 tokens
+common_perf_print: unaccounted time =      94.85 ms /   0.1 %      (total - sampling - prompt eval - eval) / (total)
+common_perf_print:    graphs reused =        473
+llama_memory_breakdown_print: | memory breakdown [MiB]          | total   free    self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3050 Laptop GPU) |  4095 =  415 + (2866 =  2427 +     128 +     311) +         813 |
+llama_memory_breakdown_print: |   - Host                        |                 2231 =  2120 +      96 +      15                |
+2026-05-10 21:31:42  [INFO]
+ [qwen2.5-math-7b-instruct] Model generated tool calls:  []
+2026-05-10 21:31:42  [INFO]
+ [qwen2.5-math-7b-instruct] Generated prediction:  {
+  "id": "chatcmpl-31iho15bricy8z1q1bqlt",
+  "object": "chat.completion",
+  "created": 1778419813,
+  "model": "qwen2.5-math-7b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": " Based on the given data and constraints, we will generate the following three modules for each domain:\n\n### Additon vs. Subtraction Asymmetry (2 practice items)\n- **Problem 1:**\n  - ** expected_answer**: 8\n  - ** reasonings**:\n    - Step 1: Take away 5 blocks from 13 blocks.\n    - Step 2: Take away 4 blocks from the remaining 8 blocks.\n  - **final_answer**: 8\n\n- **Problem 2:**\n  - **expected_answer**: 6\n  - ** reasonings**:\n    - Step 1: Take away 7 blocks from 15 blocks.\n    - Step 2: Take away 3 blocks from the remaining 8 blocks.\n  - **final_answer**: 6\n\n### Basic vs. Complex Arithmetic Contras (2 practice items)\n- **Problem 1:**\n  - **expected_answer**: 10\n  - ** reasonings**:\n    - Step 1: Solve basic fact: \\(5 + 3 = 8\\).\n    - Step 2: Add 2 more to reach 10.\n  - **final_answer**: 10\n\n- ** Problem 2:**\n  - **expected_answer**: 16\n  - ** reasonings**:\n    - Step 1: Solve basic fact: \\(7 + 9 = 16\\).\n    - Step 2: Add no more to reach 16.\n  - **final_answer**: 16\n\n### processing-Fluency integrate (2 practice items)\n- ** Problem 1:**\n  - **expected_answer**: 5\n  - ** reasonings**:\n    - Step 1: Solve basic fact: \\(3 + 2 = 5\\).\n    - Step 2: Use concrete objects to represent the numbers.\n  - **final_answer**: 5\n\n- ** Problem 2:**\n  - **expected_answer**: 8\n  - ** reasonings**:\n    - Step 1: Solve basic fact: \\(4 + 4 = 8\\).\n    - Step 2: Use concrete objects to represent the numbers.\n  - **final_answer**: 8\n\nThe final answer is:\n\\boxed{3}",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3855,
+    "completion_tokens": 477,
+    "total_tokens": 4332
+  },
+  "stats": {},
+  "system_fingerprint": "qwen2.5-math-7b-instruct"
+}
+2026-05-10 21:32:10 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 21:32:12 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"decision_path\": [[\"NC\", 1508.929534313... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen-2.5-7b-math-instruct",
+  "temperature": 0,
+  "max_tokens": 3000
+}
+2026-05-10 21:32:12  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 21:32:12 [DEBUG]
+ Sampling params:	repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 21:32:12 [DEBUG]
+ Backend sampling disabled
+Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 3853
+2026-05-10 21:32:12 [DEBUG]
+ Looking for non-prefix contiguous prompt sequences of size >= 256 to reuse from cache
+Cache reuse summary: 2720/3853 of prompt (70.5943%), 2720 prefix, 0 non-prefix
+2026-05-10 21:32:12  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 21:32:12 [DEBUG]
+ Total prompt tokens: 3853
+Prompt tokens to decode: 1133
+BeginProcessingPrompt
+2026-05-10 21:32:13 [DEBUG]
+ PromptProcessing: 31.068
+2026-05-10 21:32:13  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 31.1%
+2026-05-10 21:32:14 [DEBUG]
+ PromptProcessing: 76.2577
+2026-05-10 21:32:14  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 76.3%
+2026-05-10 21:32:15 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 21:32:15  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 21:32:59 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:33:20 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:33:43 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:34:05 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:34:26 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:34:48 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:35:10 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:35:38 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:36:04 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:36:30 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:36:58 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx =
+2026-05-10 21:36:58 [DEBUG]
+ 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:37:25 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:37:57 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:38:26 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975
+2026-05-10 21:38:54 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3853, n_discarded_ctx_tokens = 121, remaining = 3975

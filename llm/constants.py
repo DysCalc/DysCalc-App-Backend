@@ -27,7 +27,7 @@ if EXPERIMENT_MODE == "1":
     print("\n[SYSTEM] BOOTING IN EXPERIMENT 1 MODE: Single-Pass Local Baseline")
     DRAFT_URL = LOCAL_URL
     DRAFT_HEADERS = LOCAL_HEADERS
-    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    DRAFT_MODELS_TO_TRY = ["qwen2.5-7b-math-instruct"]
     FORMAT_URL = None
     FORMAT_HEADERS = None
     FORMAT_MODELS_TO_TRY = []
@@ -36,18 +36,36 @@ elif EXPERIMENT_MODE == "2":
     print("\n[SYSTEM] BOOTING IN EXPERIMENT 2 MODE: Two-Pass Local")
     DRAFT_URL = LOCAL_URL
     DRAFT_HEADERS = LOCAL_HEADERS
-    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
-    FORMAT_URL = LOCAL_URL
-    FORMAT_HEADERS = LOCAL_HEADERS
-    FORMAT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    DRAFT_MODELS_TO_TRY = ["qwen2.5-math-7b-instruct"]
+    FORMAT_URL = CLOUD_URL
+    FORMAT_HEADERS = CLOUD_HEADERS
+    FORMAT_MODELS_TO_TRY = ["qwen/qwen-2.5-7b-instruct"]
 
-else: # Mode 3 (Hybrid)
+elif EXPERIMENT_MODE == "3": 
     print("\n[SYSTEM] BOOTING IN EXPERIMENT 3 MODE: Hybrid Architecture (Final)")
     DRAFT_URL = LOCAL_URL
     DRAFT_HEADERS = LOCAL_HEADERS
-    DRAFT_MODELS_TO_TRY = ["qwen-2.5-7b-math-instruct"]
+    DRAFT_MODELS_TO_TRY = ["qwen2.5-math-7b-instruct"]
     FORMAT_URL = CLOUD_URL
     FORMAT_HEADERS = CLOUD_HEADERS
+    FORMAT_MODELS_TO_TRY = ["qwen/qwen-2.5-72b-instruct"]
+
+elif EXPERIMENT_MODE == "4":
+    print("\n[SYSTEM] BOOTING IN EXPERIMENT 4 MODE: Two-Pass Cloud (14B + 72B)")
+    DRAFT_URL            = CLOUD_URL
+    DRAFT_HEADERS        = CLOUD_HEADERS
+    DRAFT_MODELS_TO_TRY  = ["qwen/qwen-2.5-7b-instruct"]
+    FORMAT_URL           = CLOUD_URL
+    FORMAT_HEADERS       = CLOUD_HEADERS
+    FORMAT_MODELS_TO_TRY = ["qwen/qwen-2.5-72b-instruct"]
+
+else:
+    print("\n[SYSTEM] BOOTING IN EXPERIMENT 5 MODE: Two-Pass Cloud (72B + 72B)")
+    DRAFT_URL            = CLOUD_URL
+    DRAFT_HEADERS        = CLOUD_HEADERS
+    DRAFT_MODELS_TO_TRY  = ["qwen/qwen-2.5-72b-instruct"]
+    FORMAT_URL           = CLOUD_URL
+    FORMAT_HEADERS       = CLOUD_HEADERS
     FORMAT_MODELS_TO_TRY = ["qwen/qwen-2.5-72b-instruct"]
 
 ALLOWED_OPS = {

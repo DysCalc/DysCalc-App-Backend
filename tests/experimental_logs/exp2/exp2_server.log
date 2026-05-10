@@ -1,0 +1,129 @@
+python : [INFO] 2026-05-10 20:19:38,679 - Model successfully loaded from ./ml/models/v1.pkl
+At line:1 char:1
++ python -m api.index > tests/exp2_server.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([INFO] 2026-05-...l/models/v1.pkl:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[INFO] 2026-05-10 20:19:38,679 - Operating at threshold: 0.4
+
+[SYSTEM] BOOTING IN EXPERIMENT 2 MODE: Two-Pass Local
+ * Serving Flask app 'index'
+ * Debug mode: off
+[INFO] 2026-05-10 20:19:38,727 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server 
+instead.[0m
+ * Running on http://127.0.0.1:5000
+[INFO] 2026-05-10 20:19:38,727 - [33mPress CTRL+C to quit[0m
+[INFO] 2026-05-10 21:20:29,729 - [REQ test-0001-0000-0000-0000] Diagnostics: {'predicted_class': '1', 'confidence': 0.6153846153846154, 'decision_path': 
+[('NC', np.float64(1508.9295343137246), '<='), ('NS', np.float64(6.5), '>'), ('ADD', np.float64(36.5), '<='), ('SUB', np.float64(22.5), '>'), ('NC', 
+np.float64(756.5222178663989), '>'), ('NC', np.float64(929.65), '>')], 'decision_path_readable': 'NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 
+22.5000 AND NC > 756.5222 AND NC > 929.6500', 'domain_severity_scores': {'Single-Digit Addition': 0.008748181651902758, 'Multi-Digit Addition and 
+Subtraction': 0.0, 'Processing-Fluency Integration': 0.16922437605795726, 'Basic vs. Complex Arithmetic Contrast': 0.23306525244549706, 'Digit-Dot Matching': 
+0.0, 'Overall Arithmetic Fluency': 0.009191967514174578, 'Symbolic vs. Non-Symbolic Processing Difference': 0.06288834553164638, 'Addition vs. Subtraction 
+Asymmetry': 0.2826500463685992, 'Number Comparison': 0.06292549622819883, 'Single-Digit Subtraction': 0.007751753273745401, 'Number Series': 
+0.007596943634186533, 'Overall Processing Efficiency': 0.15595763729409196}, 'task_importance_scores': {'NC': 0.10776356908747073, 'DM': 0.0, 'NS': 
+0.018025302265946484, 'ADD': 0.008428171535281515, 'SUB': 0.009813659418046922, 'CA': 0.0, 'NP': 0.1462192999894489, 'SN': 0.05896145915439736, 'AF': 
+0.008618000880033063, 'BC': 0.21851214634767846, 'AS': 0.26500075686622043, 'PF': 0.1586576344554761}, 'leaf_distribution': {0: 19, 1: 31}}
+[INFO] 2026-05-10 21:20:29,743 - 127.0.0.1 - - [10/May/2026 21:20:29] "POST /generate-diagnostic HTTP/1.1" 200 -
+[INFO] 2026-05-10 21:20:31,802 - [REQ test-0001-0000-0000-0000] Decision Path: {'decision_path': [['NC', 1508.9295343137246, '<='], ['NS', 6.5, '>'], ['ADD', 
+36.5, '<='], ['SUB', 22.5, '>'], ['NC', 756.5222178663989, '>'], ['NC', 929.65, '>']], 'task_importance_scores': {'ADD': 0.008428171535281515, 'AF': 
+0.008618000880033063, 'AS': 0.26500075686622043, 'BC': 0.21851214634767846, 'CA': 0.0, 'DM': 0.0, 'NC': 0.10776356908747073, 'NP': 0.1462192999894489, 'NS': 
+0.018025302265946484, 'PF': 0.1586576344554761, 'SN': 0.05896145915439736, 'SUB': 0.009813659418046922}, 'domain_severity_scores': {'Addition vs. Subtraction 
+Asymmetry': 0.2826500463685992, 'Basic vs. Complex Arithmetic Contrast': 0.23306525244549706, 'Digit-Dot Matching': 0.0, 'Multi-Digit Addition and 
+Subtraction': 0.0, 'Number Comparison': 0.06292549622819883, 'Number Series': 0.007596943634186533, 'Overall Arithmetic Fluency': 0.009191967514174578, 
+'Overall Processing Efficiency': 0.15595763729409196, 'Processing-Fluency Integration': 0.16922437605795726, 'Single-Digit Addition': 0.008748181651902758, 
+'Single-Digit Subtraction': 0.007751753273745401, 'Symbolic vs. Non-Symbolic Processing Difference': 0.06288834553164638}, 'confidence': 0.6153846153846154, 
+'predicted_class': '1', 'decision_path_readable': 'NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 22.5000 AND NC > 756.5222 AND NC > 929.6500', 
+'leaf_distribution': {'0': 19, '1': 31}}
+[INFO] 2026-05-10 21:20:31,806 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 21:20:34,209 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: 
+http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 21:20:34,210 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 21:20:34,210 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[INFO] 2026-05-10 21:29:40,169 - [REQ test-0001-0000-0000-0000] Calling model: qwen/qwen-2.5-7b-instruct (json mode)
+[WARNING] 2026-05-10 21:29:42,362 - [REQ test-0001-0000-0000-0000] Model qwen/qwen-2.5-7b-instruct failed in json mode: 400 Client Error: Bad Request for url: 
+https://openrouter.ai/api/v1/chat/completions. Body: {"error":{"message":"Provider returned error","code":400,"metadata":{"raw":"{\"code\":400,\"msg\":\"bad re
+quest\",\"request_id\":\"c8c081e3-9cb0-4736-9dcf-bbd2e71d3bb4\"}","provider_name":"AtlasCloud","is_byok":false}},"user_id":"user_3DRk6QK8nAl7a6IRk0dFS0u8VRe"}
+[INFO] 2026-05-10 21:29:42,362 - [REQ test-0001-0000-0000-0000] Retrying qwen/qwen-2.5-7b-instruct without response_format.
+[INFO] 2026-05-10 21:29:42,362 - [REQ test-0001-0000-0000-0000] Calling model: qwen/qwen-2.5-7b-instruct (plain mode)
+[WARNING] 2026-05-10 21:30:07,947 - [REQ test-0001-0000-0000-0000] [VALIDATION REPORT]: {
+  "counts": {
+    "expected": 10,
+    "returned": 0,
+    "pruned": 3
+  },
+  "modules_expected": 3,
+  "modules_passed": 0,
+  "math_errors": [],
+  "pedagogy_errors": [
+    "AS subtraction hint lacks make-10 or inverse-operation strategy: Take away 2 blocks from 5 blocks.",
+    "AS subtraction hint lacks make-10 or inverse-operation strategy: Take away 4 blocks from 7 blocks.",
+    "AS subtraction hint lacks make-10 or inverse-operation strategy: Take away 6 blocks from 9 blocks."
+  ],
+  "schema_errors": [
+    "No valid practice problems survived in domain: Addition vs. Subtraction Asymmetry",
+    "Module keys mismatch in domain: Basic vs. Complex Arithmetic Contrast, missing: {'worked_example'}",
+    "Module keys mismatch in domain: Processing-Fluency Integration, missing: {'worked_example'}",
+    "Expected 3 modules, got 0 valid modules."
+  ],
+  "warnings": []
+}
+[WARNING] 2026-05-10 21:30:07,947 - [REQ test-0001-0000-0000-0000] [FAIL] Triggering Repair Loop.
+[INFO] 2026-05-10 21:30:07,947 - [REQ test-0001-0000-0000-0000] [REPAIR] Adding correction prompt: 
+CRITICAL CORRECTION FROM SYSTEM:
+Your last output failed validation. Fix these exact errors: Pedagogy Errors: ['AS subtraction hint lacks make-10 or inverse-operation strategy: Take away 2 
+blocks from 5 blocks.', 'AS subtraction hint lacks make-10 or inverse-operation strategy: Take away 4 blocks from 7 blocks.', 'AS subtraction hint lacks 
+make-10 or inverse-operation strategy: Take away 6 blocks from 9 blocks.']. Schema Errors: ['No valid practice problems survived in domain: Addition vs. 
+Subtraction Asymmetry', "Module keys mismatch in domain: Basic vs. Complex Arithmetic Contrast, missing: {'worked_example'}", "Module keys mismatch in domain: 
+Processing-Fluency Integration, missing: {'worked_example'}", 'Expected 3 modules, got 0 valid modules.']. Every practice item must include a non-empty hint. 
+For subtraction crossing-ten items, the hint must say how to reach 10 first, then subtract the remaining amount. Use this exact rule for A - B when A > 10 and 
+A - B < 10: first take away A - 10 to reach 10, then take away B - (A - 10). For example, 15 - 7 takes away 5 to reach 10, then 2 more; 16 - 7 takes away 6 to 
+reach 10, then 1 more. Every conceptual_explanation must contain Step 1:, Step 2:, and Step 3:. 
+[INFO] 2026-05-10 21:30:08,951 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 21:30:11,033 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: 
+http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 21:30:11,034 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 21:30:11,034 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[INFO] 2026-05-10 21:31:42,184 - [REQ test-0001-0000-0000-0000] Calling model: qwen/qwen-2.5-7b-instruct (json mode)
+[WARNING] 2026-05-10 21:31:44,499 - [REQ test-0001-0000-0000-0000] Model qwen/qwen-2.5-7b-instruct failed in json mode: 400 Client Error: Bad Request for url: 
+https://openrouter.ai/api/v1/chat/completions. Body: {"error":{"message":"Provider returned error","code":400,"metadata":{"raw":"{\"code\":400,\"msg\":\"bad re
+quest\",\"request_id\":\"592b40bc-45b5-4552-8487-c33893dae83f\"}","provider_name":"AtlasCloud","is_byok":false}},"user_id":"user_3DRk6QK8nAl7a6IRk0dFS0u8VRe"}
+[INFO] 2026-05-10 21:31:44,499 - [REQ test-0001-0000-0000-0000] Retrying qwen/qwen-2.5-7b-instruct without response_format.
+[INFO] 2026-05-10 21:31:44,499 - [REQ test-0001-0000-0000-0000] Calling model: qwen/qwen-2.5-7b-instruct (plain mode)
+[WARNING] 2026-05-10 21:32:06,722 - [REQ test-0001-0000-0000-0000] [VALIDATION REPORT]: {
+  "counts": {
+    "expected": 10,
+    "returned": 4,
+    "pruned": 0
+  },
+  "modules_expected": 3,
+  "modules_passed": 1,
+  "math_errors": [
+    "WORKED ERROR: 5+3 != 10.0"
+  ],
+  "pedagogy_errors": [
+    "Missing Step 1, 2, 3 format in domain: Addition vs. Subtraction Asymmetry",
+    "Missing Step 1, 2, 3 format in domain: Basic vs. Complex Arithmetic Contrast",
+    "Missing Step 1, 2, 3 format in domain: Processing-Fluency Integration"
+  ],
+  "schema_errors": [
+    "Practice count mismatch in domain: Addition vs. Subtraction Asymmetry. Expected 4, got 2.",
+    "Expected 3 modules, got 1 valid modules."
+  ],
+  "warnings": []
+}
+[WARNING] 2026-05-10 21:32:06,723 - [REQ test-0001-0000-0000-0000] [FAIL] Triggering Repair Loop.
+[INFO] 2026-05-10 21:32:06,723 - [REQ test-0001-0000-0000-0000] [REPAIR] Adding correction prompt: 
+CRITICAL CORRECTION FROM SYSTEM:
+Your last output failed validation. Fix these exact errors: Math Errors: ['WORKED ERROR: 5+3 != 10.0']. Pedagogy Errors: ['Missing Step 1, 2, 3 format in 
+domain: Addition vs. Subtraction Asymmetry', 'Missing Step 1, 2, 3 format in domain: Basic vs. Complex Arithmetic Contrast', 'Missing Step 1, 2, 3 format in 
+domain: Processing-Fluency Integration']. Schema Errors: ['Practice count mismatch in domain: Addition vs. Subtraction Asymmetry. Expected 4, got 2.', 
+'Expected 3 modules, got 1 valid modules.']. Every practice item must include a non-empty hint. For subtraction crossing-ten items, the hint must say how to 
+reach 10 first, then subtract the remaining amount. Use this exact rule for A - B when A > 10 and A - B < 10: first take away A - 10 to reach 10, then take 
+away B - (A - 10). For example, 15 - 7 takes away 5 to reach 10, then 2 more; 16 - 7 takes away 6 to reach 10, then 1 more. Every conceptual_explanation must 
+contain Step 1:, Step 2:, and Step 3:. Do not remove or shorten practice_set arrays. Each module must contain exactly the requested number of items. 
+[INFO] 2026-05-10 21:32:08,725 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 21:32:10,787 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: 
+http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 21:32:10,787 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 21:32:10,787 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
