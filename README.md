@@ -175,6 +175,103 @@ If all retries fail, the response now preserves the strongest near-valid attempt
 }
 ```
 
+### `POST /generate_retest`
+
+Generates a fresh, fully validated set of retest questions from a student's longitudinal
+session history. Always uses the **latest session's** diagnostic profile as the generation
+basis. Pools all previous questions across all sessions for deduplication. Questions are
+validated through the same math, pedagogy, and hint-quality checks used by `/generate_module`.
+
+Request:
+
+```json
+{
+  "student_history": [
+    {
+      "session_id": 1,
+      "date": "2025-11-01",
+      "diagnostic_data": {
+        "predicted_class": "At-Risk (1)",
+        "domain_severity_scores": {
+          "Addition vs. Subtraction Asymmetry": 0.55
+        },
+        "task_importance_scores": {
+          "AS": 0.55
+        }
+      },
+      "questions_asked": [
+        {"problem": "5 + 3", "expected_answer": 8},
+        {"problem": "8 - 3", "expected_answer": 5}
+      ]
+    },
+    {
+      "session_id": 2,
+      "date": "2026-05-08",
+      "diagnostic_data": {
+        "predicted_class": "At-Risk (1)",
+        "domain_severity_scores": {
+          "Addition vs. Subtraction Asymmetry": 0.35
+        },
+        "task_importance_scores": {
+          "AS": 0.35
+        }
+      },
+      "questions_asked": []
+    }
+  ]
+}
+```
+
+Notes:
+- `questions_asked` must be an empty array `[]` for the current (latest) session.
+- `task_importance_scores` is used by the domain selection algorithm and should be included when available.
+- All problems in `questions_asked` must be symbolic equations (e.g. `"13 - 5"`), not word problems.
+
+Success response (HTTP 200) — all 5 questions passed full validation:
+
+```json
+{
+  "retest_questions": [
+    {
+      "problem": "13 - 6",
+      "hint": "Use 13 blocks. Take away 3 to reach 10, then take away 3 more. Count 7 blocks left.",
+      "expected_answer": 7
+    }
+  ],
+  "_meta_validation_report": {
+    "counts": {"returned": 5, "pruned": 0},
+    "math_errors": [],
+    "pedagogy_errors": [],
+    "schema_errors": []
+  },
+  "based_on_session": 2,
+  "based_on_session_date": "2026-05-08",
+  "total_sessions_in_history": 2
+}
+```
+
+Partial response (HTTP 207) — retries exhausted but at least one valid question was produced:
+
+```json
+{
+  "retest_questions": [...],
+  "_meta_validation_report": {...},
+  "based_on_session": 2,
+  "based_on_session_date": "2026-05-08",
+  "total_sessions_in_history": 2,
+  "warning": "Only 3 of 5 questions passed full validation. Review _meta_validation_report for details."
+}
+```
+
+Failure response (HTTP 500) — no valid questions produced after all retries:
+
+```json
+{
+  "error": "Failed to generate valid retest questions after retries.",
+  "best_validation_report": {...}
+}
+```
+
 ## LLM Pipeline
 
 The module generator uses two LLM passes:
@@ -352,7 +449,3 @@ Run raw diagnostic inputs through `/generate-diagnostic`, wrap the result, then 
 - Always inspect `_meta_validation_report`.
 - `expected_answer` values are normalized to integers in valid outputs.
 - A 500 response may include `best_candidate` and `best_validation_report`; these are useful for debugging, not for direct student display.
-
-## Known Non-Active Code
-
-The old `/generate_retest` route exists only as commented code in `api/index.py`. It is not currently an active endpoint.

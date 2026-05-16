@@ -280,14 +280,50 @@ def generate_retest():
                 "date": "<string>",
                 "diagnostic_data": {
                     "predicted_class": "<string>",
-                    "domain_severity_scores": { "<domain>": <float> },
-                    ...
+                    "domain_severity_scores": { "<domain_name>": <float> },
+                    "task_importance_scores": { "<acronym>": <float> }
                 },
                 "questions_asked": [
                     {"problem": "<string>", "expected_answer": <int>}
                 ]
             }
         ]
+    }
+    
+    Success Response (HTTP 200):
+    {
+        "retest_questions": [
+            {
+                "problem": "<string>",
+                "hint": "<string>",
+                "expected_answer": <int>
+            }
+        ],
+        "_meta_validation_report": {
+            "counts": {"returned": <int>, "pruned": <int>},
+            "math_errors": [],
+            "pedagogy_errors": [],
+            "schema_errors": []
+        },
+        "based_on_session": <int>,
+        "based_on_session_date": "<string>",
+        "total_sessions_in_history": <int>
+    }
+
+    Partial Response (HTTP 207):
+    {
+        "retest_questions": [...],
+        "_meta_validation_report": {...},
+        "based_on_session": <int>,
+        "based_on_session_date": "<string>",
+        "total_sessions_in_history": <int>,
+        "warning": "<string>"
+    }
+
+    Failure Response (HTTP 500):
+    {
+        "error": "<string>",
+        "best_validation_report": {...}
     }
     """
     try:
@@ -492,7 +528,7 @@ Output RAW JSON only. No markdown fences. No extra keys.
                         )
 
                 # best batch across attempts
-                net_valid = report["counts"]["returned"] - report["counts"]["pruned"]
+                report["counts"]["returned"] = len(math_valid)
                 if len(math_valid) > len(best_questions):
                     best_questions = math_valid
                     best_report = report
