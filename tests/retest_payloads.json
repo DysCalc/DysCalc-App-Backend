@@ -1,0 +1,139 @@
+[
+  {
+    "scenario_name": "Case 1: Improving Subtraction Asymmetry (Session 3)",
+    "student_history": [
+      {
+        "session_id": 1,
+        "date": "2025-11-01",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": {
+            "Addition vs. Subtraction Asymmetry": 0.55
+          },
+          "task_importance_scores": {
+            "AS": 0.55
+          }
+        },
+        "questions_asked": [
+          {"problem": "5 + 3", "expected_answer": 8},
+          {"problem": "8 - 3", "expected_answer": 5}
+        ]
+      },
+      {
+        "session_id": 2,
+        "date": "2026-02-15",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": {
+            "Addition vs. Subtraction Asymmetry": 0.35,
+            "Basic vs. Complex Arithmetic Contrast": 0.15
+          },
+          "task_importance_scores": {
+            "AS": 0.35,
+            "BC": 0.15
+          }
+        },
+        "questions_asked": [
+          {"problem": "12 - 5", "expected_answer": 7},
+          {"problem": "9 + 4", "expected_answer": 13}
+        ]
+      },
+      {
+        "session_id": 3,
+        "date": "2026-05-08",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": {
+            "Addition vs. Subtraction Asymmetry": 0.25,
+            "Basic vs. Complex Arithmetic Contrast": 0.15
+          },
+          "task_importance_scores": {
+            "AS": 0.25,
+            "BC": 0.15
+          }
+        },
+        "questions_asked": []
+      }
+    ]
+  },
+  {
+    "scenario_name": "Case 2: Persistent Processing-Fluency Deficit (Session 2)",
+    "student_history": [
+      {
+        "session_id": 1,
+        "date": "2026-01-10",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": {
+            "Processing-Fluency Integration": 0.55,
+            "Overall Processing Efficiency": 0.40
+          },
+          "task_importance_scores": {
+            "PF": 0.55,
+            "NP": 0.40
+          }
+        },
+        "questions_asked": [
+          {"problem": "14 - 6", "expected_answer": 8},
+          {"problem": "7 + 5", "expected_answer": 12}
+        ]
+      },
+      {
+        "session_id": 2,
+        "date": "2026-04-20",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": {
+            "Processing-Fluency Integration": 0.50,
+            "Overall Processing Efficiency": 0.38
+          },
+          "task_importance_scores": {
+            "PF": 0.50,
+            "NP": 0.38
+          }
+        },
+        "questions_asked": []
+      }
+    ]
+  },
+  {
+    "scenario_name": "Case 3: Typical Learner Refresher (Session 2)",
+    "student_history": [
+      {
+        "session_id": 1,
+        "date": "2025-09-01",
+        "diagnostic_data": {
+          "predicted_class": "Typical (0)",
+          "domain_severity_scores": {
+            "Overall Arithmetic Fluency": 0.12,
+            "Single-Digit Addition": 0.09
+          },
+          "task_importance_scores": {
+            "AF": 0.12,
+            "ADD": 0.09
+          }
+        },
+        "questions_asked": [
+          {"problem": "10 + 2", "expected_answer": 12},
+          {"problem": "15 - 5", "expected_answer": 10}
+        ]
+      },
+      {
+        "session_id": 2,
+        "date": "2026-05-01",
+        "diagnostic_data": {
+          "predicted_class": "Typical (0)",
+          "domain_severity_scores": {
+            "Overall Arithmetic Fluency": 0.08,
+            "Single-Digit Addition": 0.06
+          },
+          "task_importance_scores": {
+            "AF": 0.08,
+            "ADD": 0.06
+          }
+        },
+        "questions_asked": []
+      }
+    ]
+  }
+]

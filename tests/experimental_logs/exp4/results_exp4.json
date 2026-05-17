@@ -1,0 +1,332 @@
+[
+  {
+    "test_id": "test-0001-0000-0000-0000",
+    "endpoint": "/generate-diagnostic",
+    "request": {
+      "test_id": "test-0001-0000-0000-0000",
+      "number_comparison": 1274.50980392157,
+      "dot_matching": 2384.91891891892,
+      "number_series": 16,
+      "single_addition": 34,
+      "single_subtraction": 37,
+      "complex_arithmetic": 16
+    },
+    "response": {
+      "status_code": 200,
+      "ok": true,
+      "body": {
+        "confidence": 0.6153846153846154,
+        "decision_path": [
+          [
+            "NC",
+            1508.9295343137246,
+            "<="
+          ],
+          [
+            "NS",
+            6.5,
+            ">"
+          ],
+          [
+            "ADD",
+            36.5,
+            "<="
+          ],
+          [
+            "SUB",
+            22.5,
+            ">"
+          ],
+          [
+            "NC",
+            756.5222178663989,
+            ">"
+          ],
+          [
+            "NC",
+            929.65,
+            ">"
+          ]
+        ],
+        "decision_path_readable": "NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 22.5000 AND NC > 756.5222 AND NC > 929.6500",
+        "domain_severity_scores": {
+          "Addition vs. Subtraction Asymmetry": 0.2826500463685992,
+          "Basic vs. Complex Arithmetic Contrast": 0.23306525244549706,
+          "Digit-Dot Matching": 0.0,
+          "Multi-Digit Addition and Subtraction": 0.0,
+          "Number Comparison": 0.06292549622819883,
+          "Number Series": 0.007596943634186533,
+          "Overall Arithmetic Fluency": 0.009191967514174578,
+          "Overall Processing Efficiency": 0.15595763729409196,
+          "Processing-Fluency Integration": 0.16922437605795726,
+          "Single-Digit Addition": 0.008748181651902758,
+          "Single-Digit Subtraction": 0.007751753273745401,
+          "Symbolic vs. Non-Symbolic Processing Difference": 0.06288834553164638
+        },
+        "leaf_distribution": {
+          "0": 19,
+          "1": 31
+        },
+        "predicted_class": "1",
+        "task_importance_scores": {
+          "ADD": 0.008428171535281515,
+          "AF": 0.008618000880033063,
+          "AS": 0.26500075686622043,
+          "BC": 0.21851214634767846,
+          "CA": 0.0,
+          "DM": 0.0,
+          "NC": 0.10776356908747073,
+          "NP": 0.1462192999894489,
+          "NS": 0.018025302265946484,
+          "PF": 0.1586576344554761,
+          "SN": 0.05896145915439736,
+          "SUB": 0.009813659418046922
+        }
+      }
+    }
+  },
+  {
+    "test_id": "test-0001-0000-0000-0000",
+    "endpoint": "/generate_module",
+    "request": {
+      "test_id": "test-0001-0000-0000-0000",
+      "diagnostic_data": {
+        "decision_path": [
+          [
+            "NC",
+            1508.9295343137246,
+            "<="
+          ],
+          [
+            "NS",
+            6.5,
+            ">"
+          ],
+          [
+            "ADD",
+            36.5,
+            "<="
+          ],
+          [
+            "SUB",
+            22.5,
+            ">"
+          ],
+          [
+            "NC",
+            756.5222178663989,
+            ">"
+          ],
+          [
+            "NC",
+            929.65,
+            ">"
+          ]
+        ],
+        "task_importance_scores": {
+          "ADD": 0.008428171535281515,
+          "AF": 0.008618000880033063,
+          "AS": 0.26500075686622043,
+          "BC": 0.21851214634767846,
+          "CA": 0.0,
+          "DM": 0.0,
+          "NC": 0.10776356908747073,
+          "NP": 0.1462192999894489,
+          "NS": 0.018025302265946484,
+          "PF": 0.1586576344554761,
+          "SN": 0.05896145915439736,
+          "SUB": 0.009813659418046922
+        },
+        "confidence": 0.6153846153846154,
+        "predicted_class": "1",
+        "domain_severity_scores": {
+          "Addition vs. Subtraction Asymmetry": 0.2826500463685992,
+          "Basic vs. Complex Arithmetic Contrast": 0.23306525244549706,
+          "Digit-Dot Matching": 0.0,
+          "Multi-Digit Addition and Subtraction": 0.0,
+          "Number Comparison": 0.06292549622819883,
+          "Number Series": 0.007596943634186533,
+          "Overall Arithmetic Fluency": 0.009191967514174578,
+          "Overall Processing Efficiency": 0.15595763729409196,
+          "Processing-Fluency Integration": 0.16922437605795726,
+          "Single-Digit Addition": 0.008748181651902758,
+          "Single-Digit Subtraction": 0.007751753273745401,
+          "Symbolic vs. Non-Symbolic Processing Difference": 0.06288834553164638
+        },
+        "leaf_distribution": {
+          "0": 19,
+          "1": 31
+        },
+        "decision_path_readable": "NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 22.5000 AND NC > 756.5222 AND NC > 929.6500"
+      }
+    },
+    "response": {
+      "status_code": 500,
+      "ok": false,
+      "body": {
+        "best_candidate": {
+          "decision_path_rationale": "The student shows relative weaknesses in subtraction, complex arithmetic, and processing fluency, indicating a need for targeted interventions to improve these skills.",
+          "diagnostic_modules": [
+            {
+              "clinical_explanation": "The student shows a relative weakness in subtraction compared to addition. This suggests difficulty with mental inversion and backward reasoning.",
+              "conceptual_explanation": "Step 1: Understand that subtraction can be thought of as finding the difference between two numbers. Step 2: Visualize the problem using physical objects or a number line. Step 3: Practice making 10 first before subtracting the remaining amount.",
+              "domain_name": "Addition vs. Subtraction Asymmetry",
+              "learning_objectives": [
+                "Improve subtraction fluency by connecting subtraction to related addition facts.",
+                "Develop the ability to reason backward from a quantity.",
+                "Practice subtraction problems that require crossing tens."
+              ],
+              "practice_set": [
+                {
+                  "expected_answer": 8,
+                  "hint": "Take away 3 to reach 10, then take away 2 more.",
+                  "problem": "13 - 5"
+                },
+                {
+                  "expected_answer": 9,
+                  "hint": "Take away 6 to reach 10, then take away 1 more.",
+                  "problem": "16 - 7"
+                },
+                {
+                  "expected_answer": 8,
+                  "hint": "Take away 4 to reach 10, then take away 2 more.",
+                  "problem": "14 - 6"
+                },
+                {
+                  "expected_answer": 8,
+                  "hint": "Take away 2 to reach 10, then take away 2 more.",
+                  "problem": "12 - 4"
+                }
+              ],
+              "teaching_strategy": "Use concrete objects (e.g., blocks, candies) and a number line. Anchor the hint in physical objects (e.g., 'Count 9 mangoes, add 1 to make 10, then add the rest').",
+              "worked_example": {
+                "final_answer": 8,
+                "problem": "15 - 7",
+                "reasoning_steps": [
+                  "Step 1: Take away 5 to reach 10.",
+                  "Step 2: Then take away 2 more.",
+                  "Step 3: Final answer is 8."
+                ]
+              }
+            },
+            {
+              "clinical_explanation": "The student struggles with complex arithmetic problems that involve crossing tens. This indicates a need to focus on breaking numbers into tens and ones.",
+              "conceptual_explanation": "Step 1: Understand that complex problems can be broken down into simpler parts. Step 2: Visualize the problem using tens and ones. Step 3: Recombine the tens and ones to find the solution.",
+              "domain_name": "Basic vs. Complex Arithmetic Contrast",
+              "learning_objectives": [
+                "Master basic facts.",
+                "Break complex numbers into tens and ones.",
+                "Recombine to solve complex problems."
+              ],
+              "practice_set": [
+                {
+                  "expected_answer": 22,
+                  "hint": "Break 15 into 10 and 5, then add 7.",
+                  "problem": "15 + 7"
+                },
+                {
+                  "expected_answer": 25,
+                  "hint": "Break 16 into 10 and 6, then add 9.",
+                  "problem": "16 + 9"
+                },
+                {
+                  "expected_answer": 22,
+                  "hint": "Break 14 into 10 and 4, then add 8.",
+                  "problem": "14 + 8"
+                },
+                {
+                  "expected_answer": 21,
+                  "hint": "Break 12 into 10 and 2, then add 9.",
+                  "problem": "12 + 9"
+                }
+              ],
+              "teaching_strategy": "Use concrete objects (e.g., blocks, candies) and a number line. Anchor the hint in physical objects (e.g., 'Break 15 into 10 and 5, then add 7').",
+              "worked_example": {
+                "final_answer": 21,
+                "problem": "13 + 8",
+                "reasoning_steps": [
+                  "Step 1: Break 13 into 10 and 3.",
+                  "Step 2: Add 8 to 10 to get 18.",
+                  "Step 3: Add the remaining 3 to 18."
+                ]
+              }
+            },
+            {
+              "clinical_explanation": "The student may benefit from support in reducing cognitive load and improving flexibility between addition and subtraction.",
+              "conceptual_explanation": "Step 1: Understand that chunking can simplify complex problems. Step 2: Visualize the problem using objects or a number line. Step 3: Practice switching between addition and subtraction flexibly.",
+              "domain_name": "Processing-Fluency Integration",
+              "learning_objectives": [
+                "Reduce cognitive load by using chunking strategies.",
+                "Practice switching between addition and subtraction flexibly.",
+                "Improve overall processing efficiency."
+              ],
+              "practice_set": [
+                {
+                  "expected_answer": 8,
+                  "hint": "Take away 7 to reach 10, then take away 2 more.",
+                  "problem": "17 - 9"
+                },
+                {
+                  "expected_answer": 9,
+                  "hint": "Take away 5 to reach 10, then take away 1 more.",
+                  "problem": "15 - 6"
+                }
+              ],
+              "teaching_strategy": "Use concrete objects (e.g., blocks, candies) and a number line. Anchor the hint in physical objects (e.g., 'Use 5 blocks to make 10, then add the rest').",
+              "worked_example": {
+                "final_answer": 8,
+                "problem": "17 - 9",
+                "reasoning_steps": [
+                  "Step 1: Take away 7 to reach 10.",
+                  "Step 2: Then take away 2 more.",
+                  "Step 3: Final answer is 8."
+                ]
+              }
+            }
+          ],
+          "formative_assessment": [
+            {
+              "expected_answer": 8,
+              "question": "13 - 5"
+            },
+            {
+              "expected_answer": 9,
+              "question": "16 - 7"
+            },
+            {
+              "expected_answer": 8,
+              "question": "14 - 6"
+            },
+            {
+              "expected_answer": 8,
+              "question": "12 - 4"
+            },
+            {
+              "expected_answer": 22,
+              "question": "15 + 7"
+            }
+          ],
+          "overall_summary": "The student requires support in subtraction, complex arithmetic, and processing fluency to enhance their overall arithmetic performance.",
+          "status": "At-Risk (1)"
+        },
+        "best_validation_report": {
+          "counts": {
+            "expected": 10,
+            "pruned": 0,
+            "returned": 10
+          },
+          "math_errors": [],
+          "modules_expected": 3,
+          "modules_passed": 2,
+          "pedagogy_errors": [],
+          "schema_errors": [
+            "AS module failed subtraction/addition ratio (sub=4, add=0).",
+            "Expected 3 modules, got 2 valid modules."
+          ],
+          "warnings": []
+        },
+        "error": "Failed to generate fully valid module after retries"
+      }
+    }
+  }
+]

@@ -1,0 +1,68 @@
+
+[SYSTEM] BOOTING IN EXPERIMENT 1 MODE: Single-Pass Local Baseline
+
+[INFO] 2026-05-10 00:20:54,410 - Press CTRL+C to quit
+[INFO] 2026-05-10 00:31:49,097 - [REQ test-0001-0000-0000-0000] Diagnostics: {'predicted_class': '1', 'confidence': 0.6153846153846154, 'decision_path': [('NC', np.float64(1508.9295343137246), '<='), ('NS', np.float64(6.5), '>'), ('ADD', np.float64(36.5), '<='), ('SUB', np.float64(22.5), '>'), ('NC', np.float64(756.5222178663989), '>'), ('NC', np.float64(929.65), '>')], 'decision_path_readable': 'NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 22.5000 AND NC > 756.5222 AND NC > 929.6500', 'domain_severity_scores': {'Number Comparison': 0.06292549622819882, 'Basic vs. Complex Arithmetic Contrast': 0.23306525244549703, 'Processing-Fluency Integration': 0.16922437605795723, 'Single-Digit Addition': 0.008748181651902756, 'Number Series': 0.0075969436341865315, 'Multi-Digit Addition and Subtraction': 0.0, 'Digit-Dot Matching': 0.0, 'Addition vs. Subtraction Asymmetry': 0.2826500463685992, 'Single-Digit Subtraction': 0.0077517532737454, 'Overall Arithmetic Fluency': 0.009191967514174577, 'Overall Processing Efficiency': 0.15595763729409193, 'Symbolic vs. Non-Symbolic Processing Difference': 0.06288834553164636}, 'task_importance_scores': {'NC': 0.10776356908747073, 'DM': 0.0, 'NS': 0.018025302265946484, 'ADD': 0.008428171535281515, 'SUB': 0.009813659418046922, 'CA': 0.0, 'NP': 0.1462192999894489, 'SN': 0.05896145915439736, 'AF': 0.008618000880033063, 'BC': 0.21851214634767846, 'AS': 0.26500075686622043, 'PF': 0.1586576344554761}, 'leaf_distribution': {0: 19, 1: 31}}
+[INFO] 2026-05-10 00:31:49,296 - 127.0.0.1 - - [10/May/2026 00:31:49] "POST /generate-diagnostic HTTP/1.1" 200 -
+[INFO] 2026-05-10 00:31:51,370 - [REQ test-0001-0000-0000-0000] Decision Path: {'predicted_class': '1', 'confidence': 0.6153846153846154, 'task_importance_scores': {'ADD': 0.008428171535281515, 'AF': 0.008618000880033063, 'AS': 0.26500075686622043, 'BC': 0.21851214634767846, 'CA': 0.0, 'DM': 0.0, 'NC': 0.10776356908747073, 'NP': 0.1462192999894489, 'NS': 0.018025302265946484, 'PF': 0.1586576344554761, 'SN': 0.05896145915439736, 'SUB': 0.009813659418046922}, 'decision_path': [['NC', 1508.9295343137246, '<='], ['NS', 6.5, '>'], ['ADD', 36.5, '<='], ['SUB', 22.5, '>'], ['NC', 756.5222178663989, '>'], ['NC', 929.65, '>']], 'domain_severity_scores': {'Addition vs. Subtraction Asymmetry': 0.2826500463685992, 'Basic vs. Complex Arithmetic Contrast': 0.23306525244549703, 'Digit-Dot Matching': 0.0, 'Multi-Digit Addition and Subtraction': 0.0, 'Number Comparison': 0.06292549622819882, 'Number Series': 0.0075969436341865315, 'Overall Arithmetic Fluency': 0.009191967514174577, 'Overall Processing Efficiency': 0.15595763729409193, 'Processing-Fluency Integration': 0.16922437605795723, 'Single-Digit Addition': 0.008748181651902756, 'Single-Digit Subtraction': 0.0077517532737454, 'Symbolic vs. Non-Symbolic Processing Difference': 0.06288834553164636}, 'decision_path_readable': 'NC <= 1508.9295 AND NS > 6.5000 AND ADD <= 36.5000 AND SUB > 22.5000 AND NC > 756.5222 AND NC > 929.6500', 'leaf_distribution': {'0': 19, '1': 31}}
+
+[REQ test-0001-0000-0000-0000] Pipeline Loop: Attempt 1
+[REQ test-0001-0000-0000-0000] EXP 1: SINGLE-PASS GENERATION...
+[INFO] 2026-05-10 00:31:51,383 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 00:31:54,605 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 00:31:54,608 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 00:31:54,609 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[ERROR] 2026-05-10 00:37:43,697 - [REQ test-0001-0000-0000-0000] [RETRY] Pipeline step failed
+Traceback (most recent call last):
+  File "C:\Users\angel\DysCalc-App-Backend\api\index.py", line 134, in generate_module
+    if not perfect_json: raise Exception("Single Pass JSON extraction failed")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: Single Pass JSON extraction failed
+
+[REQ test-0001-0000-0000-0000] Pipeline Loop: Attempt 2
+[REQ test-0001-0000-0000-0000] EXP 1: SINGLE-PASS GENERATION...
+[INFO] 2026-05-10 00:37:44,878 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 00:37:47,268 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 00:37:47,269 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 00:37:47,270 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[ERROR] 2026-05-10 00:42:32,876 - [REQ test-0001-0000-0000-0000] [RETRY] Pipeline step failed
+Traceback (most recent call last):
+  File "C:\Users\angel\DysCalc-App-Backend\api\index.py", line 134, in generate_module
+    if not perfect_json: raise Exception("Single Pass JSON extraction failed")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: Single Pass JSON extraction failed
+
+[REQ test-0001-0000-0000-0000] Pipeline Loop: Attempt 3
+[REQ test-0001-0000-0000-0000] EXP 1: SINGLE-PASS GENERATION...
+[INFO] 2026-05-10 00:42:34,897 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 00:42:37,001 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 00:42:37,001 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 00:42:37,002 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+
+[REQ test-0001-0000-0000-0000] Pipeline Loop: Attempt 4
+[REQ test-0001-0000-0000-0000] EXP 1: SINGLE-PASS GENERATION...
+[INFO] 2026-05-10 00:46:55,119 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 00:46:57,226 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 00:46:57,227 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 00:46:57,227 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[ERROR] 2026-05-10 00:50:40,418 - [REQ test-0001-0000-0000-0000] [RETRY] Pipeline step failed
+Traceback (most recent call last):
+  File "C:\Users\angel\DysCalc-App-Backend\api\index.py", line 134, in generate_module
+    if not perfect_json: raise Exception("Single Pass JSON extraction failed")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: Single Pass JSON extraction failed
+
+[REQ test-0001-0000-0000-0000] Pipeline Loop: Attempt 5
+[REQ test-0001-0000-0000-0000] EXP 1: SINGLE-PASS GENERATION...
+[INFO] 2026-05-10 00:50:48,437 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (json mode)
+[WARNING] 2026-05-10 00:50:50,560 - [REQ test-0001-0000-0000-0000] Model qwen-2.5-7b-math-instruct failed in json mode: 400 Client Error: Bad Request for url: http://localhost:1234/v1/chat/completions. Body: {"error":"'response_format.type' must be 'json_schema' or 'text'"}
+[INFO] 2026-05-10 00:50:50,560 - [REQ test-0001-0000-0000-0000] Retrying qwen-2.5-7b-math-instruct without response_format.
+[INFO] 2026-05-10 00:50:50,560 - [REQ test-0001-0000-0000-0000] Calling model: qwen-2.5-7b-math-instruct (plain mode)
+[ERROR] 2026-05-10 00:55:05,613 - [REQ test-0001-0000-0000-0000] [RETRY] Pipeline step failed
+Traceback (most recent call last):
+  File "C:\Users\angel\DysCalc-App-Backend\api\index.py", line 134, in generate_module
+    if not perfect_json: raise Exception("Single Pass JSON extraction failed")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: Single Pass JSON extraction failed
+[INFO] 2026-05-10 00:55:21,662 - 127.0.0.1 - - [10/May/2026 00:55:21] "POST /generate_module HTTP/1.1" 500 -
+

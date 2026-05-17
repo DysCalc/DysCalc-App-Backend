@@ -1,0 +1,189 @@
+--- Available Retest Scenarios ---
+[1] Case 1: Improving Subtraction Asymmetry (Session 3) (3 sessions logged)
+[2] Case 2: Persistent Processing-Fluency Deficit (Session 2) (2 sessions logged)
+[3] Case 3: Typical Learner Refresher (Session 2) (2 sessions logged)
+----------------------------------
+
+Select scenarios to run (e.g., 1, 1-2, all): all
+
+[SYSTEM] Running 3 selected scenario(s)...
+
+============================================================
+EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
+============================================================
+[STATUS] 200 OK — FULL VALIDATION PASSED
+
+[INFO] Based on session:          3
+[INFO] Total sessions in history: 3
+[OUTPUT] Questions returned:      5
+[OUTPUT] Questions pruned:        0
+
+=== NEW RETEST QUESTIONS ===
+{
+  "_meta_validation_report": {
+    "counts": {
+      "pruned": 0,
+      "returned": 5
+    },
+    "math_errors": [],
+    "pedagogy_errors": [],
+    "schema_errors": []
+  },
+  "based_on_session": 3,
+  "based_on_session_date": "2026-05-08",
+  "retest_questions": [
+    {
+      "expected_answer": 6,
+      "hint": "Count 14 mangoes, take away 4 to reach 10, then 4 more. Final answer is 6.",
+      "problem": "14 - 8"
+    },
+    {
+      "expected_answer": 13,
+      "hint": "Count 7 peso coins, add 3 to make 10, then add 3 more. Final answer is 13.",
+      "problem": "7 + 6"
+    },
+    {
+      "expected_answer": 7,
+      "hint": "Count 16 blocks, take away 6 to reach 10, then 3 more. Final answer is 7.",
+      "problem": "16 - 9"
+    },
+    {
+      "expected_answer": 6,
+      "hint": "Count 11 jeepney toys, take away 1 to reach 10, then 4 more. Final answer is 6.",
+      "problem": "11 - 5"
+    },
+    {
+      "expected_answer": 14,
+      "hint": "Count 9 blocks, add 1 to make 10, then add 4 more. Final answer is 14.",
+      "problem": "9 + 5"
+    }
+  ],
+  "total_sessions_in_history": 3
+}
+============================
+
+
+[VERIFICATION] Previous questions in history pool: ['12 - 5', '5 + 3', '8 - 3', '9 + 4']
+[VERIFICATION] PASS — No repeated questions from history.
+[VERIFICATION] New questions generated: ['14 - 8', '7 + 6', '16 - 9', '11 - 5', '9 + 5']
+[VERIFICATION] PASS — Generated from latest session (session 3).
+
+============================================================
+EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
+============================================================
+[STATUS] 200 OK — FULL VALIDATION PASSED
+
+[INFO] Based on session:          2
+[INFO] Total sessions in history: 2
+[OUTPUT] Questions returned:      5
+[OUTPUT] Questions pruned:        0
+
+=== NEW RETEST QUESTIONS ===
+{
+  "_meta_validation_report": {
+    "counts": {
+      "pruned": 0,
+      "returned": 5
+    },
+    "math_errors": [],
+    "pedagogy_errors": [],
+    "schema_errors": []
+  },
+  "based_on_session": 2,
+  "based_on_session_date": "2026-04-20",
+  "retest_questions": [
+    {
+      "expected_answer": 7,
+      "hint": "Count 12 mangoes, take away 2 to reach 10, then 3 more. Final answer is 7.",
+      "problem": "12 - 5"
+    },
+    {
+      "expected_answer": 14,
+      "hint": "Count 8 peso coins, add 2 to make 10, then add 4 more. Final answer is 14.",
+      "problem": "8 + 6"
+    },
+    {
+      "expected_answer": 7,
+      "hint": "Count 15 blocks, take away 5 to reach 10, then 3 more. Final answer is 7.",
+      "problem": "15 - 8"
+    },
+    {
+      "expected_answer": 13,
+      "hint": "Count 9 jeepney toys, add 1 to make 10, then add 3 more. Final answer is 13.",
+      "problem": "9 + 4"
+    },
+    {
+      "expected_answer": 8,
+      "hint": "Count 17 blocks, take away 7 to reach 10, then 2 more. Final answer is 8.",
+      "problem": "17 - 9"
+    }
+  ],
+  "total_sessions_in_history": 2
+}
+============================
+
+
+[VERIFICATION] Previous questions in history pool: ['14 - 6', '7 + 5']
+[VERIFICATION] PASS — No repeated questions from history.
+[VERIFICATION] New questions generated: ['12 - 5', '8 + 6', '15 - 8', '9 + 4', '17 - 9']
+[VERIFICATION] PASS — Generated from latest session (session 2).
+
+============================================================
+EXECUTING: Case 3: Typical Learner Refresher (Session 2)
+============================================================
+[STATUS] 200 OK — FULL VALIDATION PASSED
+
+[INFO] Based on session:          2
+[INFO] Total sessions in history: 2
+[OUTPUT] Questions returned:      5
+[OUTPUT] Questions pruned:        0
+
+=== NEW RETEST QUESTIONS ===
+{
+  "_meta_validation_report": {
+    "counts": {
+      "pruned": 0,
+      "returned": 5
+    },
+    "math_errors": [],
+    "pedagogy_errors": [],
+    "schema_errors": []
+  },
+  "based_on_session": 2,
+  "based_on_session_date": "2026-05-01",
+  "retest_questions": [
+    {
+      "expected_answer": 6,
+      "hint": "Count 14 mangoes, take away 4 to reach 10, then 4 more. Final answer is 6.",
+      "problem": "14 - 8"
+    },
+    {
+      "expected_answer": 13,
+      "hint": "Count 9 peso coins, add 1 to make 10, then add 3 more. Final answer is 13.",
+      "problem": "9 + 4"
+    },
+    {
+      "expected_answer": 8,
+      "hint": "Count 17 blocks, take away 7 to reach 10, then 2 more. Final answer is 8.",
+      "problem": "17 - 9"
+    },
+    {
+      "expected_answer": 15,
+      "hint": "Count 8 jeepney toys, add 2 to make 10, then add 5 more. Final answer is 15.",
+      "problem": "8 + 7"
+    },
+    {
+      "expected_answer": 7,
+      "hint": "Count 12 mangoes, take away 2 to reach 10, then 3 more. Final answer is 7.",
+      "problem": "12 - 5"
+    }
+  ],
+  "total_sessions_in_history": 2
+}
+============================
+
+
+[VERIFICATION] Previous questions in history pool: ['10 + 2', '15 - 5']
+[VERIFICATION] PASS — No repeated questions from history.
+[VERIFICATION] New questions generated: ['14 - 8', '9 + 4', '17 - 9', '8 + 7', '12 - 5']
+[VERIFICATION] PASS — Generated from latest session (session 2).

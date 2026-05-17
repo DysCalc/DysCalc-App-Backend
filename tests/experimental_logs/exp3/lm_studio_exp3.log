@@ -1,0 +1,1059 @@
+2026-05-10 22:30:46 [DEBUG]
+ [LM Studio] GPU Configuration:
+  Strategy: evenly
+  Priority: []
+  Disabled GPUs: []
+  Limit weight offload to dedicated GPU Memory: OFF
+  Offload KV Cache to GPU: ON
+2026-05-10 22:30:46 [DEBUG]
+ [LM Studio] Live GPU memory info (source 'LMS Core'):
+  GPU 0: NVIDIA GeForce RTX 3050 Laptop GPU (Used: 383.83 MB, Total: 4.29 GB, Free: 3.91 GB)
+2026-05-10 22:30:46 [DEBUG]
+ [LM Studio] Model load size estimate with raw num offload layers '17' and context length '4096':
+  Model: 2.79 GB
+  Context: 297.67 MB
+  Total: 3.09 GB
+2026-05-10 22:30:46 [DEBUG]
+ [LM Studio] Strict GPU VRAM cap is OFF: GPU offload layers will not be checked for adjustment
+[LM Studio] Resolved GPU config options:
+  Num Offload Layers: 17
+  Num CPU Expert Layers: 0
+  Main GPU: 0
+  Tensor Split: [0]
+  Disabled GPUs: []
+2026-05-10 22:30:46 [DEBUG]
+ ggml_cuda_init: found 1 CUDA devices:
+  Device 0: NVIDIA GeForce RTX 3050 Laptop GPU, compute capability 8.6, VMM: yes
+CUDA : ARCHS = 750,800,890,900,1000,1200 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_load_from_file_impl: using device CUDA0 (NVIDIA GeForce RTX 3050 Laptop GPU) (0000:01:00.0) - 3303 MiB free
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_loader: loaded meta data with 38 key-value pairs and 339 tensors from C:\Users\angel\.lmstudio\models\bartowski\Qwen2.5-Math-7B-Instruct-GGUF\Qwen2.5-Math-7B-Instruct-Q4_K_S.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_loader: - kv   0:                       general.architecture str              = qwen2
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                               general.name str              = Qwen2.5 Math 7B Instruct
+llama_model_loader: - kv   3:                           general.finetune str              = Instruct
+llama_model_loader: - kv   4:                           general.basename str              = Qwen2.5-Math
+llama_model_loader: - kv   5:                         general.size_label str              = 7B
+llama_model_loader: - kv   6:                            general.license str              = apache-2.0
+llama_model_loader: - kv   7:                       general.license.link str              = https://huggingface.co/Qwen/Qwen2.5-M...
+llama_model_loader: - kv   8:                   general.base_model.count u32              = 1
+llama_model_loader: - kv   9:                  general.base_model.0.name str              = Qwen2.5 Math 7B
+llama_model_loader: - kv  10:          general.base_model.0.organization str              = Qwen
+llama_model_loader: - kv  11:              general.base_model.0.repo_url str              = https://huggingface.co/Qwen/Qwen2.5-M...
+llama_model_loader: - kv  12:                               general.tags arr[str,2]       = ["chat", "text-generation"]
+llama_model_loader: - kv  13:                          general.languages arr[str,1]       = ["en"]
+llama_model_loader: - kv  14:                          qwen2.block_count u32              = 28
+llama_model_loader: - kv  15:                       qwen2.context_length u32              = 4096
+llama_model_loader: - kv  16:                     qwen2.embedding_length u32              = 3584
+llama_model_loader: - kv  17:                  qwen2.feed_forward_length u32              = 18944
+llama_model_loader: - kv  18:                 qwen2.attention.head_count u32              = 28
+llama_model_loader: - kv  19:              qwen2.attention.head_count_kv u32              = 4
+llama_model_loader: - kv  20:                       qwen2.rope.freq_base f32              = 10000.000000
+llama_model_loader: - kv  21:     qwen2.attention.layer_norm_rms_epsilon f32              = 0.000001
+llama_model_loader: - kv  22:                          general.file_type u32              = 14
+llama_model_loader: - kv  23:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  24:                         tokenizer.ggml.pre str              = qwen2
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_loader: - kv  25:                      tokenizer.ggml.tokens arr[str,152064]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_loader: - kv  26:                  tokenizer.ggml.token_type arr[i32,152064]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+2026-05-10 22:30:46 [DEBUG]
+ llama_model_loader: - kv  27:                      tokenizer.ggml.merges arr[str,151387]  = ["Ġ Ġ", "ĠĠ ĠĠ", "i n", "Ġ t",...
+llama_model_loader: - kv  28:                tokenizer.ggml.eos_token_id u32              = 151645
+llama_model_loader: - kv  29:            tokenizer.ggml.padding_token_id u32              = 151643
+llama_model_loader: - kv  30:                tokenizer.ggml.bos_token_id u32              = 151643
+llama_model_loader: - kv  31:               tokenizer.ggml.add_bos_token bool             = false
+llama_model_loader: - kv  32:                    tokenizer.chat_template str              = {%- if tools %}\n    {{- '<|im_start|>...
+llama_model_loader: - kv  33:               general.quantization_version u32              = 2
+llama_model_loader: - kv  34:                      quantize.imatrix.file str              = /models_out/Qwen2.5-Math-7B-Instruct-...
+llama_model_loader: - kv  35:                   quantize.imatrix.dataset str              = /training_dir/calibration_datav3.txt
+llama_model_loader: - kv  36:             quantize.imatrix.entries_count i32              = 196
+llama_model_loader: - kv  37:              quantize.imatrix.chunks_count i32              = 128
+llama_model_loader: - type  f32:  141 tensors
+llama_model_loader: - type q4_K:  190 tensors
+llama_model_loader: - type q5_K:    7 tensors
+llama_model_loader: - type q6_K:    1 tensors
+print_info: file format = GGUF V3 (latest)
+print_info: file type   = Q4_K - Small
+print_info: file size   = 4.15 GiB (4.68 BPW)
+2026-05-10 22:30:46 [DEBUG]
+ load: 0 unused tokens
+2026-05-10 22:30:46 [DEBUG]
+ load: printing all EOG tokens:
+load:   - 151643 ('<|endoftext|>')
+load:   - 151645 ('<|im_end|>')
+load:   - 151662 ('<|fim_pad|>')
+load:   - 151663 ('<|repo_name|>')
+load:   - 151664 ('<|file_sep|>')
+2026-05-10 22:30:46 [DEBUG]
+ load: special tokens cache size = 22
+2026-05-10 22:30:46 [DEBUG]
+ load: token to piece cache size = 0.9310 MB
+2026-05-10 22:30:46 [DEBUG]
+ print_info: arch                  = qwen2
+print_info: vocab_only            = 0
+print_info: no_alloc              = 0
+print_info: n_ctx_train           = 4096
+print_info: n_embd                = 3584
+print_info: n_embd_inp            = 3584
+print_info: n_layer               = 28
+print_info: n_head                = 28
+print_info: n_head_kv             = 4
+print_info: n_rot                 = 128
+print_info: n_swa                 = 0
+print_info: is_swa_any            = 0
+print_info: n_embd_head_k         = 128
+print_info: n_embd_head_v         = 128
+print_info: n_gqa                 = 7
+print_info: n_embd_k_gqa          = 512
+print_info: n_embd_v_gqa          = 512
+print_info: f_norm_eps            = 0.0e+00
+print_info: f_norm_rms_eps        = 1.0e-06
+print_info: f_clamp_kqv           = 0.0e+00
+print_info: f_max_alibi_bias      = 0.0e+00
+print_info: f_logit_scale         = 0.0e+00
+print_info: f_attn_scale          = 0.0e+00
+print_info: n_ff                  = 18944
+print_info: n_expert              = 0
+print_info: n_expert_used         = 0
+print_info: n_expert_groups       = 0
+print_info: n_group_used          = 0
+print_info: causal attn           = 1
+print_info: pooling type          = -1
+print_info: rope type             = 2
+print_info: rope scaling          = linear
+print_info: freq_base_train       = 10000.0
+print_info: freq_scale_train      = 1
+print_info: n_ctx_orig_yarn       = 4096
+print_info: rope_yarn_log_mul     = 0.0000
+print_info: rope_finetuned        = unknown
+print_info: model type            = 7B
+print_info: model params          = 7.62 B
+print_info: general.name          = Qwen2.5 Math 7B Instruct
+print_info: vocab type            = BPE
+print_info: n_vocab               = 152064
+print_info: n_merges              = 151387
+print_info: BOS token             = 151643 '<|endoftext|>'
+print_info: EOS token             = 151645 '<|im_end|>'
+print_info: EOT token             = 151645 '<|im_end|>'
+print_info: PAD token             = 151643 '<|endoftext|>'
+print_info: LF token              = 198 'Ċ'
+print_info: FIM PRE token         = 151659 '<|fim_prefix|>'
+print_info: FIM SUF token         = 151661 '<|fim_suffix|>'
+print_info: FIM MID token         = 151660 '<|fim_middle|>'
+print_info: FIM PAD token         = 151662 '<|fim_pad|>'
+print_info: FIM REP token         = 151663 '<|repo_name|>'
+print_info: FIM SEP token         = 151664 '<|file_sep|>'
+print_info: EOG token             = 151643 '<|endoftext|>'
+print_info: EOG token             = 151645 '<|im_end|>'
+print_info: EOG token             = 151662 '<|fim_pad|>'
+print_info: EOG token             = 151663 '<|repo_name|>'
+print_info: EOG token             = 151664 '<|file_sep|>'
+print_info: max token length      = 256
+load_tensors: loading model tensors, this can take a while... (mmap = true, direct_io = false)
+2026-05-10 22:30:48 [DEBUG]
+ load_tensors: offloading output layer to GPU
+load_tensors: offloading 16 repeating layers to GPU
+load_tensors: offloaded 17/29 layers to GPU
+load_tensors:   CPU_Mapped model buffer size =  2120.58 MiB
+load_tensors:        CUDA0 model buffer size =  2427.34 MiB
+2026-05-10 22:30:55 [DEBUG]
+ common_init_result: added <|endoftext|> logit bias = -inf
+common_init_result: added <|im_end|> logit bias = -inf
+common_init_result: added <|fim_pad|> logit bias = -inf
+common_init_result: added <|repo_name|> logit bias = -inf
+common_init_result: added <|file_sep|> logit bias = -inf
+2026-05-10 22:30:55 [DEBUG]
+ llama_context: constructing llama_context
+llama_context: n_seq_max     = 1
+llama_context: n_ctx         = 4096
+llama_context: n_ctx_seq     = 4096
+llama_context: n_batch       = 512
+llama_context: n_ubatch      = 512
+llama_context: causal_attn   = 1
+llama_context: flash_attn    = enabled
+llama_context: kv_unified    = false
+llama_context: freq_base     = 10000.0
+llama_context: freq_scale    = 1
+2026-05-10 22:30:55 [DEBUG]
+ llama_context:  CUDA_Host  output buffer size =     0.58 MiB
+2026-05-10 22:30:55 [DEBUG]
+ llama_kv_cache:        CPU KV buffer size =    96.00 MiB
+2026-05-10 22:30:55 [DEBUG]
+ llama_kv_cache:      CUDA0 KV buffer size =   128.00 MiB
+2026-05-10 22:30:55 [DEBUG]
+ llama_kv_cache: size =  224.00 MiB (  4096 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+sched_reserve: reserving ...
+2026-05-10 22:30:55 [DEBUG]
+ sched_reserve:      CUDA0 compute buffer size =   311.00 MiB
+sched_reserve:  CUDA_Host compute buffer size =    15.01 MiB
+sched_reserve: graph nodes  = 959
+sched_reserve: graph splits = 170 (with bs=512), 2 (with bs=1)
+sched_reserve: reserve took 25.12 ms, sched copies = 1
+2026-05-10 22:30:55 [DEBUG]
+ common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+2026-05-10 22:30:55 [DEBUG]
+ GgmlThreadpools: llama threadpool init = n_threads = 4
+2026-05-10 22:31:30 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...en-ended questions.\n    </strict_rules>\n\n    \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0.4,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 22:31:32 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...en-ended questions.\n    </strict_rules>\n\n    \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0.4,
+  "max_tokens": 3000
+}
+2026-05-10 22:31:32  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 22:31:33 [DEBUG]
+ Sampling params:
+2026-05-10 22:31:33 [DEBUG]
+ repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.400
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 22:31:33 [DEBUG]
+ Backend sampling disabled
+Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 3533
+2026-05-10 22:31:33 [DEBUG]
+ Total prompt tokens:
+2026-05-10 22:31:33 [DEBUG]
+ 3533
+Prompt tokens to decode: 3533
+BeginProcessingPrompt
+2026-05-10 22:31:33  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 22:31:34 [DEBUG]
+ PromptProcessing:
+2026-05-10 22:31:34  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 14.5%
+2026-05-10 22:31:34 [DEBUG]
+ 14.4919
+2026-05-10 22:31:35 [DEBUG]
+ PromptProcessing: 28.9839
+2026-05-10 22:31:35  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 29.0%
+2026-05-10 22:31:36 [DEBUG]
+ PromptProcessing: 43.4758
+2026-05-10 22:31:36  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 43.5%
+2026-05-10 22:31:37 [DEBUG]
+ PromptProcessing: 57.9677
+2026-05-10 22:31:37  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 58.0%
+2026-05-10 22:31:39 [DEBUG]
+ PromptProcessing: 72.4597
+2026-05-10 22:31:39  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 72.5%
+2026-05-10 22:31:40 [DEBUG]
+ PromptProcessing: 86.9516
+2026-05-10 22:31:40  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 87.0%
+2026-05-10 22:31:41 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 22:31:41  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 22:33:33 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3533, n_discarded_ctx_tokens = 281, remaining = 3815
+2026-05-10 22:34:06 [DEBUG]
+ Target model llama_perf stats:
+2026-05-10 22:34:06 [DEBUG]
+ common_perf_print:    sampling time =     644.45 ms
+common_perf_print:    samplers time =     439.51 ms /  4255 tokens
+common_perf_print:        load time =    9358.37 ms
+common_perf_print: prompt eval time =    8171.68 ms /  3533 tokens (    2.31 ms per token,   432.35 tokens per second)
+common_perf_print:        eval time =  144053.67 ms /   721 runs   (  199.80 ms per token,     5.01 tokens per second)
+common_perf_print:       total time =  153266.43 ms /  4254 tokens
+common_perf_print: unaccounted time =     396.64 ms /   0.3 %      (total - sampling - prompt eval - eval) / (total)
+common_perf_print:    graphs reused =        717
+2026-05-10 22:34:06 [DEBUG]
+ llama_memory_breakdown_print: | memory breakdown [MiB]          | total   free    self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3050 Laptop GPU) |  4095 =  415 + (2866 =  2427 +     128 +     311) +         813 |
+llama_memory_breakdown_print: |   - Host                        |                 2231 =  2120 +      96 +      15                |
+2026-05-10 22:34:06  [INFO]
+ [qwen2.5-math-7b-instruct] Model generated tool calls:  []
+2026-05-10 22:34:06  [INFO]
+ [qwen2.5-math-7b-instruct] Generated prediction:  {
+  "id": "chatcmpl-vso36dkwy7aofghlkz7l5",
+  "object": "chat.completion",
+  "created": 1778423492,
+  "model": "qwen2.5-math-7b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": " Based on the givenML data, we need to generate three distinct intervention modules for the domains \"Addition vs. Subtraction Asymmetry\", \"Basic vs. Complex Arithmetic Contrast\", and \"Processing-Fluency integrate\". Here are the step-by-step instructions to generate each module:\n\n### Domain: Addition vs. Subtraction Asymmetry\n\n**clinical explanation**: The student has difficulty with mental inversion, which means they have trouble subtracting numbers by thinking of addition in reverse. This can be fixed by explicitly teaching make-10 or inverse-power reasoning.\n\n**learning objectives**:\n1. Understand the concept of mental inversion.\n2. Use concrete objects to model subtraction as adding the inverse.\n3. Apply this understanding to solve basic subtraction problems.\n\n** conceptual explanation**:\nStep 1: Identify the numbers involved in the subtraction problem.\nStep 2: Use concrete objects (e.g., blocks) to model the subtraction by adding the inverse.\n\n**teaching strategy**: Use concrete objects like blocks to help students understand subtraction as adding the inverse.\n\n**worked example**:\n Problem: 8 - 3\n Reasoning steps:\n1. Start with 8 blocks.\n2. Remove 3 blocks.\n3. Count the remaining blocks.\n Final answer: 5\n\n** practice set**:\n[\n{\n \"problem\": \"7 + 4\",\n \" reasonings**: {\n \"Step 1\": \"Add 7 blocks and 4 blocks to get 11 blocks.\"\n \"Step 2\": \"Remove 4 blocks from 11 blocks to get 7 blocks.\"\n \"final answer\": \"3\"\n},\n \"final answer\": \"3\"\n}\n]\n\n### Domain: Basic vs. Complex Arithmetic Contrast\n\n** clinical explanation**: The student has trouble crossing tens when adding or subtracting numbers. This can be fixed by explicitly teaching the concept of place value and concrete object concrete representation.\n\n** learning objectives**:\n1. Understand the concept of place value.\n2. Use concrete objects to model addition and subtraction involving crossing tens.\n3. Apply this understanding to solve basic and complex arithmetic problems.\n\n** conceptual explanation**:\nStep 1: Identify the numbers involved in the addition or subtraction problem.\nStep 2: Use concrete objects like blocks to model the addition or subtraction by crossing tens.\n\n** teaching strategy**: Use concrete objects like blocks to help students understand the concept of place value and crossing tens.\n\n** worked example**:\n Problem: 15 + 7\n Reasoning steps:\n1. Start with 15 blocks.\n2. Add 7 blocks.\n3. Cross ten blocks to get 22 blocks.\n Final answer: 22\n\n** practice set**:\n[\n{\n \" problem\": \"14 - 6\",\n \" reasonings**: {\n \"Step 1\": \"Start with 14 blocks and remove 6 blocks.\"\n \"Step 2$: \"Cross ten blocks to get 8 blocks.\"\n \"final answer\": \"8\"\n},\n \"final answer\": \"8\"\n}\n]\n\n### Domain: processing-Fluency integrate\n\n** Clinical explanation**: The student has trouble processing concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object con concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object concrete object con concrete object concrete object con concrete object concrete object concrete object concrete concrete object concrete object concrete object concrete object con concrete object concrete relational concrete conlegate |\n\n### Final Answer**\n\\boxed{3}\n```",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3533,
+    "completion_tokens": 722,
+    "total_tokens": 4255
+  },
+  "stats": {},
+  "system_fingerprint": "qwen2.5-math-7b-instruct"
+}
+2026-05-10 22:35:02 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 22:35:04 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0,
+  "max_tokens": 3000
+}
+2026-05-10 22:35:04  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 22:35:04 [DEBUG]
+ Sampling params:	repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 22:35:04 [DEBUG]
+ Backend sampling disabled
+2026-05-10 22:35:04 [DEBUG]
+ Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 4036
+2026-05-10 22:35:04 [DEBUG]
+ Looking for non-prefix contiguous prompt sequences of size >= 256 to reuse from cache
+Cache reuse summary: 2701/4036 of prompt (
+2026-05-10 22:35:04 [DEBUG]
+ 66.9227%), 2701 prefix, 0 non-prefix
+2026-05-10 22:35:04 [DEBUG]
+ Total prompt tokens: 4036
+Prompt tokens to decode: 1335
+2026-05-10 22:35:04 [DEBUG]
+ BeginProcessingPrompt
+2026-05-10 22:35:04  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 22:35:05 [DEBUG]
+ PromptProcessing: 27.7903
+2026-05-10 22:35:05  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 27.8%
+2026-05-10 22:35:07 [DEBUG]
+ PromptProcessing: 66.1423
+2026-05-10 22:35:07  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 66.1%
+2026-05-10 22:35:08 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 22:35:08  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 22:35:20 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:26 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:33 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:39 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:45 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:51 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:35:57 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:03 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:09 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:14 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:20 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:28 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:35 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:42 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:49 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:36:56 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:03 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:09 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:15 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:21 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:27 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:34 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:40 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:46 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:52 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:37:58 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:04 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:11 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:17 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:25 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:33 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:39 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:46 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:51 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:38:58 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:04 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:10 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:16 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:22 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:28 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:34 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:40 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:45 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:51 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:39:57 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:02 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:09 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:15 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:21 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:27 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:33 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:39 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:44 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:50 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:40:56 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:02 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:07 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:13 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:19 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:24 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:30 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:35 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:41 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:46 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:52 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:41:57 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:03 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:08 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:14 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:19 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:24 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:30 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:36 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:41 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:47 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:52 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:42:58 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:04 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:10 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:15 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:21 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:26 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:32 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:38 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:43 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:49 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:43:54 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:00 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:06 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:11 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:17 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:23 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:29 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:35 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:40 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:47 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:53 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:44:59 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 4036, n_discarded_ctx_tokens = 30, remaining = 4066
+2026-05-10 22:45:05 [DEBUG]
+ Target model llama_perf stats:
+2026-05-10 22:45:05 [DEBUG]
+ common_perf_print:    sampling time =    2134.13 ms
+common_perf_print:    samplers time =    1336.39 ms /  7036 tokens
+common_perf_print:        load time =    9358.37 ms
+common_perf_print: prompt eval time =    4083.13 ms /  1335 tokens (    3.06 ms per token,   326.95 tokens per second)
+common_perf_print:        eval time =  594721.72 ms /  2999 runs   (  198.31 ms per token,     5.04 tokens per second)
+common_perf_print:       total time =  601222.27 ms /  4334 tokens
+common_perf_print: unaccounted time =     283.29 ms /   0.0 %      (total - sampling - prompt eval - eval) / (total)
+common_perf_print:    graphs reused =       2900
+2026-05-10 22:45:05 [DEBUG]
+ llama_memory_breakdown_print: | memory breakdown [MiB]          | total   free    self   model   context   compute    unaccounted |
+llama_memory_breakdown_print: |   - CUDA0 (RTX 3050 Laptop GPU) |  4095 =  415 + (2866 =  2427 +     128 +     311) +         813 |
+llama_memory_breakdown_print: |   - Host                        |                 2231 =  2120 +      96 +      15                |
+2026-05-10 22:45:06  [INFO]
+ [qwen2.5-math-7b-instruct] Model generated tool calls:  []
+2026-05-10 22:45:06  [INFO]
+ [qwen2.5-math-7b-instruct] Generated prediction:  {
+  "id": "chatcmpl-qz48p51rfrogzxtinzc",
+  "object": "chat.completion",
+  "created": 1778423704,
+  "model": "qwen2.5-math-7b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": " Based on the given data and constraints, we will generate three modules for each domain: Addition vs. Subtraction Asymmetry (AS), Basic vs. Complex Arithmetic Contrast (BC), and Processing-Fluency integrate (PF). Each module must contain exactly 4 practice items with specific rules and constraints.\n\n### Additon vs. Subtraction Asymmetry (AD)\n** clinical explanation**:(difficulties with mental inversion)\n\n** learning objectives**:\n1. Understand forward and inverse reasoning.\n2. Use make-10 or inverse-game reasoning.\n\n** conceptual explanation**:\nStep 1: Solve basic facts.\nStep 2: Break complex numbers into tens and ones.\nStep 3: Recombine to solve.\n\n** teaching strategy**: Use concrete manipulatives like blocks or coins to help students understand the concept. For addition, use concrete objects to show combining quantities. For subtraction, use concrete objects to show taking away quantities. Use visual representations like number lines to help students understand the concept of place value and the relationship between numbers. Use concrete manipulatives like blocks or counters to help students understand the concept of addition and subtraction. Use games and activities to make learning more engaging and fun. Use formative assessments to check for understanding and provide immediate feedback. Use a variety of teaching strategies to reach all learners. Use real-world examples and concrete objects to make math concepts more relatable. Use games and songs to make math more fun and engaging. Use manipulatives to help students understand concrete mathematical concepts. Use concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete concrete])**])\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n]\r\n",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 4036,
+    "completion_tokens": 3000,
+    "total_tokens": 7036
+  },
+  "stats": {},
+  "system_fingerprint": "qwen2.5-math-7b-instruct"
+}
+2026-05-10 22:46:12 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0,
+  "max_tokens": 3000,
+  "response_format": {
+    "type": "json_object"
+  }
+}
+2026-05-10 22:46:15 [DEBUG]
+ Received request: POST to /v1/chat/completions with body  {
+  "messages": [
+    {
+      "role": "system",
+      "content": "\n    <role>\n    You are a Senior Special Education... <Truncated in logs> ...ntain exactly the requested number of items. \n    "
+    },
+    {
+      "role": "user",
+      "content": "<ml_data>\n{\"task_importance_scores\": {\"ADD\": 0.008... <Truncated in logs> ...rate the modules based ONLY on the target domains."
+    }
+  ],
+  "model": "qwen2.5-math-7b-instruct",
+  "temperature": 0,
+  "max_tokens": 3000
+}
+2026-05-10 22:46:15  [INFO]
+ [qwen2.5-math-7b-instruct] Running chat completion on conversation with 2 messages.
+2026-05-10 22:46:15 [DEBUG]
+ Sampling params:	repeat_last_n = 64, repeat_penalty = 1.100, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+2026-05-10 22:46:15 [DEBUG]
+ Backend sampling disabled
+2026-05-10 22:46:15 [DEBUG]
+ Sampling: 
+logits -> penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+Generate: n_ctx = 4096, n_batch = 512, n_predict = 3000, n_keep = 3858
+2026-05-10 22:46:15 [DEBUG]
+ Looking for non-prefix contiguous prompt sequences of size >= 256 to reuse from cache
+Cache reuse summary: 2750/3858 of prompt (
+2026-05-10 22:46:15 [DEBUG]
+ 71.2805%), 2750 prefix, 0 non-prefix
+2026-05-10 22:46:15  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 0.0%
+2026-05-10 22:46:15 [DEBUG]
+ Total prompt tokens: 3858
+Prompt tokens to decode: 1108
+BeginProcessingPrompt
+2026-05-10 22:46:16 [DEBUG]
+ PromptProcessing: 29.0614
+2026-05-10 22:46:16  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 29.1%
+2026-05-10 22:46:17 [DEBUG]
+ PromptProcessing: 75.2708
+2026-05-10 22:46:17  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 75.3%
+2026-05-10 22:46:19 [DEBUG]
+ FinishedProcessingPrompt. Progress: 100
+2026-05-10 22:46:19  [INFO]
+ [qwen2.5-math-7b-instruct] Prompt processing progress: 100.0%
+2026-05-10 22:47:07 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx =
+2026-05-10 22:47:07 [DEBUG]
+ 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:47:31 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:47:56 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:48:22 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:48:47 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:49:12 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:49:39 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:50:05 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx =
+2026-05-10 22:50:05 [DEBUG]
+ 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
+2026-05-10 22:50:32 [DEBUG]
+ 
+
+
+context full, shifting: n_ctx = 4096, n_past = 4096, n_keep_with_multimodal = 3858, n_discarded_ctx_tokens = 119, remaining = 3977
