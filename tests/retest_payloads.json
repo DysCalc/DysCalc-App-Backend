@@ -11,12 +11,19 @@
             "Addition vs. Subtraction Asymmetry": 0.55
           },
           "task_importance_scores": {
-            "AS": 0.55
+            "single_subtraction": 0.55,
+            "single_addition": 0.30
           }
         },
         "questions_asked": [
-          {"problem": "5 + 3", "expected_answer": 8},
-          {"problem": "8 - 3", "expected_answer": 5}
+          {
+            "question": "5 + 3",
+            "correct": 8
+          },
+          {
+            "question": "8 - 3",
+            "correct": 5
+          }
         ]
       },
       {
@@ -29,13 +36,19 @@
             "Basic vs. Complex Arithmetic Contrast": 0.15
           },
           "task_importance_scores": {
-            "AS": 0.35,
-            "BC": 0.15
+            "single_subtraction": 0.35,
+            "single_addition": 0.15
           }
         },
         "questions_asked": [
-          {"problem": "12 - 5", "expected_answer": 7},
-          {"problem": "9 + 4", "expected_answer": 13}
+          {
+            "question": "12 - 5",
+            "correct": 7
+          },
+          {
+            "question": "9 + 4",
+            "correct": 13
+          }
         ]
       },
       {
@@ -48,8 +61,8 @@
             "Basic vs. Complex Arithmetic Contrast": 0.15
           },
           "task_importance_scores": {
-            "AS": 0.25,
-            "BC": 0.15
+            "single_subtraction": 0.25,
+            "single_addition": 0.15
           }
         },
         "questions_asked": []
@@ -69,13 +82,19 @@
             "Overall Processing Efficiency": 0.40
           },
           "task_importance_scores": {
-            "PF": 0.55,
-            "NP": 0.40
+            "number_comparison": 0.55,
+            "dot_matching": 0.40
           }
         },
         "questions_asked": [
-          {"problem": "14 - 6", "expected_answer": 8},
-          {"problem": "7 + 5", "expected_answer": 12}
+          {
+            "question": "14 - 6",
+            "correct": 8
+          },
+          {
+            "question": "7 + 5",
+            "correct": 12
+          }
         ]
       },
       {
@@ -88,8 +107,8 @@
             "Overall Processing Efficiency": 0.38
           },
           "task_importance_scores": {
-            "PF": 0.50,
-            "NP": 0.38
+            "number_comparison": 0.50,
+            "dot_matching": 0.38
           }
         },
         "questions_asked": []
@@ -109,13 +128,19 @@
             "Single-Digit Addition": 0.09
           },
           "task_importance_scores": {
-            "AF": 0.12,
-            "ADD": 0.09
+            "single_addition": 0.12,
+            "dot_matching": 0.09
           }
         },
         "questions_asked": [
-          {"problem": "10 + 2", "expected_answer": 12},
-          {"problem": "15 - 5", "expected_answer": 10}
+          {
+            "question": "10 + 2",
+            "correct": 12
+          },
+          {
+            "question": "15 - 5",
+            "correct": 10
+          }
         ]
       },
       {
@@ -128,8 +153,8 @@
             "Single-Digit Addition": 0.06
           },
           "task_importance_scores": {
-            "AF": 0.08,
-            "ADD": 0.06
+            "single_addition": 0.08,
+            "dot_matching": 0.06
           }
         },
         "questions_asked": []

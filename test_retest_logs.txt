@@ -15,7 +15,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
 
 [INFO] Based on session:          3
 [INFO] Total sessions in history: 3
-[OUTPUT] Questions returned:      5
+[OUTPUT] Questions returned:      12
 [OUTPUT] Questions pruned:        0
 
 === NEW RETEST QUESTIONS ===
@@ -23,7 +23,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
   "_meta_validation_report": {
     "counts": {
       "pruned": 0,
-      "returned": 5
+      "returned": 12
     },
     "math_errors": [],
     "pedagogy_errors": [],
@@ -31,33 +31,48 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
   },
   "based_on_session": 3,
   "based_on_session_date": "2026-05-08",
-  "retest_questions": [
-    {
-      "expected_answer": 6,
-      "hint": "Count 14 mangoes, take away 4 to reach 10, then 4 more. Final answer is 6.",
-      "problem": "14 - 8"
+  "retest_data": {
+    "single_addition": {
+      "rationale": "This task is being retested to reinforce the student's understanding of basic addition, which is essential for building a strong foundation in arithmetic. The student's profile suggests that additional practice will help improve their speed and accuracy in solving addition problems.",
+      "tests": [
+        {
+          "correct": 13,
+          "hint": "Start with 6 blocks. Add 3 more blocks to reach 9, then add 4 more blocks. Count the total number of blocks.",
+          "question": "6 + 7"
+        },
+        {
+          "correct": 13,
+          "hint": "Start with 4 mangoes. Add 6 more mangoes to reach 10, then add 3 more mangoes. Count the total number of mangoes.",
+          "question": "4 + 9"
+        },
+        {
+          "correct": 13,
+          "hint": "Start with 8 peso coins. Add 2 more coins to reach 10, then add 3 more coins. Count the total number of coins.",
+          "question": "8 + 5"
+        }
+      ]
     },
-    {
-      "expected_answer": 13,
-      "hint": "Count 7 peso coins, add 3 to make 10, then add 3 more. Final answer is 13.",
-      "problem": "7 + 6"
-    },
-    {
-      "expected_answer": 7,
-      "hint": "Count 16 blocks, take away 6 to reach 10, then 3 more. Final answer is 7.",
-      "problem": "16 - 9"
-    },
-    {
-      "expected_answer": 6,
-      "hint": "Count 11 jeepney toys, take away 1 to reach 10, then 4 more. Final answer is 6.",
-      "problem": "11 - 5"
-    },
-    {
-      "expected_answer": 14,
-      "hint": "Count 9 blocks, add 1 to make 10, then add 4 more. Final answer is 14.",
-      "problem": "9 + 5"
+    "single_subtraction": {
+      "rationale": "This task is being retested to address the student's difficulty with basic subtraction, which is a critical foundational skill for more complex arithmetic operations. The student's profile indicates a need for additional practice to improve accuracy and fluency in this area.",
+      "tests": [
+        {
+          "correct": 8,
+          "hint": "Start with 15 blocks. Take away 5 blocks to reach 10, then take away 2 more blocks. Count the remaining blocks.",
+          "question": "15 - 7"
+        },
+        {
+          "correct": 7,
+          "hint": "Start with 11 mangoes. Take away 1 mango to reach 10, then take away 3 more mangoes. Count the remaining mangoes.",
+          "question": "11 - 4"
+        },
+        {
+          "correct": 8,
+          "hint": "Start with 14 peso coins. Take away 4 coins to reach 10, then take away 2 more coins. Count the remaining coins.",
+          "question": "14 - 6"
+        }
+      ]
     }
-  ],
+  },
   "total_sessions_in_history": 3
 }
 ============================
@@ -65,7 +80,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
 
 [VERIFICATION] Previous questions in history pool: ['12 - 5', '5 + 3', '8 - 3', '9 + 4']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['14 - 8', '7 + 6', '16 - 9', '11 - 5', '9 + 5']
+[VERIFICATION] New questions generated: ['6 + 7', '4 + 9', '8 + 5', '15 - 7', '11 - 4', '14 - 6']
 [VERIFICATION] PASS — Generated from latest session (session 3).
 
 ============================================================
@@ -75,7 +90,7 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
 
 [INFO] Based on session:          2
 [INFO] Total sessions in history: 2
-[OUTPUT] Questions returned:      5
+[OUTPUT] Questions returned:      6
 [OUTPUT] Questions pruned:        0
 
 === NEW RETEST QUESTIONS ===
@@ -83,7 +98,7 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
   "_meta_validation_report": {
     "counts": {
       "pruned": 0,
-      "returned": 5
+      "returned": 6
     },
     "math_errors": [],
     "pedagogy_errors": [],
@@ -91,33 +106,48 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
   },
   "based_on_session": 2,
   "based_on_session_date": "2026-04-20",
-  "retest_questions": [
-    {
-      "expected_answer": 7,
-      "hint": "Count 12 mangoes, take away 2 to reach 10, then 3 more. Final answer is 7.",
-      "problem": "12 - 5"
+  "retest_data": {
+    "dot_matching": {
+      "rationale": "Retesting dot matching helps to assess the student's ability to visually match and count dots, which is crucial for developing early number sense and one-to-one correspondence.",
+      "tests": [
+        {
+          "correct": "\u2022\u2022\u2022\u2022",
+          "hint": "Use blocks to show 3 dots and 4 dots. Which group has more dots?",
+          "question": "\u2022\u2022\u2022 vs \u2022\u2022\u2022\u2022"
+        },
+        {
+          "correct": "\u2022\u2022\u2022\u2022\u2022",
+          "hint": "Use peso coins to show 5 dots and 3 dots. Which group has more dots?",
+          "question": "\u2022\u2022\u2022\u2022\u2022 vs \u2022\u2022\u2022"
+        },
+        {
+          "correct": "\u2022\u2022\u2022\u2022\u2022\u2022",
+          "hint": "Draw 6 dots and 4 dots. Which group has more dots?",
+          "question": "\u2022\u2022\u2022\u2022\u2022\u2022 vs \u2022\u2022\u2022\u2022"
+        }
+      ]
     },
-    {
-      "expected_answer": 14,
-      "hint": "Count 8 peso coins, add 2 to make 10, then add 4 more. Final answer is 14.",
-      "problem": "8 + 6"
-    },
-    {
-      "expected_answer": 7,
-      "hint": "Count 15 blocks, take away 5 to reach 10, then 3 more. Final answer is 7.",
-      "problem": "15 - 8"
-    },
-    {
-      "expected_answer": 13,
-      "hint": "Count 9 jeepney toys, add 1 to make 10, then add 3 more. Final answer is 13.",
-      "problem": "9 + 4"
-    },
-    {
-      "expected_answer": 8,
-      "hint": "Count 17 blocks, take away 7 to reach 10, then 2 more. Final answer is 8.",
-      "problem": "17 - 9"
+    "number_comparison": {
+      "rationale": "Retesting number comparison is essential to ensure the student can accurately identify which of two numbers is larger or smaller, a foundational skill for more complex mathematical operations.",
+      "tests": [
+        {
+          "correct": 8,
+          "hint": "Use blocks to show 5 and 8. Which pile has more blocks?",
+          "question": "5 vs 8"
+        },
+        {
+          "correct": 12,
+          "hint": "Use peso coins to show 12 and 9. Which stack has more coins?",
+          "question": "12 vs 9"
+        },
+        {
+          "correct": 7,
+          "hint": "Draw 3 mangoes and 7 mangoes. Which group has more mangoes?",
+          "question": "3 vs 7"
+        }
+      ]
     }
-  ],
+  },
   "total_sessions_in_history": 2
 }
 ============================
@@ -125,7 +155,7 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
 
 [VERIFICATION] Previous questions in history pool: ['14 - 6', '7 + 5']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['12 - 5', '8 + 6', '15 - 8', '9 + 4', '17 - 9']
+[VERIFICATION] New questions generated: ['••• vs ••••', '••••• vs •••', '•••••• vs ••••', '5 vs 8', '12 vs 9', '3 vs 7']
 [VERIFICATION] PASS — Generated from latest session (session 2).
 
 ============================================================
@@ -135,7 +165,7 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
 
 [INFO] Based on session:          2
 [INFO] Total sessions in history: 2
-[OUTPUT] Questions returned:      5
+[OUTPUT] Questions returned:      9
 [OUTPUT] Questions pruned:        0
 
 === NEW RETEST QUESTIONS ===
@@ -143,7 +173,7 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
   "_meta_validation_report": {
     "counts": {
       "pruned": 0,
-      "returned": 5
+      "returned": 9
     },
     "math_errors": [],
     "pedagogy_errors": [],
@@ -151,33 +181,48 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
   },
   "based_on_session": 2,
   "based_on_session_date": "2026-05-01",
-  "retest_questions": [
-    {
-      "expected_answer": 6,
-      "hint": "Count 14 mangoes, take away 4 to reach 10, then 4 more. Final answer is 6.",
-      "problem": "14 - 8"
+  "retest_data": {
+    "dot_matching": {
+      "rationale": "Dot matching is a critical task for developing number sense and one-to-one correspondence, which are essential for early mathematical skills. Retesting this task will help ensure the student is accurately matching quantities and understanding the concept of equality.",
+      "tests": [
+        {
+          "correct": false,
+          "hint": "Use blocks to show 2 blocks and 3 blocks. Ask the student to point to the group with more blocks.",
+          "question": "2 vs 3"
+        },
+        {
+          "correct": true,
+          "hint": "Draw 5 mangoes in one group and 5 mangoes in another group. Ask the student to point to the group with the same number of mangoes.",
+          "question": "5 vs 5"
+        },
+        {
+          "correct": false,
+          "hint": "Use peso coins to show 4 coins and 6 coins. Ask the student to point to the group with more coins.",
+          "question": "4 vs 6"
+        }
+      ]
     },
-    {
-      "expected_answer": 13,
-      "hint": "Count 9 peso coins, add 1 to make 10, then add 3 more. Final answer is 13.",
-      "problem": "9 + 4"
-    },
-    {
-      "expected_answer": 8,
-      "hint": "Count 17 blocks, take away 7 to reach 10, then 2 more. Final answer is 8.",
-      "problem": "17 - 9"
-    },
-    {
-      "expected_answer": 15,
-      "hint": "Count 8 jeepney toys, add 2 to make 10, then add 5 more. Final answer is 15.",
-      "problem": "8 + 7"
-    },
-    {
-      "expected_answer": 7,
-      "hint": "Count 12 mangoes, take away 2 to reach 10, then 3 more. Final answer is 7.",
-      "problem": "12 - 5"
+    "single_addition": {
+      "rationale": "The student's profile indicates a slight deficit in single-digit addition, which is a foundational skill for overall arithmetic fluency. Retesting this task will help monitor progress and ensure the student is building a strong foundation in basic addition.",
+      "tests": [
+        {
+          "correct": 12,
+          "hint": "Use blocks to show 7 blocks and 5 blocks. Count all the blocks together to find the total.",
+          "question": "7 + 5"
+        },
+        {
+          "correct": 12,
+          "hint": "Draw 9 mangoes and 3 mangoes. Count all the mangoes to find the total.",
+          "question": "9 + 3"
+        },
+        {
+          "correct": 14,
+          "hint": "Use peso coins to show 6 coins and 8 coins. Count all the coins together to find the total.",
+          "question": "6 + 8"
+        }
+      ]
     }
-  ],
+  },
   "total_sessions_in_history": 2
 }
 ============================
@@ -185,5 +230,5 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
 
 [VERIFICATION] Previous questions in history pool: ['10 + 2', '15 - 5']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['14 - 8', '9 + 4', '17 - 9', '8 + 7', '12 - 5']
+[VERIFICATION] New questions generated: ['2 vs 3', '5 vs 5', '4 vs 6', '7 + 5', '9 + 3', '6 + 8']
 [VERIFICATION] PASS — Generated from latest session (session 2).
