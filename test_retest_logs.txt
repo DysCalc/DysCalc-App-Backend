@@ -15,7 +15,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
 
 [INFO] Based on session:          3
 [INFO] Total sessions in history: 3
-[OUTPUT] Questions returned:      15
+[OUTPUT] Questions returned:      9
 [OUTPUT] Questions pruned:        0
 
 === NEW RETEST QUESTIONS ===
@@ -23,7 +23,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
   "_meta_validation_report": {
     "counts": {
       "pruned": 0,
-      "returned": 15
+      "returned": 9
     },
     "math_errors": [],
     "pedagogy_errors": [],
@@ -33,48 +33,53 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
   "based_on_session_date": "2026-05-08",
   "retest_data": {
     "number_series": {
-      "rationale": "The student has shown difficulty with recognizing number order and simple sequences. Retesting these skills will help ensure the student can identify and continue number patterns.",
+      "rationale": "This task is being retested to improve the student's ability to recognize and continue number sequences. The focus is on counting patterns and understanding the order of numbers.",
       "tests": [
         {
-          "correct": 11,
-          "hint": "Count by 2s. The next number after 9 is 11.",
-          "question": "3, 5, 7, 9, __"
+          "correct": 15,
+          "hint": "Use peso coins to show the sequence. Count by 3s to find the next number.",
+          "question": "3, 6, 9, 12, __"
         },
         {
-          "correct": 2,
-          "hint": "Count back by 2s. The next number after 4 is 2.",
-          "question": "10, 8, 6, 4, __"
+          "correct": 12,
+          "hint": "Draw a number line and count back by 2s from 20 to find the next number.",
+          "question": "20, 18, 16, 14, __"
         },
         {
-          "correct": 9,
-          "hint": "Count by 2s. The next number after 7 is 9.",
-          "question": "1, 3, 5, 7, __"
+          "correct": 25,
+          "hint": "Use blocks to show the sequence. Count by 5s to find the next number.",
+          "question": "5, 10, 15, 20, __"
         }
       ]
     },
     "single_addition": {
-      "rationale": "The student has shown difficulty with basic addition facts, particularly with making ten and counting on. Retesting these skills will help identify any persistent areas of weakness.",
+      "rationale": "This task is being retested to strengthen the student's basic addition skills, particularly in making ten and counting on. The focus is on reinforcing the use of concrete objects and number lines.",
       "tests": [
         {
-          "correct": 13,
-          "hint": "Start at 6 and count on 7 more. You can also think of it as 6 + 4 = 10, then 10 + 3 = 13.",
-          "question": "6 + 7"
+          "correct": 11,
+          "hint": "Use mangoes to show 6 and 5. Count all the mangoes to find the total.",
+          "question": "6 + 5"
         },
         {
-          "correct": 14,
-          "hint": "Start at 9 and count on 5 more. You can also think of it as 9 + 1 = 10, then 10 + 4 = 14.",
-          "question": "9 + 5"
+          "correct": 10,
+          "hint": "Use your fingers to show 7. Count on 3 more fingers to find the total.",
+          "question": "7 + 3"
         },
         {
-          "correct": 13,
-          "hint": "Start at 7 and count on 6 more. You can also think of it as 7 + 3 = 10, then 10 + 3 = 13.",
-          "question": "7 + 6"
+          "correct": 11,
+          "hint": "Draw a number line and start at 9. Count on 2 more steps to find the total.",
+          "question": "9 + 2"
         }
       ]
     },
     "single_subtraction": {
-      "rationale": "The student has shown difficulty with basic subtraction facts, particularly with taking away and counting back. Retesting these skills will help identify any persistent areas of weakness.",
+      "rationale": "This task is being retested to address the student's difficulty with basic subtraction facts and the concept of taking away. The focus is on reinforcing the understanding of subtraction without borrowing or negative answers.",
       "tests": [
+        {
+          "correct": 7,
+          "hint": "Use blocks to show 11 mangoes. Take away 4 mangoes and count how many are left.",
+          "question": "11 - 4"
+        },
         {
           "correct": 8,
           "hint": "Use 15 blocks. Take away 5 to reach 10, then take away 2 more. Count 8 blocks left.",
@@ -82,13 +87,8 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
         },
         {
           "correct": 7,
-          "hint": "Use 11 blocks. Take away 1 to reach 10, then take away 3 more. Count 7 blocks left.",
-          "question": "11 - 4"
-        },
-        {
-          "correct": 8,
-          "hint": "Use 14 blocks. Take away 4 to reach 10, then take away 2 more. Count 8 blocks left.",
-          "question": "14 - 6"
+          "hint": "Use your fingers to show 10. Put down 3 fingers and count how many are left standing.",
+          "question": "10 - 3"
         }
       ]
     }
@@ -100,7 +100,7 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
 
 [VERIFICATION] Previous questions in history pool: ['12 - 5', '5 + 3', '8 - 3', '9 + 4']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['3, 5, 7, 9, __', '10, 8, 6, 4, __', '1, 3, 5, 7, __', '6 + 7', '9 + 5', '7 + 6', '15 - 7', '11 - 4', '14 - 6']
+[VERIFICATION] New questions generated: ['3, 6, 9, 12, __', '20, 18, 16, 14, __', '5, 10, 15, 20, __', '6 + 5', '7 + 3', '9 + 2', '11 - 4', '15 - 7', '10 - 3']
 [VERIFICATION] PASS — Generated from latest session (session 3).
 
 ============================================================
@@ -128,61 +128,61 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
   "based_on_session_date": "2026-04-20",
   "retest_data": {
     "dot_matching": {
-      "rationale": "Retesting dot matching to ensure the student can accurately link digits to exact visual quantities and check one-to-one correspondence, which is essential for building a solid understanding of number sense.",
+      "rationale": "The student needs to improve their ability to link digits to exact visual quantities and check one-to-one correspondence. Retesting this task will help solidify the connection between symbolic numbers and their concrete representations.",
       "tests": [
         {
-          "correct": true,
-          "hint": "Use 4 blocks to show that 4 blocks match 4 blocks. Count each block to confirm they are the same.",
-          "question": "4 vs 4"
+          "correct": false,
+          "hint": "Count 4 blocks and 6 blocks. 4 blocks are fewer than 6 blocks, so 4 is not the same as 6.",
+          "question": "4 vs 6"
         },
         {
           "correct": true,
-          "hint": "Use 6 mangoes to show that 6 mangoes match 6 mangoes. Count each mango to confirm they are the same.",
-          "question": "6 vs 6"
+          "hint": "Count 7 peso coins and 7 peso coins. Both sets have the same number of coins, so 7 is equal to 7.",
+          "question": "7 vs 7"
         },
         {
           "correct": false,
-          "hint": "Use 8 blocks and 9 blocks to show that 8 blocks do not match 9 blocks. Count each block to see which group has more.",
-          "question": "8 vs 9"
+          "hint": "Count 9 mangoes and 5 mangoes. 9 mangoes are more than 5 mangoes, so 9 is not the same as 5.",
+          "question": "9 vs 5"
         }
       ]
     },
     "number_comparison": {
-      "rationale": "Retesting number comparison to reinforce the student's ability to identify larger and smaller numbers, which is crucial for developing a strong foundation in numerical magnitude understanding.",
+      "rationale": "The student has shown difficulty in comparing numerical magnitudes, which is crucial for developing a strong number sense. Retesting this task will help reinforce the ability to identify larger or smaller numbers and understand their relative sizes.",
       "tests": [
         {
           "correct": 9,
-          "hint": "Use mangoes to show that 9 mangoes are more than 3 mangoes. Count each mango to see which group has more.",
-          "question": "3 vs 9"
+          "hint": "Use a number line to show that 9 is to the right of 5, indicating that 9 is larger. You can also use blocks to show that 9 blocks are more than 5 blocks.",
+          "question": "5 vs 9"
         },
         {
           "correct": 12,
-          "hint": "Use peso coins to show that 12 coins are more than 5 coins. Place the coins in two rows to compare them easily.",
-          "question": "12 vs 5"
+          "hint": "Count out 12 mangoes and 7 mangoes. The pile with 12 mangoes is larger, so 12 is greater than 7.",
+          "question": "12 vs 7"
         },
         {
-          "correct": 15,
-          "hint": "Use blocks to show that 15 blocks are more than 7 blocks. Stack the blocks to see which stack is taller.",
-          "question": "7 vs 15"
+          "correct": 8,
+          "hint": "Draw a number line from 0 to 10. Place 3 and 8 on the line. 8 is further to the right, so it is larger than 3.",
+          "question": "3 vs 8"
         }
       ]
     },
     "number_series": {
-      "rationale": "Retesting number series to help the student recognize number order, counting patterns, and missing numbers, which are fundamental skills for developing sequential and pattern recognition abilities.",
+      "rationale": "The student has shown challenges in recognizing number order and counting patterns. Retesting this task will help improve their ability to identify missing numbers in sequences and understand simple forward and backward counting.",
       "tests": [
         {
           "correct": 10,
-          "hint": "Use a number line to show the pattern of counting by 2s. Start at 2 and jump by 2s to reach 10.",
+          "hint": "Use a number line to show the sequence. Count by 2s: 2, 4, 6, 8, 10. The next number is 10.",
           "question": "2, 4, 6, 8, __"
         },
         {
           "correct": 7,
-          "hint": "Use a number line to show the pattern of counting backward by 2s. Start at 15 and move backward by 2s to reach 7.",
+          "hint": "Use a number line to show the sequence. Count backward by 2s: 15, 13, 11, 9, 7. The next number is 7.",
           "question": "15, 13, 11, 9, __"
         },
         {
           "correct": 15,
-          "hint": "Use a number line to show the pattern of counting by 3s. Start at 3 and jump by 3s to reach 15.",
+          "hint": "Use a number line to show the sequence. Count by 3s: 3, 6, 9, 12, 15. The next number is 15.",
           "question": "3, 6, 9, 12, __"
         }
       ]
@@ -195,7 +195,7 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
 
 [VERIFICATION] Previous questions in history pool: ['14 - 6', '7 + 5']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['4 vs 4', '6 vs 6', '8 vs 9', '3 vs 9', '12 vs 5', '7 vs 15', '2, 4, 6, 8, __', '15, 13, 11, 9, __', '3, 6, 9, 12, __']
+[VERIFICATION] New questions generated: ['4 vs 6', '7 vs 7', '9 vs 5', '5 vs 9', '12 vs 7', '3 vs 8', '2, 4, 6, 8, __', '15, 13, 11, 9, __', '3, 6, 9, 12, __']
 [VERIFICATION] PASS — Generated from latest session (session 2).
 
 ============================================================
@@ -205,7 +205,7 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
 
 [INFO] Based on session:          2
 [INFO] Total sessions in history: 2
-[OUTPUT] Questions returned:      12
+[OUTPUT] Questions returned:      9
 [OUTPUT] Questions pruned:        0
 
 === NEW RETEST QUESTIONS ===
@@ -213,7 +213,7 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
   "_meta_validation_report": {
     "counts": {
       "pruned": 0,
-      "returned": 12
+      "returned": 9
     },
     "math_errors": [],
     "pedagogy_errors": [],
@@ -223,47 +223,47 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
   "based_on_session_date": "2026-05-01",
   "retest_data": {
     "dot_matching": {
-      "rationale": "Retesting dot matching to solidify the student's understanding of linking digits to exact visual quantities, as the diagnostic profile suggests a need for continued practice in this area.",
+      "rationale": "Retesting dot matching to strengthen the student's ability to link digits to exact visual quantities and ensure one-to-one correspondence, as indicated by the task importance score.",
       "tests": [
         {
           "correct": true,
-          "hint": "Use dots to show 4 dots on one side and 4 dots on the other side. Count each set to confirm they match.",
+          "hint": "Use dots to show 4 dots and 4 dots. Count each dot to ensure they match.",
           "question": "4 vs 4"
         },
         {
           "correct": true,
-          "hint": "Use blocks to show 9 blocks on one side and 9 blocks on the other side. Count each set to confirm they match.",
-          "question": "9 vs 9"
+          "hint": "Use blocks to show 7 blocks and 7 blocks. Count each block to ensure they match.",
+          "question": "7 vs 7"
         },
         {
           "correct": true,
-          "hint": "Use peso coins to show 6 coins on one side and 6 coins on the other side. Count each set to confirm they match.",
-          "question": "6 vs 6"
+          "hint": "Use peso coins to show 9 coins and 9 coins. Count each coin to ensure they match.",
+          "question": "9 vs 9"
         }
       ]
     },
     "number_comparison": {
-      "rationale": "Retesting number comparison to enhance the student's ability to identify and explain the magnitude of numbers, as the diagnostic profile indicates a need for further development in this skill.",
+      "rationale": "Retesting number comparison to enhance the student's ability to compare numerical magnitudes and understand the concept of larger and smaller numbers, as indicated by the task importance score.",
       "tests": [
         {
-          "correct": 8,
-          "hint": "Use a number line to show the positions of 5 and 8. Point out that 8 is to the right of 5, which means 8 is larger.",
-          "question": "5 vs 8"
-        },
-        {
-          "correct": 10,
-          "hint": "Use blocks to show 10 blocks and 3 blocks. Count each set and compare to see which set has more blocks.",
-          "question": "10 vs 3"
-        },
-        {
           "correct": 12,
-          "hint": "Use mangoes to show 7 mangoes and 12 mangoes. Count each set and compare to see which set has more mangoes.",
+          "hint": "Use a number line to show the positions of 7 and 12. The number further to the right is larger.",
           "question": "7 vs 12"
+        },
+        {
+          "correct": 15,
+          "hint": "Use blocks to show 15 blocks and 9 blocks. The pile with more blocks is larger.",
+          "question": "15 vs 9"
+        },
+        {
+          "correct": 11,
+          "hint": "Use mangoes to show 4 mangoes and 11 mangoes. The group with more mangoes is larger.",
+          "question": "4 vs 11"
         }
       ]
     },
     "single_addition": {
-      "rationale": "Retesting single-digit addition to reinforce basic addition facts and improve fluency, as the student's profile indicates a need for continued practice in this area.",
+      "rationale": "Retesting single-digit addition to reinforce basic addition facts and improve fluency, as indicated by the student's domain severity score in Single-Digit Addition.",
       "tests": [
         {
           "correct": 12,
@@ -272,13 +272,13 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
         },
         {
           "correct": 12,
-          "hint": "Use peso coins to show 5 coins and 7 coins. Count all the coins together to get the total.",
-          "question": "5 + 7"
+          "hint": "Use peso coins to show 3 coins and 9 coins. Count all the coins together to get the total.",
+          "question": "3 + 9"
         },
         {
-          "correct": 9,
-          "hint": "Use blocks to show 6 blocks and 3 blocks. Count all the blocks together to get the total.",
-          "question": "6 + 3"
+          "correct": 11,
+          "hint": "Use blocks to show 5 blocks and 6 blocks. Count all the blocks together to get the total.",
+          "question": "5 + 6"
         }
       ]
     }
@@ -290,5 +290,5 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
 
 [VERIFICATION] Previous questions in history pool: ['10 + 2', '15 - 5']
 [VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['4 vs 4', '9 vs 9', '6 vs 6', '5 vs 8', '10 vs 3', '7 vs 12', '8 + 4', '5 + 7', '6 + 3']
+[VERIFICATION] New questions generated: ['4 vs 4', '7 vs 7', '9 vs 9', '7 vs 12', '15 vs 9', '4 vs 11', '8 + 4', '3 + 9', '5 + 6']
 [VERIFICATION] PASS — Generated from latest session (session 2).

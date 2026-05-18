@@ -587,6 +587,9 @@ def generate_retest():
                 missing_domains = [t for t in top_tasks if len(current_retest_data.get(t, {}).get("tests", [])) < RETEST_TARGET_PER_DOMAIN]
 
                 if not blocking_errors and not missing_domains:
+                    total_questions = sum(len(d.get("tests", [])) for d in current_retest_data.values())
+                    report["counts"]["returned"] = total_questions
+
                     logger.info(f"[{rid}] Retest VALIDATION PASSED on attempt {attempt + 1}")
                     response = {
                         "retest_data": current_retest_data,
@@ -626,6 +629,9 @@ def generate_retest():
                 time.sleep(2 ** attempt)
 
         if best_retest_data:
+            total_questions = sum(len(d.get("tests", [])) for d in best_retest_data.values())
+            best_report["counts"]["returned"] = total_questions
+            
             logger.warning(f"[{rid}] Retest returning best partial result after all retries.")
             return jsonify({
                 "retest_data": best_retest_data,
