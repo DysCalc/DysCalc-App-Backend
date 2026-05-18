@@ -33,8 +33,6 @@ from llm.helpers import (
     format_with_cloud_llm,
     get_single_pass_lesson,
     validate_hint_quality,            
-    check_answer_diversity,         
-    check_hint_diversity,           
     validate_tone_for_status,       
     normalize_equation              
 )
@@ -266,9 +264,71 @@ def generate_module():
 @app.route('/generate_retest', methods=['POST'])
 def generate_retest():
     """
-    Generate a fresh, fully validated set of retest questions targeting the 
-    top 3 deficit tasks (e.g., number_comparison, dot_matching) from a student's 
-    longitudinal session history.
+    Generate a fresh, fully validated set of retest questions targeting the
+    top 3 deficit tasks from a student's longitudinal session history.
+
+    Always uses the LATEST session's diagnostic profile as the generation basis.
+    Pools ALL previous questions across ALL sessions for deduplication.
+    Requires task_importance_scores in the latest session's diagnostic_data.
+
+    Request Format:
+    {
+        "student_history": [
+            {
+                "session_id": <int>,
+                "date": "<string>",
+                "diagnostic_data": {
+                    "predicted_class": "<string>",
+                    "domain_severity_scores": { "<domain_name>": <float> },
+                    "task_importance_scores": { "<task_key>": <float> }
+                },
+                "questions_asked": [
+                    {"question": "<string>", "correct": <int>}
+                ]
+            }
+        ]
+    }
+
+    Success Response (HTTP 200):
+    {
+        "retest_data": {
+            "<task_name>": {
+                "rationale": "<string>",
+                "tests": [
+                    {
+                        "question": "<string>",
+                        "correct": <int or bool>,
+                        "hint": "<string>"
+                    }
+                ]
+            }
+        },
+        "_meta_validation_report": {
+            "counts": {"returned": <int>, "pruned": <int>},
+            "math_errors": [],
+            "pedagogy_errors": [],
+            "schema_errors": []
+        },
+        "based_on_session": <int>,
+        "based_on_session_date": "<string>",
+        "total_sessions_in_history": <int>
+    }
+
+    Partial Response (HTTP 207):
+    {
+        "retest_data": { ... },
+        "_meta_validation_report": { ... },
+        "based_on_session": <int>,
+        "based_on_session_date": "<string>",
+        "total_sessions_in_history": <int>,
+        "warning": "<string>"
+    }
+
+    Failure Response (HTTP 500):
+    {
+        "error": "<string>",
+        "best_validation_report": { ... }
+    }
     """
     try:
         data = request.json
@@ -289,10 +349,33 @@ def generate_retest():
         if not task_scores:
             return jsonify({"error": "Missing task_importance_scores in diagnostic_data"}), 400
             
-        # Sort tasks by severity score (highest first) and grab the top 3
-        top_tasks = sorted(task_scores, key=task_scores.get, reverse=True)[:3]
+        ACRONYM_TO_TASK = {
+            "NC": "number_comparison",
+            "DM": "dot_matching",
+            "NS": "number_series",
+            "ADD": "single_addition",
+            "SUB": "single_subtraction",
+            "CA": "complex_arithmetic"
+        }
         
-        domain_rules_dict = {t: DOMAIN_GENERATION_RULES.get(t, {}) for t in top_tasks}
+        filtered_task_scores = {
+            ACRONYM_TO_TASK[k]: v 
+            for k, v in task_scores.items() 
+            if k in ACRONYM_TO_TASK
+        }
+            
+        top_tasks = sorted(filtered_task_scores, key=filtered_task_scores.get, reverse=True)[:3]
+        
+        TASK_TO_DOMAIN = {
+            "number_comparison": "Number Comparison",
+            "dot_matching": "Digit-Dot Matching",
+            "number_series": "Number Series",
+            "single_addition": "Single-Digit Addition",
+            "single_subtraction": "Single-Digit Subtraction",
+            "complex_arithmetic": "Multi-Digit Addition and Subtraction",
+        }
+
+        domain_rules_dict = {t: DOMAIN_GENERATION_RULES.get(TASK_TO_DOMAIN.get(t, t), {}) for t in top_tasks}
         domain_rules = json.dumps(domain_rules_dict, indent=2)
 
         # Strict History Tracking & Deduplication (Pooling all sessions)
@@ -306,58 +389,64 @@ def generate_retest():
         )
 
         retest_prompt = f"""
-<role>
-You are a Senior Special Education (SPED) Clinical Consultant in the Philippines specializing in early Dyscalculia intervention.
-</role>
+        <role>
+        You are a Senior Special Education (SPED) Clinical Consultant in the Philippines specializing in early Dyscalculia intervention.
+        </role>
 
-<mission>
-Generate a FRESH set of retest practice problems for the student's TOP 3 deficit tasks based on the LATEST diagnostic profile below. 
-You MUST generate exactly 3 questions per task.
+        <mission>
+        Generate a FRESH set of retest practice problems for the student's TOP 3 deficit tasks based on the LATEST diagnostic profile below. 
+        You MUST generate exactly 3 questions per task.
 
-PRIMARY TASKS TO RETEST: {', '.join(top_tasks)}
-</mission>
+        PRIMARY TASKS TO RETEST: {', '.join(top_tasks)}
+        </mission>
 
-<latest_diagnostic_profile>
-{json.dumps(ml_data, indent=2)}
-</latest_diagnostic_profile>
+        <latest_diagnostic_profile>
+        {json.dumps(ml_data, indent=2)}
+        </latest_diagnostic_profile>
 
-<history_pool_do_not_repeat>
-The following problems have already been asked. Do NOT generate any problem that is exactly the same as these:
-{json.dumps([q.get("question", "") for q in all_previous_questions])}
-</history_pool_do_not_repeat>
+        <history_pool_do_not_repeat>
+        The following problems have already been asked. Do NOT generate any problem that is exactly the same as these:
+        {json.dumps([q.get("question", "") for q in all_previous_questions])}
+        </history_pool_do_not_repeat>
 
-<domain_specific_rules>
-{domain_rules if domain_rules else "No additional task rules provided."}
-</domain_specific_rules>
+        <domain_specific_rules>
+        {domain_rules if domain_rules else "No additional task rules provided."}
+        </domain_specific_rules>
 
-<clinical_precision>
-- PHILIPPINE CONTEXT: Use locally familiar objects in hints (mangoes, peso coins, blocks).
-- RATIONALE: Provide a brief clinical explanation of why this task is being retested based on the student's profile.
-- HINTS: Provide a teacher guide/hint for every question using Concrete-Representational-Abstract language.
-- TONE: If predicted_class is 0 (Typical), avoid terms like "severe", "critical", or "high-risk".
-- ASYMMETRY RULE: For any subtraction problems crossing ten, do NOT combine addition and subtraction into a single hint. You MUST strictly follow the CROSSING-TEN SUBTRACTION FORMULA (e.g., "take away X to reach 10, then take away Y").
-- TRUE/FALSE BALANCE: For tasks where the answer is boolean (True/False) or matching, you MUST provide a mix of both outcomes. Do not make all 3 answers the same.
-</clinical_precision>
+        <clinical_precision>
+        - PHILIPPINE CONTEXT: Use locally familiar objects in hints (mangoes, peso coins, blocks).
+        - RATIONALE: Provide a brief clinical explanation of why this task is being retested based on the student's profile.
+        - HINTS: Provide a teacher guide/hint for every question using Concrete-Representational-Abstract language.
+        - TONE: If predicted_class is 0 (Typical), avoid terms like "severe", "critical", or "high-risk".
+        - ASYMMETRY RULE: For any subtraction problems crossing ten, do NOT combine addition and subtraction into a single hint. You MUST strictly follow the CROSSING-TEN SUBTRACTION FORMULA (e.g., "take away X to reach 10, then take away Y").
+        - TRUE/FALSE BALANCE: For tasks where the answer is boolean (True/False) or matching, you MUST provide a mix of both outcomes. Do not make all 3 answers the same.
+        </clinical_precision>
 
-<output_format>
-Output RAW JSON only. No markdown fences. Ensure you generate exactly 3 questions per task.
-Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g., "14 + 7").
-{{
-    "TASK_NAME_1": {{
-        "rationale": "<Brief clinical explanation why this task is being retested>",
-        "tests": [
-            {{
-                "question": "<string, e.g., '2 vs 3' or '1+4'>",
-                "correct": <integer or boolean depending on the task format>,
-                "hint": "<string, teacher observation guide/hint>"
-            }}
-        ]
-    }},
-    "TASK_NAME_2": {{ ... }},
-    "TASK_NAME_3": {{ ... }}
-}}
-</output_format>
-"""
+        <output_format>
+        Output RAW JSON only. No markdown fences. Ensure you generate exactly 3 questions per task.
+        Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g., "14 + 7").
+
+        TASK FORMAT RULES:
+        - number_comparison: question must be "X vs Y" (e.g., "5 vs 8"). The two numbers MUST BE DIFFERENT SIZES (one strictly larger than the other). The 'correct' field must be the LARGER integer. NEVER use equal numbers like "6 vs 6".
+        - dot_matching: question must be "X vs Y" using INTEGERS ONLY (e.g., "4 vs 4"). Do NOT write "dots" in the question field.
+        - number_series: question must be the sequence string (e.g., "2, 4, 6, 8, __"), correct must be the missing integer
+        - single_addition / single_subtraction / complex_arithmetic: question must be a symbolic equation (e.g., "7 + 5"), correct must be the integer answer
+        {{
+            "TASK_NAME_1": {{
+                "rationale": "<Brief clinical explanation why this task is being retested>",
+                "tests": [
+                    {{
+                        "question": "<string, e.g., '2 vs 3' or '1+4'>",
+                        "correct": <integer or boolean depending on the task format>,
+                        "hint": "<string, teacher observation guide/hint>"
+                    }}
+                ]
+            }},
+            "TASK_NAME_2": {{ ... }},
+            "TASK_NAME_3": {{ ... }}
+        }}
+        </output_format>
+        """
 
         RETEST_TARGET_PER_DOMAIN = 3
         best_retest_data = {}
@@ -394,6 +483,9 @@ Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g.,
 
                 current_retest_data = {}
                 
+                # Schema Integrity: Bypass AST Math Validator for non-equation tasks
+                non_math_tasks = ["number_comparison", "dot_matching", "Number Comparison", "Digit-Dot Matching", "number_series", "Number Series"]
+
                 # Iterate through the generated tasks
                 for task_name, task_data in parsed.items():
                     rationale = task_data.get("rationale", "")
@@ -416,15 +508,14 @@ Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g.,
 
                         seen_in_batch.add(norm)
                         
-                        new_q["problem"] = new_q["question"]
+                        is_non_math = any(t.lower() in task_name.lower() for t in non_math_tasks)
+                        new_q["problem"] = "" if is_non_math else new_q["question"]
                         new_q["expected_answer"] = new_q.get("correct")
                         if "match" in new_q:
                             new_q["expected_answer"] = new_q["match"]
                             
                         unique_questions.append(new_q)
 
-                    # Schema Integrity: Bypass AST Math Validator for non-equation tasks
-                    non_math_tasks = ["number_comparison", "dot_matching", "Number Comparison", "Digit-Dot Matching"]
                     if any(t.lower() in task_name.lower() for t in non_math_tasks):
                         math_valid = unique_questions[:] 
                     else:
@@ -434,12 +525,13 @@ Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g.,
                     for item in math_valid[:]:
                         hint = str(item.get("hint", "")).strip()
 
-                        hint_ok, hint_error = validate_hint_quality(item.get("problem", ""), hint, task_name)
-                        if not hint_ok:
-                            report["pedagogy_errors"].append(f"[{task_name}] {hint_error}")
-                            report["counts"]["pruned"] += 1
-                            math_valid.remove(item)
-                            continue
+                        if not any(t.lower() in task_name.lower() for t in non_math_tasks):
+                            hint_ok, hint_error = validate_hint_quality(item.get("problem", ""), hint, task_name)
+                            if not hint_ok:
+                                report["pedagogy_errors"].append(f"[{task_name}] {hint_error}")
+                                report["counts"]["pruned"] += 1
+                                math_valid.remove(item)
+                                continue
 
                         tone_ok, tone_error = validate_tone_for_status(hint, predicted_class)
                         if not tone_ok:
@@ -447,6 +539,24 @@ Do NOT append "= ?" to the end of equations. Output the raw equation only (e.g.,
                             report["counts"]["pruned"] += 1
                             math_valid.remove(item)
                             continue
+
+                        # Guardrail: Prevent equal numbers in number_comparison
+                        if "comparison" in task_name.lower():
+                            q_str = item.get("question", "")
+                            parts = [p.strip() for p in q_str.lower().split("vs")]
+                            if len(parts) == 2 and parts[0] == parts[1]:
+                                report["pedagogy_errors"].append(f"[{task_name}] Cannot use equal numbers ({q_str}). X and Y must be different.")
+                                report["counts"]["pruned"] += 1
+                                math_valid.remove(item)
+                                continue
+
+                        # Guardrail: Force boolean types for dot_matching
+                        if "dot_matching" in task_name.lower() or "digit-dot" in task_name.lower():
+                            if not isinstance(item.get("expected_answer"), bool):
+                                report["schema_errors"].append(f"[{task_name}] 'correct' field must be a boolean (true/false), not an integer.")
+                                report["counts"]["pruned"] += 1
+                                math_valid.remove(item)
+                                continue
                         
                         item.pop("problem", None)
                         item.pop("expected_answer", None)

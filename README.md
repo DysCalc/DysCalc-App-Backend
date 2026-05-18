@@ -179,7 +179,7 @@ If all retries fail, the response now preserves the strongest near-valid attempt
 
 Generates a fresh, fully validated set of retest questions targeting the top 3 deficit tasks from a student's longitudinal session history. Always uses the **latest session's** diagnostic profile as the generation basis. Pools all previous questions across all sessions for strict deduplication.
 
-Questions are dynamically grouped by their specific task name and validated through the same math, pedagogy, and hint-quality checks used by `/generate_module` (excluding answer diversity checks due to the targeted 3-question limit).
+Questions are dynamically grouped by their specific task name and validated through the same math, pedagogy, and hint-quality checks used by `/generate_module` (excluding answer diversity checks due to the targeted 3-question limit). Non-symbolic string tasks (like number series or dot matching) safely bypass the mathematical AST parser.
 
 Request:
 
@@ -195,8 +195,10 @@ Request:
           "Addition vs. Subtraction Asymmetry": 0.55
         },
         "task_importance_scores": {
-          "single_subtraction": 0.55,
-          "single_addition": 0.30
+          "SUB": 0.55,
+          "AS": 0.45,
+          "ADD": 0.30,
+          "NS": 0.20
         }
       },
       "questions_asked": [
@@ -219,8 +221,10 @@ Request:
           "Addition vs. Subtraction Asymmetry": 0.35
         },
         "task_importance_scores": {
-          "single_subtraction": 0.35,
-          "single_addition": 0.15
+          "SUB": 0.35,
+          "AS": 0.25,
+          "ADD": 0.15,
+          "NS": 0.18
         }
       },
       "questions_asked": []
@@ -231,8 +235,8 @@ Request:
 
 Notes:
 - **Longitudinal Deduplication:** The endpoint automatically aggregates all items from the `questions_asked` arrays across *all* provided sessions. Any question matching a historical item is discarded and regenerated.
-- **Dynamic Task Selection:** The endpoint ranks the keys provided in `task_importance_scores` in descending order to automatically target the top 3 acute deficit areas for retesting.
-- **Data Circularity:** To allow seamless data recycling, both the input payload (`questions_asked`) and the generated output arrays strictly use matching `"question"` and `"correct"` keys.
+- **Dynamic Task Selection:** The endpoint automatically translates raw ML task acronyms (e.g., ADD, NC, SUB) provided in `task_importance_scores` dictionary into standard schema keys (single_addition, number_comparison, etc.). Overarching domain acronyms (e.g., AS or BC) are safely ignored. It then ranks the valid tasks in descending order to target the top 3 acute deficit areas.
+- **Data Circularity:** To allow seamless data recycling between the database and the frontend, both the input payload (`questions_asked`) and the generated output arrays strictly use matching `"question"` and `"correct"` keys.
 
 Success response (HTTP 200) — produces exactly 3 targeted questions per task with an individual SPED rationale:
 
