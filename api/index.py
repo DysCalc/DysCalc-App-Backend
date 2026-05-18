@@ -453,7 +453,7 @@ def generate_retest():
         best_report = None
         correction_prompt = ""
 
-        for attempt in range(3):
+        for attempt in range(5):
             logger.info(f"[{rid}] Retest attempt {attempt + 1}")
             try:
                 payload = {
@@ -612,6 +612,8 @@ def generate_retest():
                     repair_notes.append(f"Math errors: {report['math_errors']}.")
                 if report["pedagogy_errors"]:
                     repair_notes.append(f"Pedagogy errors: {report['pedagogy_errors']}.")
+                if report["schema_errors"]:
+                    repair_notes.append(f"Schema errors: {report['schema_errors']}.")
                 
                 if repair_notes:
                     correction_prompt = "\n\nCRITICAL CORRECTION:\n" + " ".join(repair_notes)
