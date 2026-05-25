@@ -5,6 +5,7 @@ import copy
 import math
 import json
 import difflib
+import random
 
 from llm.constants import (
     ALLOWED_OPS,
@@ -665,6 +666,153 @@ def validate_assessment_item(item: dict, assessment_equations=None) -> tuple[boo
         return False, f"Assessment mismatch: {q_text} evaluated to {computed}, got {ans_text}", None
 
     return True, None, {"question": q_text, "expected_answer": int(ans_text)}
+
+def generate_retest_items(
+    task: str,
+    count: int,
+    used_ids: set,
+    used_strs: set,
+) -> list[dict]:
+    """
+    Deterministically generates gap-fill retest items when the item bank is
+    exhausted. No LLM involvement. Returns at most `count` items.
+ 
+    Covers: number_comparison, dot_matching, number_series,
+            single_addition, single_subtraction.
+ 
+    complex_arithmetic is NOT handled here — it falls through to the LLM
+    in the endpoint because multi-digit questions require more varied structure.
+ 
+    Each returned item has keys: id, question, correct.
+    Hints are attached later in the endpoint from TASK_TEACHER_HINTS.
+    """
+ 
+    results = []
+ 
+    if task == "number_comparison":
+        candidates = []
+        for a in range(2, 16):
+            for b in range(2, 16):
+                if a == b:
+                    continue
+                q_str = f"{a} vs {b}"
+                q_id  = f"nc_gen_{a:02d}_{b:02d}"
+                if q_id in used_ids or normalize_equation(q_str) in used_strs:
+                    continue
+                candidates.append({
+                    "id":       q_id,
+                    "question": q_str,
+                    "correct":  max(a, b),
+                })
+        random.shuffle(candidates)
+        results = candidates[:count]
+ 
+    elif task == "dot_matching":
+        match_candidates = []
+        for n in range(1, 10):
+            q_str = f"{n} vs {n}"
+            q_id  = f"dm_gen_m_{n:02d}"
+            if q_id in used_ids or normalize_equation(q_str) in used_strs:
+                continue
+            match_candidates.append({
+                "id":       q_id,
+                "question": q_str,
+                "correct":  True,
+            })
+ 
+        non_match_candidates = []
+        for a in range(1, 10):
+            for b in range(1, 10):
+                if a == b:
+                    continue
+                q_str = f"{a} vs {b}"
+                q_id  = f"dm_gen_n_{a:02d}_{b:02d}"
+                if q_id in used_ids or normalize_equation(q_str) in used_strs:
+                    continue
+                non_match_candidates.append({
+                    "id":       q_id,
+                    "question": q_str,
+                    "correct":  False,
+                })
+ 
+        random.shuffle(match_candidates)
+        random.shuffle(non_match_candidates)
+ 
+        half = count // 2
+        taken_match     = match_candidates[:half]
+        taken_non_match = non_match_candidates[:count - half]
+        combined = taken_match + taken_non_match
+        random.shuffle(combined)
+        results = combined[:count]
+ 
+    elif task == "number_series":
+        candidates = []
+        steps = [1, 2, 3, 4, 5, 10]
+ 
+        for step in steps:
+            for start in range(1, 21):
+                terms = [start + step * i for i in range(4)]
+                answer = start + step * 4
+                q_str = f"{terms[0]}, {terms[1]}, {terms[2]}, {terms[3]}, __"
+                q_id  = f"ns_gen_a_{start:02d}_s{step}"
+                if q_id not in used_ids and normalize_equation(q_str) not in used_strs:
+                    candidates.append({
+                        "id":       q_id,
+                        "question": q_str,
+                        "correct":  answer,
+                    })
+ 
+                if start > step * 4:
+                    d_terms = [start - step * i for i in range(4)]
+                    d_answer = start - step * 4
+                    if d_answer > 0:
+                        q_str_d = f"{d_terms[0]}, {d_terms[1]}, {d_terms[2]}, {d_terms[3]}, __"
+                        q_id_d  = f"ns_gen_d_{start:02d}_s{step}"
+                        if q_id_d not in used_ids and normalize_equation(q_str_d) not in used_strs:
+                            candidates.append({
+                                "id":       q_id_d,
+                                "question": q_str_d,
+                                "correct":  d_answer,
+                            })
+ 
+        random.shuffle(candidates)
+        results = candidates[:count]
+ 
+    elif task == "single_addition":
+        candidates = []
+        for a in range(1, 10):
+            for b in range(1, 10):
+                q_str = f"{a} + {b}"
+                q_id  = f"add_gen_{a:02d}_{b:02d}"
+                if q_id in used_ids or normalize_equation(q_str) in used_strs:
+                    continue
+                candidates.append({
+                    "id":       q_id,
+                    "question": q_str,
+                    "correct":  a + b,
+                })
+        random.shuffle(candidates)
+        results = candidates[:count]
+ 
+    elif task == "single_subtraction":
+        candidates = []
+        for a in range(1, 19):   
+            for b in range(1, 10):
+                if a - b <= 0:
+                    continue
+                q_str = f"{a} - {b}"
+                q_id  = f"sub_gen_{a:02d}_{b:02d}"
+                if q_id in used_ids or normalize_equation(q_str) in used_strs:
+                    continue
+                candidates.append({
+                    "id":       q_id,
+                    "question": q_str,
+                    "correct":  a - b,
+                })
+        random.shuffle(candidates)
+        results = candidates[:count]
+  
+    return results
 
 def get_lesson_from_qwen(
     ml_data,
