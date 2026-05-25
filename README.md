@@ -177,10 +177,9 @@ If all retries fail, the response now preserves the strongest near-valid attempt
 
 ### `POST /generate_retest`
 
-Generates a fresh, fully validated set of retest questions from a student's longitudinal
-session history. Always uses the **latest session's** diagnostic profile as the generation
-basis. Pools all previous questions across all sessions for deduplication. Questions are
-validated through the same math, pedagogy, and hint-quality checks used by `/generate_module`.
+Generates a fresh, fully validated set of retest questions targeting the top 3 deficit tasks from a student's longitudinal session history. Always uses the **latest session's** diagnostic profile as the generation basis. Pools all previous questions across all sessions for strict deduplication.
+
+Questions are dynamically grouped by their specific task name and validated through the same math, pedagogy, and hint-quality checks used by `/generate_module` (excluding answer diversity checks due to the targeted 3-question limit). Non-symbolic string tasks (like number series or dot matching) safely bypass the mathematical AST parser.
 
 Request:
 
@@ -196,12 +195,21 @@ Request:
           "Addition vs. Subtraction Asymmetry": 0.55
         },
         "task_importance_scores": {
-          "AS": 0.55
+          "SUB": 0.55,
+          "AS": 0.45,
+          "ADD": 0.30,
+          "NS": 0.20
         }
       },
       "questions_asked": [
-        {"problem": "5 + 3", "expected_answer": 8},
-        {"problem": "8 - 3", "expected_answer": 5}
+        {
+          "question": "5 + 3",
+          "correct": 8
+        },
+        {
+          "question": "8 - 3",
+          "correct": 5
+        }
       ]
     },
     {
@@ -213,7 +221,10 @@ Request:
           "Addition vs. Subtraction Asymmetry": 0.35
         },
         "task_importance_scores": {
-          "AS": 0.35
+          "SUB": 0.35,
+          "AS": 0.25,
+          "ADD": 0.15,
+          "NS": 0.18
         }
       },
       "questions_asked": []
@@ -223,52 +234,70 @@ Request:
 ```
 
 Notes:
-- `questions_asked` must be an empty array `[]` for the current (latest) session.
-- `task_importance_scores` is used by the domain selection algorithm and should be included when available.
-- All problems in `questions_asked` must be symbolic equations (e.g. `"13 - 5"`), not word problems.
+- **Longitudinal Deduplication:** The endpoint automatically aggregates all items from the `questions_asked` arrays across *all* provided sessions. Any question matching a historical item is discarded and regenerated.
+- **Dynamic Task Selection:** The endpoint automatically translates raw ML task acronyms (e.g., ADD, NC, SUB) provided in `task_importance_scores` dictionary into standard schema keys (single_addition, number_comparison, etc.). Overarching domain acronyms (e.g., AS or BC) are safely ignored. It then ranks the valid tasks in descending order to target the top 3 acute deficit areas.
+- **Data Circularity:** To allow seamless data recycling between the database and the frontend, both the input payload (`questions_asked`) and the generated output arrays strictly use matching `"question"` and `"correct"` keys.
 
-Success response (HTTP 200) — all 5 questions passed full validation:
+Success response (HTTP 200) — produces exactly 3 targeted questions per task with an individual SPED rationale:
 
 ```json
 {
-  "retest_questions": [
-    {
-      "problem": "13 - 6",
-      "hint": "Use 13 blocks. Take away 3 to reach 10, then take away 3 more. Count 7 blocks left.",
-      "expected_answer": 7
-    }
-  ],
   "_meta_validation_report": {
-    "counts": {"returned": 5, "pruned": 0},
+    "counts": {
+      "pruned": 0,
+      "returned": 6
+    },
     "math_errors": [],
     "pedagogy_errors": [],
     "schema_errors": []
   },
   "based_on_session": 2,
   "based_on_session_date": "2026-05-08",
+  "retest_data": {
+    "single_addition": {
+      "rationale": "This task is being retested to reinforce the student's understanding of basic addition, which is essential for building a strong foundation in arithmetic...",
+      "tests": [
+        {
+          "correct": 13,
+          "hint": "Start with 6 blocks. Add 4 more blocks to reach 10, then add 3 more blocks.",
+          "question": "6 + 7"
+        }
+      ]
+    },
+    "single_subtraction": {
+      "rationale": "This task is being retested to address the student's difficulty with basic subtraction, which is a critical foundational skill...",
+      "tests": [
+        {
+          "correct": 8,
+          "hint": "Start with 15 blocks. Take away 5 blocks to reach 10, then take away 2 more blocks. Count the remaining blocks.",
+          "question": "15 - 7"
+        }
+      ]
+    }
+  },
   "total_sessions_in_history": 2
 }
 ```
 
-Partial response (HTTP 207) — retries exhausted but at least one valid question was produced:
+Partial response (HTTP 207) — retries exhausted but at least one domain passed validation safely:
 
 ```json
 {
-  "retest_questions": [...],
-  "_meta_validation_report": {...},
+  "retest_data": { ... },
+  "_meta_validation_report": { ... },
   "based_on_session": 2,
   "based_on_session_date": "2026-05-08",
   "total_sessions_in_history": 2,
-  "warning": "Only 3 of 5 questions passed full validation. Review _meta_validation_report for details."
+  "warning": "Partial validation failure. Review _meta_validation_report."
 }
 ```
 
-Failure response (HTTP 500) — no valid questions produced after all retries:
+Failure response (HTTP 500) — no valid items could be generated or repaired after all retry loops:
 
 ```json
 {
   "error": "Failed to generate valid retest questions after retries.",
-  "best_validation_report": {...}
+  "best_validation_report": { ... }
 }
 ```
 

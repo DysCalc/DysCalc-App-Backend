@@ -57,9 +57,8 @@ def print_menu(items):
 def print_verification(body, scenario_history):
     """
     Runs post-response verification checks and prints a clear report.
-    Mirrors the same checks the original test_retest.py described manually.
+    Updated to handle the new nested 'retest_data' dictionary structure.
     """
-    questions = body.get("retest_questions", [])
     based_on = body.get("based_on_session")
     total_sessions = body.get("total_sessions_in_history")
     report = body.get("_meta_validation_report", {})
@@ -85,11 +84,18 @@ def print_verification(body, scenario_history):
     if schema_errors:
         print(f"[VALIDATION] Schema errors:   {schema_errors}")
 
+    # Extract the new questions from the nested retest_data dictionary
+    retest_data = body.get("retest_data", {})
+    new_generated_questions = []
+    for domain, content in retest_data.items():
+        for test_item in content.get("tests", []):
+            new_generated_questions.append(test_item)
+
     # Collect all problems previously seen across all sessions
     all_previous = set()
     for session in scenario_history:
         for q in session.get("questions_asked", []):
-            prob = q.get("problem", "").strip()
+            prob = q.get("question", "").strip()
             if prob:
                 all_previous.add(prob)
 
@@ -97,8 +103,8 @@ def print_verification(body, scenario_history):
 
     repeated = []
     new_problems = []
-    for q in questions:
-        prob = q.get("problem", "").strip()
+    for q in new_generated_questions:
+        prob = q.get("question", "").strip()
         if prob in all_previous:
             repeated.append(prob)
         else:
