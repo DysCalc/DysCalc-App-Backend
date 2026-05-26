@@ -3,11 +3,12 @@ import ast
 import operator
 from dotenv import load_dotenv
 from pathlib import Path
+import json as json
 
 env_path = Path(__file__).parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
-EXPERIMENT_MODE = os.getenv("EXPERIMENT_MODE", "3")
+EXPERIMENT_MODE = os.getenv("EXPERIMENT_MODE", "5")
 CLOUD_TOKEN = os.getenv("OPENROUTER_TOKEN")
 OPENROUTER_TOKEN = os.getenv("OPENROUTER_TOKEN")
 
@@ -322,4 +323,87 @@ DOMAIN_GENERATION_RULES = {
             "repetitive hint wording"
         ],
     },
+    
+}
+
+RETEST_SAMPLE_SIZE = {
+    "number_comparison":  10,
+    "dot_matching":       10,
+    "single_addition":    15,
+    "single_subtraction": 15,
+    "number_series":      10,
+    "complex_arithmetic": 15,
+}
+ 
+
+_BANK_PATH = Path(__file__).parent.parent / "tests" / "dyscalc_simulation.json"
+ 
+def _load_item_bank():
+    try:
+        raw = json.loads(_BANK_PATH.read_text(encoding="utf-8"))
+        return {
+            "number_comparison":    raw["TASK_1_NUMBER_COMPARISON"]["items"],
+            "dot_matching":         raw["TASK_2_DIGIT_DOT_MATCHING"]["items"],
+            "single_addition":      raw["TASK_3_SINGLE_DIGIT_ADDITION"]["items"],
+            "single_subtraction":   raw["TASK_4_SINGLE_DIGIT_SUBTRACTION"]["items"],
+            "number_series":        raw["TASK_5_NUMBER_SERIES"]["items"],
+            "complex_arithmetic":   raw["TASK_6_MULTI_DIGIT_CALCULATION"]["items"],
+        }
+    except Exception as e:
+        print(f"[WARN] Could not load item bank from {_BANK_PATH}: {e}")
+        return {}
+ 
+TASK_ITEM_BANK = _load_item_bank()
+print(f"[SYSTEM] Item bank loaded: { {k: len(v) for k, v in TASK_ITEM_BANK.items()} }")
+ 
+# Full question counts matching the original assessment per task. Retest targets the same count or whatever remains after deduplication, with LLM gap-filling if the bank is exhausted.
+TASK_QUESTION_COUNTS = {
+    "number_comparison":  42,
+    "dot_matching":       42,
+    "single_addition":    81,
+    "single_subtraction": 81,
+    "number_series":      20,
+    "complex_arithmetic": 80,
+}
+
+ACRONYM_TO_TASK = {
+    "NC":  "number_comparison",
+    "DM":  "dot_matching",
+    "NS":  "number_series",
+    "ADD": "single_addition",
+    "SUB": "single_subtraction",
+    "CA":  "complex_arithmetic",
+}
+ 
+TASK_TEACHER_HINTS = {
+    "number_comparison": (
+        "Observe whether the student hesitates before answering. "
+        "Watch for finger counting or mouthing numbers. "
+        "If the student guesses without comparing, prompt: 'Which pile has more?'"
+    ),
+    "dot_matching": (
+        "Watch whether the student counts each dot individually or subitizes. "
+        "Note any hesitation on non-matching pairs. "
+        "Prompt: 'Are these the same amount?' if the student responds too quickly."
+    ),
+    "number_series": (
+        "Observe whether the student identifies the rule (counting by 2s, 5s, etc.) "
+        "or guesses. Ask the student to explain the pattern aloud. "
+        "Watch for errors at decade boundaries (e.g., ...8, 9, 10...)."
+    ),
+    "single_addition": (
+        "Watch for finger counting or counting-all strategies. "
+        "Note whether the student uses make-10 or counts on from the larger number. "
+        "Prompt: 'Can you start from the bigger number and count on?'"
+    ),
+    "single_subtraction": (
+        "Watch for counting-down-from strategies versus fact retrieval. "
+        "For crossing-ten items, note whether the student bridges through 10. "
+        "Prompt: 'How many do you need to take away to reach 10 first?'"
+    ),
+    "complex_arithmetic": (
+        "Observe whether the student decomposes into tens and ones or attempts to compute directly. "
+        "Watch for place-value confusion. "
+        "Prompt: 'How many tens are in that number?' if the student stalls."
+    ),
 }

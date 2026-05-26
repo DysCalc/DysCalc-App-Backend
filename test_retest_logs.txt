@@ -2,11 +2,10 @@
 [1] Case 1: Improving Subtraction Asymmetry (Session 3) (3 sessions logged)
 [2] Case 2: Persistent Processing-Fluency Deficit (Session 2) (2 sessions logged)
 [3] Case 3: Typical Learner Refresher (Session 2) (2 sessions logged)
+[4] Case 4: Bank Exhaustion Stress Test — Number Series (Session 25) (3 sessions logged)
 ----------------------------------
 
-Select scenarios to run (e.g., 1, 1-2, all): all
-
-[SYSTEM] Running 3 selected scenario(s)...
+[SYSTEM] Running 4 selected scenario(s)...
 
 ============================================================
 EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
@@ -15,93 +14,44 @@ EXECUTING: Case 1: Improving Subtraction Asymmetry (Session 3)
 
 [INFO] Based on session:          3
 [INFO] Total sessions in history: 3
-[OUTPUT] Questions returned:      9
+[OUTPUT] Questions returned:      40
 [OUTPUT] Questions pruned:        0
 
-=== NEW RETEST QUESTIONS ===
-{
-  "_meta_validation_report": {
-    "counts": {
-      "pruned": 0,
-      "returned": 9
-    },
-    "math_errors": [],
-    "pedagogy_errors": [],
-    "schema_errors": []
-  },
-  "based_on_session": 3,
-  "based_on_session_date": "2026-05-08",
-  "retest_data": {
-    "number_series": {
-      "rationale": "This task is being retested to improve the student's ability to recognize and continue number sequences. The focus is on counting patterns and understanding the order of numbers.",
-      "tests": [
-        {
-          "correct": 15,
-          "hint": "Use peso coins to show the sequence. Count by 3s to find the next number.",
-          "question": "3, 6, 9, 12, __"
-        },
-        {
-          "correct": 12,
-          "hint": "Draw a number line and count back by 2s from 20 to find the next number.",
-          "question": "20, 18, 16, 14, __"
-        },
-        {
-          "correct": 25,
-          "hint": "Use blocks to show the sequence. Count by 5s to find the next number.",
-          "question": "5, 10, 15, 20, __"
-        }
-      ]
-    },
-    "single_addition": {
-      "rationale": "This task is being retested to strengthen the student's basic addition skills, particularly in making ten and counting on. The focus is on reinforcing the use of concrete objects and number lines.",
-      "tests": [
-        {
-          "correct": 11,
-          "hint": "Use mangoes to show 6 and 5. Count all the mangoes to find the total.",
-          "question": "6 + 5"
-        },
-        {
-          "correct": 10,
-          "hint": "Use your fingers to show 7. Count on 3 more fingers to find the total.",
-          "question": "7 + 3"
-        },
-        {
-          "correct": 11,
-          "hint": "Draw a number line and start at 9. Count on 2 more steps to find the total.",
-          "question": "9 + 2"
-        }
-      ]
-    },
-    "single_subtraction": {
-      "rationale": "This task is being retested to address the student's difficulty with basic subtraction facts and the concept of taking away. The focus is on reinforcing the understanding of subtraction without borrowing or negative answers.",
-      "tests": [
-        {
-          "correct": 7,
-          "hint": "Use blocks to show 11 mangoes. Take away 4 mangoes and count how many are left.",
-          "question": "11 - 4"
-        },
-        {
-          "correct": 8,
-          "hint": "Use 15 blocks. Take away 5 to reach 10, then take away 2 more. Count 8 blocks left.",
-          "question": "15 - 7"
-        },
-        {
-          "correct": 7,
-          "hint": "Use your fingers to show 10. Put down 3 fingers and count how many are left standing.",
-          "question": "10 - 3"
-        }
-      ]
-    }
-  },
-  "total_sessions_in_history": 3
-}
-============================
+[TASK BREAKDOWN]
+  number_series: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  single_addition: target=15 | from_bank=15 | from_gap_fill=0 | excluded=2
+  single_subtraction: target=15 | from_bank=15 | from_gap_fill=0 | excluded=2
 
+[VERIFICATION] History pool: 4 unique IDs, 4 unique question strings
+[VERIFICATION] PASS — No repeated question IDs from history.
+[VERIFICATION] PASS — No repeated question strings from history.
+[VERIFICATION] PASS — Correctly based on latest session (3).
+[VERIFICATION] PASS — Session count correct (3).
 
-[VERIFICATION] Previous questions in history pool: ['12 - 5', '5 + 3', '8 - 3', '9 + 4']
-[VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['3, 6, 9, 12, __', '20, 18, 16, 14, __', '5, 10, 15, 20, __', '6 + 5', '7 + 3', '9 + 2', '11 - 4', '15 - 7', '10 - 3']
-[VERIFICATION] PASS — Generated from latest session (session 3).
+[QUESTION COUNTS PER TASK]
+  number_series: 10 / 10 [OK]
+  single_addition: 15 / 15 [OK]
+  single_subtraction: 15 / 15 [OK]
+
+[SAMPLE OUTPUT — first 3 questions per task]
+
+  NUMBER_SERIES
+  Rationale: Number series completion is being retested because of its task importance score of 0.18, which highlights the need to assess the student's ability to recognize patterns and sequences, crucial for overall mathematical reasoning....
+    [ns_16] 15, 25, 35, _ = 45 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_03] 5, 10, 15, _ = 20 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_10] 100, 200, 300, _ = 400 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+
+  SINGLE_ADDITION
+  Rationale: Single addition is being retested due to the student's 'At-Risk' status and a task importance score of 0.15, emphasizing the need to ensure foundational arithmetic skills are solidified....
+    [add_77] 9+5 = 14 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+    [add_40] 5+4 = 9 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+    [add_06] 1+6 = 7 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+
+  SINGLE_SUBTRACTION
+  Rationale: Retesting single subtraction is essential due to the student's 'At-Risk' classification and a task importance score of 0.25, indicating a significant need to monitor and improve this skill....
+    [sub_66] 11-3 = 8 | hint: Watch for counting-down-from strategies versus fact retrieval. For crossing-ten items, note whether the student bridges through 10. Prompt: 'How many do you need to take away to reach 10 first?'
+    [sub_60] 13-6 = 7 | hint: Watch for counting-down-from strategies versus fact retrieval. For crossing-ten items, note whether the student bridges through 10. Prompt: 'How many do you need to take away to reach 10 first?'
+    [sub_80] 17-8 = 9 | hint: Watch for counting-down-from strategies versus fact retrieval. For crossing-ten items, note whether the student bridges through 10. Prompt: 'How many do you need to take away to reach 10 first?'
 
 ============================================================
 EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
@@ -110,93 +60,44 @@ EXECUTING: Case 2: Persistent Processing-Fluency Deficit (Session 2)
 
 [INFO] Based on session:          2
 [INFO] Total sessions in history: 2
-[OUTPUT] Questions returned:      9
+[OUTPUT] Questions returned:      30
 [OUTPUT] Questions pruned:        0
 
-=== NEW RETEST QUESTIONS ===
-{
-  "_meta_validation_report": {
-    "counts": {
-      "pruned": 0,
-      "returned": 9
-    },
-    "math_errors": [],
-    "pedagogy_errors": [],
-    "schema_errors": []
-  },
-  "based_on_session": 2,
-  "based_on_session_date": "2026-04-20",
-  "retest_data": {
-    "dot_matching": {
-      "rationale": "The student needs to improve their ability to link digits to exact visual quantities and check one-to-one correspondence. Retesting this task will help solidify the connection between symbolic numbers and their concrete representations.",
-      "tests": [
-        {
-          "correct": false,
-          "hint": "Count 4 blocks and 6 blocks. 4 blocks are fewer than 6 blocks, so 4 is not the same as 6.",
-          "question": "4 vs 6"
-        },
-        {
-          "correct": true,
-          "hint": "Count 7 peso coins and 7 peso coins. Both sets have the same number of coins, so 7 is equal to 7.",
-          "question": "7 vs 7"
-        },
-        {
-          "correct": false,
-          "hint": "Count 9 mangoes and 5 mangoes. 9 mangoes are more than 5 mangoes, so 9 is not the same as 5.",
-          "question": "9 vs 5"
-        }
-      ]
-    },
-    "number_comparison": {
-      "rationale": "The student has shown difficulty in comparing numerical magnitudes, which is crucial for developing a strong number sense. Retesting this task will help reinforce the ability to identify larger or smaller numbers and understand their relative sizes.",
-      "tests": [
-        {
-          "correct": 9,
-          "hint": "Use a number line to show that 9 is to the right of 5, indicating that 9 is larger. You can also use blocks to show that 9 blocks are more than 5 blocks.",
-          "question": "5 vs 9"
-        },
-        {
-          "correct": 12,
-          "hint": "Count out 12 mangoes and 7 mangoes. The pile with 12 mangoes is larger, so 12 is greater than 7.",
-          "question": "12 vs 7"
-        },
-        {
-          "correct": 8,
-          "hint": "Draw a number line from 0 to 10. Place 3 and 8 on the line. 8 is further to the right, so it is larger than 3.",
-          "question": "3 vs 8"
-        }
-      ]
-    },
-    "number_series": {
-      "rationale": "The student has shown challenges in recognizing number order and counting patterns. Retesting this task will help improve their ability to identify missing numbers in sequences and understand simple forward and backward counting.",
-      "tests": [
-        {
-          "correct": 10,
-          "hint": "Use a number line to show the sequence. Count by 2s: 2, 4, 6, 8, 10. The next number is 10.",
-          "question": "2, 4, 6, 8, __"
-        },
-        {
-          "correct": 7,
-          "hint": "Use a number line to show the sequence. Count backward by 2s: 15, 13, 11, 9, 7. The next number is 7.",
-          "question": "15, 13, 11, 9, __"
-        },
-        {
-          "correct": 15,
-          "hint": "Use a number line to show the sequence. Count by 3s: 3, 6, 9, 12, 15. The next number is 15.",
-          "question": "3, 6, 9, 12, __"
-        }
-      ]
-    }
-  },
-  "total_sessions_in_history": 2
-}
-============================
+[TASK BREAKDOWN]
+  dot_matching: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  number_comparison: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  number_series: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
 
+[VERIFICATION] History pool: 2 unique IDs, 2 unique question strings
+[VERIFICATION] PASS — No repeated question IDs from history.
+[VERIFICATION] PASS — No repeated question strings from history.
+[VERIFICATION] PASS — Correctly based on latest session (2).
+[VERIFICATION] PASS — Session count correct (2).
 
-[VERIFICATION] Previous questions in history pool: ['14 - 6', '7 + 5']
-[VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['4 vs 6', '7 vs 7', '9 vs 5', '5 vs 9', '12 vs 7', '3 vs 8', '2, 4, 6, 8, __', '15, 13, 11, 9, __', '3, 6, 9, 12, __']
-[VERIFICATION] PASS — Generated from latest session (session 2).
+[QUESTION COUNTS PER TASK]
+  dot_matching: 10 / 10 [OK]
+  number_comparison: 10 / 10 [OK]
+  number_series: 10 / 10 [OK]
+
+[SAMPLE OUTPUT — first 3 questions per task]
+
+  DOT_MATCHING
+  Rationale: Retesting is essential due to the task importance score (DM: 0.38) and the domain severity score for Overall Processing Efficiency (0.38). This will help in assessing the student's visual-motor integration and processing speed....
+    [dm_18] 9 vs 9 dots = True | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_40] 2 vs 7 dots = False | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_02] 2 vs 2 dots = True | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+
+  NUMBER_COMPARISON
+  Rationale: Retesting is necessary as the task importance score (NC: 0.5) indicates a significant role in the student's overall processing efficiency. Given the domain severity score for Processing-Fluency Integration (0.5), retesting will help monitor progress in this critical area....
+    [nc_26] 6 vs 3 = 6 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_07] 3 vs 2 = 3 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_05] 2 vs 7 = 7 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+
+  NUMBER_SERIES
+  Rationale: Retesting is recommended to evaluate the student's sequential processing and working memory, as indicated by the task importance score (NS: 0.28) and the domain severity score for Processing-Fluency Integration (0.5)....
+    [ns_04] 10, 20, 30, _ = 40 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_18] 1, 4, 9, _ = 16 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_12] 1, 2, 4, _ = 8 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
 
 ============================================================
 EXECUTING: Case 3: Typical Learner Refresher (Session 2)
@@ -205,90 +106,89 @@ EXECUTING: Case 3: Typical Learner Refresher (Session 2)
 
 [INFO] Based on session:          2
 [INFO] Total sessions in history: 2
-[OUTPUT] Questions returned:      9
+[OUTPUT] Questions returned:      35
 [OUTPUT] Questions pruned:        0
 
-=== NEW RETEST QUESTIONS ===
-{
-  "_meta_validation_report": {
-    "counts": {
-      "pruned": 0,
-      "returned": 9
-    },
-    "math_errors": [],
-    "pedagogy_errors": [],
-    "schema_errors": []
-  },
-  "based_on_session": 2,
-  "based_on_session_date": "2026-05-01",
-  "retest_data": {
-    "dot_matching": {
-      "rationale": "Retesting dot matching to strengthen the student's ability to link digits to exact visual quantities and ensure one-to-one correspondence, as indicated by the task importance score.",
-      "tests": [
-        {
-          "correct": true,
-          "hint": "Use dots to show 4 dots and 4 dots. Count each dot to ensure they match.",
-          "question": "4 vs 4"
-        },
-        {
-          "correct": true,
-          "hint": "Use blocks to show 7 blocks and 7 blocks. Count each block to ensure they match.",
-          "question": "7 vs 7"
-        },
-        {
-          "correct": true,
-          "hint": "Use peso coins to show 9 coins and 9 coins. Count each coin to ensure they match.",
-          "question": "9 vs 9"
-        }
-      ]
-    },
-    "number_comparison": {
-      "rationale": "Retesting number comparison to enhance the student's ability to compare numerical magnitudes and understand the concept of larger and smaller numbers, as indicated by the task importance score.",
-      "tests": [
-        {
-          "correct": 12,
-          "hint": "Use a number line to show the positions of 7 and 12. The number further to the right is larger.",
-          "question": "7 vs 12"
-        },
-        {
-          "correct": 15,
-          "hint": "Use blocks to show 15 blocks and 9 blocks. The pile with more blocks is larger.",
-          "question": "15 vs 9"
-        },
-        {
-          "correct": 11,
-          "hint": "Use mangoes to show 4 mangoes and 11 mangoes. The group with more mangoes is larger.",
-          "question": "4 vs 11"
-        }
-      ]
-    },
-    "single_addition": {
-      "rationale": "Retesting single-digit addition to reinforce basic addition facts and improve fluency, as indicated by the student's domain severity score in Single-Digit Addition.",
-      "tests": [
-        {
-          "correct": 12,
-          "hint": "Use mangoes to show 8 mangoes and 4 mangoes. Count all the mangoes together to get the total.",
-          "question": "8 + 4"
-        },
-        {
-          "correct": 12,
-          "hint": "Use peso coins to show 3 coins and 9 coins. Count all the coins together to get the total.",
-          "question": "3 + 9"
-        },
-        {
-          "correct": 11,
-          "hint": "Use blocks to show 5 blocks and 6 blocks. Count all the blocks together to get the total.",
-          "question": "5 + 6"
-        }
-      ]
-    }
-  },
-  "total_sessions_in_history": 2
-}
-============================
+[TASK BREAKDOWN]
+  dot_matching: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  number_comparison: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  single_addition: target=15 | from_bank=15 | from_gap_fill=0 | excluded=1
 
+[VERIFICATION] History pool: 2 unique IDs, 2 unique question strings
+[VERIFICATION] PASS — No repeated question IDs from history.
+[VERIFICATION] PASS — No repeated question strings from history.
+[VERIFICATION] PASS — Correctly based on latest session (2).
+[VERIFICATION] PASS — Session count correct (2).
 
-[VERIFICATION] Previous questions in history pool: ['10 + 2', '15 - 5']
-[VERIFICATION] PASS — No repeated questions from history.
-[VERIFICATION] New questions generated: ['4 vs 4', '7 vs 7', '9 vs 9', '7 vs 12', '15 vs 9', '4 vs 11', '8 + 4', '3 + 9', '5 + 6']
-[VERIFICATION] PASS — Generated from latest session (session 2).
+[QUESTION COUNTS PER TASK]
+  dot_matching: 10 / 10 [OK]
+  number_comparison: 10 / 10 [OK]
+  single_addition: 15 / 15 [OK]
+
+[SAMPLE OUTPUT — first 3 questions per task]
+
+  DOT_MATCHING
+  Rationale: Retesting dot matching is warranted due to its task importance score of 0.06, which indicates its relevance in assessing the student's foundational math skills....
+    [dm_28] 4 vs 3 dots = False | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_01] 1 vs 1 dot = True | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_38] 7 vs 2 dots = False | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+
+  NUMBER_COMPARISON
+  Rationale: Retesting number comparison is important given its task importance score of 0.07, which suggests it plays a significant role in the student's overall arithmetic fluency....
+    [nc_33] 7 vs 4 = 7 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_22] 5 vs 6 = 6 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_36] 7 vs 8 = 8 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+
+  SINGLE_ADDITION
+  Rationale: Retesting single-digit addition is necessary as the domain severity score of 0.06 indicates a need to monitor progress in this area, despite the overall typical classification....
+    [add_40] 5+4 = 9 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+    [add_21] 3+3 = 6 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+    [add_60] 7+6 = 13 | hint: Watch for finger counting or counting-all strategies. Note whether the student uses make-10 or counts on from the larger number. Prompt: 'Can you start from the bigger number and count on?'
+
+============================================================
+EXECUTING: Case 4: Bank Exhaustion Stress Test — Number Series (Session 25)
+============================================================
+[STATUS] 200 OK — FULL VALIDATION PASSED
+
+[INFO] Based on session:          3
+[INFO] Total sessions in history: 3
+[OUTPUT] Questions returned:      30
+[OUTPUT] Questions pruned:        0
+
+[TASK BREAKDOWN]
+  dot_matching: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  number_comparison: target=10 | from_bank=10 | from_gap_fill=0 | excluded=0
+  number_series: target=10 | from_bank=0 | from_gap_fill=10 | excluded=20
+
+[VERIFICATION] History pool: 20 unique IDs, 20 unique question strings
+[VERIFICATION] PASS — No repeated question IDs from history.
+[VERIFICATION] PASS — No repeated question strings from history.
+[VERIFICATION] PASS — Correctly based on latest session (3).
+[VERIFICATION] PASS — Session count correct (3).
+
+[QUESTION COUNTS PER TASK]
+  dot_matching: 10 / 10 [OK]
+  number_comparison: 10 / 10 [OK]
+  number_series: 10 / 10 [OK]
+
+[SAMPLE OUTPUT — first 3 questions per task]
+
+  DOT_MATCHING
+  Rationale: With a task importance score of 0.2, retesting dot matching is important to assess the student's visual and perceptual skills, which are foundational for more complex mathematical tasks....
+    [dm_24] 7 vs 6 dots = False | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_11] 2 vs 2 dots = True | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+    [dm_30] 6 vs 5 dots = False | hint: Watch whether the student counts each dot individually or subitizes. Note any hesitation on non-matching pairs. Prompt: 'Are these the same amount?' if the student responds too quickly.
+
+  NUMBER_COMPARISON
+  Rationale: Given the task importance score of 0.25, retesting number comparison is essential to ensure the student's foundational skills are solid, as this task is a critical component of numerical understanding....
+    [nc_21] 5 vs 4 = 5 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_24] 5 vs 8 = 8 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+    [nc_27] 6 vs 4 = 6 | hint: Observe whether the student hesitates before answering. Watch for finger counting or mouthing numbers. If the student guesses without comparing, prompt: 'Which pile has more?'
+
+  NUMBER_SERIES
+  Rationale: Retesting is necessary due to the low domain severity score of 0.35, which indicates a need for further assessment in this area to better understand the student's capabilities and tailor interventions....
+    [ns_gen_a_12_s4] 12, 16, 20, 24, __ = 28 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_gen_a_18_s2] 18, 20, 22, 24, __ = 26 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+    [ns_gen_a_07_s4] 7, 11, 15, 19, __ = 23 | hint: Observe whether the student identifies the rule (counting by 2s, 5s, etc.) or guesses. Ask the student to explain the pattern aloud. Watch for errors at decade boundaries (e.g., ...8, 9, 10...).
+
+[SUMMARY] 4 scenario(s) | 4 passed | 0 partial | 0 failed

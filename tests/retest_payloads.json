@@ -13,12 +13,15 @@
           "task_importance_scores": {
             "SUB": 0.55,
             "ADD": 0.30,
-            "NS": 0.20
+            "NS": 0.20,
+            "NC": 0.15,
+            "DM": 0.10,
+            "CA": 0.05
           }
         },
         "questions_asked": [
-          {"question": "5 + 3", "correct": 8},
-          {"question": "8 - 3", "correct": 5}
+          { "id": "add_39", "question": "5 + 3", "correct": 8 },
+          { "id": "sub_10", "question": "8 - 3", "correct": 5 }
         ]
       },
       {
@@ -33,12 +36,15 @@
           "task_importance_scores": {
             "SUB": 0.35,
             "ADD": 0.15,
-            "NS": 0.18
+            "NS": 0.18,
+            "NC": 0.12,
+            "DM": 0.08,
+            "CA": 0.04
           }
         },
         "questions_asked": [
-          {"question": "12 - 5", "correct": 7},
-          {"question": "9 + 4", "correct": 13}
+          { "id": "sub_59", "question": "12 - 5", "correct": 7 },
+          { "id": "add_36", "question": "4 + 9", "correct": 13 }
         ]
       },
       {
@@ -53,7 +59,10 @@
           "task_importance_scores": {
             "SUB": 0.25,
             "ADD": 0.15,
-            "NS": 0.18
+            "NS": 0.18,
+            "NC": 0.10,
+            "DM": 0.05,
+            "CA": 0.02
           }
         },
         "questions_asked": []
@@ -75,12 +84,15 @@
           "task_importance_scores": {
             "NC": 0.55,
             "DM": 0.40,
-            "NS": 0.30
+            "NS": 0.30,
+            "ADD": 0.25,
+            "SUB": 0.20,
+            "CA": 0.15
           }
         },
         "questions_asked": [
-          {"question": "14 - 6", "correct": 8},
-          {"question": "7 + 5", "correct": 12}
+          { "id": "sub_69", "question": "14 - 6", "correct": 8 },
+          { "id": "add_43", "question": "5 + 7", "correct": 12 }
         ]
       },
       {
@@ -95,7 +107,10 @@
           "task_importance_scores": {
             "NC": 0.50,
             "DM": 0.38,
-            "NS": 0.28
+            "NS": 0.28,
+            "ADD": 0.20,
+            "SUB": 0.18,
+            "CA": 0.10
           }
         },
         "questions_asked": []
@@ -117,12 +132,15 @@
           "task_importance_scores": {
             "ADD": 0.12,
             "DM": 0.09,
-            "NC": 0.08
+            "NC": 0.08,
+            "SUB": 0.05,
+            "NS": 0.04,
+            "CA": 0.02
           }
         },
         "questions_asked": [
-          {"question": "10 + 2", "correct": 12},
-          {"question": "15 - 5", "correct": 10}
+          { "id": "add_10", "question": "2 + 1", "correct": 3 },
+          { "id": "sub_46", "question": "10 - 5", "correct": 5 }
         ]
       },
       {
@@ -137,7 +155,76 @@
           "task_importance_scores": {
             "ADD": 0.08,
             "DM": 0.06,
-            "NC": 0.07
+            "NC": 0.07,
+            "SUB": 0.05,
+            "NS": 0.04,
+            "CA": 0.03
+          }
+        },
+        "questions_asked": []
+      }
+    ]
+  },
+  {
+    "scenario_name": "Case 4: Bank Exhaustion Stress Test — Number Series (Session 25)",
+    "student_history": [
+      {
+        "session_id": 1,
+        "date": "2024-08-01",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": { "Number Series": 0.45 },
+          "task_importance_scores": {
+            "NS": 0.45, "NC": 0.30, "DM": 0.25,
+            "ADD": 0.10, "SUB": 0.08, "CA": 0.05
+          }
+        },
+        "questions_asked": [
+          { "id": "ns_01", "question": "1, 2, 3, _", "correct": 4 },
+          { "id": "ns_02", "question": "2, 4, 6, _", "correct": 8 },
+          { "id": "ns_03", "question": "5, 10, 15, _", "correct": 20 },
+          { "id": "ns_04", "question": "10, 20, 30, _", "correct": 40 },
+          { "id": "ns_05", "question": "9, 8, 7, _", "correct": 6 },
+          { "id": "ns_06", "question": "20, 18, 16, _", "correct": 14 },
+          { "id": "ns_07", "question": "3, 6, 9, _", "correct": 12 },
+          { "id": "ns_08", "question": "1, 3, 5, _", "correct": 7 },
+          { "id": "ns_09", "question": "4, 8, 12, _", "correct": 16 },
+          { "id": "ns_10", "question": "100, 200, 300, _", "correct": 400 }
+        ]
+      },
+      {
+        "session_id": 2,
+        "date": "2024-11-01",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": { "Number Series": 0.40 },
+          "task_importance_scores": {
+            "NS": 0.40, "NC": 0.28, "DM": 0.22,
+            "ADD": 0.10, "SUB": 0.08, "CA": 0.05
+          }
+        },
+        "questions_asked": [
+          { "id": "ns_11", "question": "50, 45, 40, _", "correct": 35 },
+          { "id": "ns_12", "question": "1, 2, 4, _", "correct": 8 },
+          { "id": "ns_13", "question": "3, 6, 12, _", "correct": 24 },
+          { "id": "ns_14", "question": "1, 10, 2, 20, 3, _", "correct": 30 },
+          { "id": "ns_15", "question": "10, 9, 8, 7, _", "correct": 6 },
+          { "id": "ns_16", "question": "15, 25, 35, _", "correct": 45 },
+          { "id": "ns_17", "question": "2, 5, 8, _", "correct": 11 },
+          { "id": "ns_18", "question": "1, 4, 9, _", "correct": 16 },
+          { "id": "ns_19", "question": "80, 40, 20, _", "correct": 10 },
+          { "id": "ns_20", "question": "2, 3, 5, 8, _", "correct": 12 }
+        ]
+      },
+      {
+        "session_id": 3,
+        "date": "2026-05-10",
+        "diagnostic_data": {
+          "predicted_class": "At-Risk (1)",
+          "domain_severity_scores": { "Number Series": 0.35 },
+          "task_importance_scores": {
+            "NS": 0.35, "NC": 0.25, "DM": 0.20,
+            "ADD": 0.10, "SUB": 0.08, "CA": 0.05
           }
         },
         "questions_asked": []
