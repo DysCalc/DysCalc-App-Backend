@@ -339,7 +339,7 @@ def generate_retest():
  
         for task in top_tasks:
             bank     = TASK_ITEM_BANK.get(task, [])
-            target   = RETEST_SAMPLE_SIZE.get(task, 10)
+            target   = TASK_QUESTION_COUNTS.get(task, 10)
             used_ids = used_ids_by_task[task]
             used_strs = used_str_by_task[task]
  
@@ -353,12 +353,25 @@ def generate_retest():
  
             random.shuffle(available)
  
-            if len(available) >= target:
-                bank_results[task] = available[:target]
-                llm_needed[task]   = 0
+            if task == "complex_arithmetic":
+                if len(available) >= target:
+                    bank_results[task] = available[:target]
+                    llm_needed[task]   = 0
+                else:
+                    bank_results[task] = available
+                    llm_needed[task]   = target - len(available)
             else:
-                bank_results[task] = available
-                llm_needed[task]   = target - len(available)
+                if len(available) >= target:
+                    bank_results[task] = available[:target]
+                else:
+                    used_in_bank = [
+                        item for item in bank
+                        if item.get('id', '') in used_ids
+                        or normalize_equation(item.get('question') or item.get('sequence', '')) in used_strs
+                    ]
+                    random.shuffle(used_in_bank)
+                    bank_results[task] = available + used_in_bank[:target - len(available)]
+                llm_needed[task] = 0
  
             logger.info(
                 f"[{rid}] {task}: bank_available={len(available)} "
@@ -557,7 +570,7 @@ OUTPUT RAW JSON ONLY. No markdown fences. Schema:
                 "from_bank":           from_bank,
                 "from_gap_fill":            from_algo,
                 "excluded_from_pool":  excluded,
-                "target":              RETEST_SAMPLE_SIZE.get(task, 0),
+                "target":              TASK_QUESTION_COUNTS.get(task, 0),
             }
             report["counts"]["returned"] += len(all_tests)
  
@@ -571,7 +584,7 @@ OUTPUT RAW JSON ONLY. No markdown fences. Schema:
  
         short_tasks = [
             t for t in top_tasks
-            if len(retest_data[t]["tests"]) < RETEST_SAMPLE_SIZE.get(t, 0)
+            if len(retest_data[t]["tests"]) < TASK_QUESTION_COUNTS.get(t, 0)
         ]
  
         has_blocking_errors = (
