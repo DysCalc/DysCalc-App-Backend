@@ -11,6 +11,8 @@ import logging
 import random
 from collections import defaultdict
 import re
+import threading
+import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -63,70 +65,12 @@ CORS(app)
 if not OPENROUTER_TOKEN:
     raise ValueError("Missing OPENROUTER_TOKEN in environment variables")
 
-@app.route('/generate_module', methods=['POST'])
-def generate_module():
-    """
-        Generate learning path from ML diagnostic data.
-
-        Request Format:
-        {
-            "test_id": {"<string>"},
-            "diagnostic_data": {
-                "predicted_class": {"<string>"},
-                "confidence": {<float>},
-                "decision_path": [("<string>", <float>, "<string>")],
-                "domain_severity_scores": {"<string>": <float>},
-                "task_importance_scores": {"<string>": <float>}
-            }
-        }
-    """
+def background_generate_module(ml_data, rid, test_id, supabase_url, supabase_key):
+    """Background task to generate module and push directly to Supabase."""
     try:
-        request_data = request.json
-        if not request_data: return jsonify({"error": "Invalid request"}), 400
-
-        rid = request_data.get("test_id", uuid.uuid4().hex[:6])
-        ml_data = request_data.get("diagnostic_data", None)
-
-        if not ml_data:
-            return jsonify({"error": "No ML data provided"}), 400
-
-        logger.info(f"[REQ {rid}] Decision Path: {ml_data}")
-
-        required_fields = [
-            "domain_severity_scores",
-            "task_importance_scores",
-            "confidence",
-            "predicted_class",
-            "decision_path",
-        ]
-
-        missing_fields = [
-            field for field in required_fields
-            if field not in ml_data or ml_data[field] is None
-        ]
-        if missing_fields:
-            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
-
         domain_severity_scores = ml_data["domain_severity_scores"]
-        task_importance_scores = ml_data["task_importance_scores"]
-        confidence = ml_data["confidence"]
         predicted_class = ml_data["predicted_class"]
-        decision_path = ml_data["decision_path"]
-
-        if not isinstance(domain_severity_scores, dict) or not domain_severity_scores:
-            return jsonify({"error": "domain_severity_scores must be a non-empty object"}), 400
-
-        if not isinstance(task_importance_scores, dict):
-            return jsonify({"error": "task_importance_scores must be an object"}), 400
-
-        if not isinstance(decision_path, list):
-            return jsonify({"error": "decision_path must be a list"}), 400
-        if decision_path and not all(
-            isinstance(item, (list, tuple)) and len(item) == 3 and isinstance(item[1], (int, float))
-            for item in decision_path
-        ):
-            return jsonify({"error": "Each item in decision_path must be a tuple/list of (domain, score, reason)"}), 400
-
+        
         top_domains = get_top_deficits(ml_data, rid, max_domains=3)
         practice_tiers = calculate_practice_tiers_by_domain(domain_severity_scores, top_domains)
         interpretation = interpret_decision_path(ml_data)
@@ -137,8 +81,10 @@ def generate_module():
         best_candidate = None
         best_report = None
         best_score = -1
+        validated_data = None
+
         for attempt in range(5):
-            print(f"\n[REQ {rid}] Pipeline Loop: Attempt {attempt + 1}")
+            logger.info(f"\n[REQ {rid}] Pipeline Loop: Attempt {attempt + 1}")
             try:
                 # --- THE EXPERIMENT ROUTER ---
                 if str(EXPERIMENT_MODE) == "1":
@@ -159,7 +105,7 @@ def generate_module():
                     )
                     if not perfect_json: raise Exception("Pass 2 JSON extraction failed")
 
-                validated_data, validation_report = schema_validator(
+                validated_data_temp, validation_report = schema_validator(
                     perfect_json,
                     practice_tiers,
                     top_domains,
@@ -180,11 +126,12 @@ def generate_module():
                 if validation_report["math_errors"] or validation_report["pedagogy_errors"] or validation_report["schema_errors"]:
                      logger.warning(f"[REQ {rid}] [VALIDATION REPORT]: {json.dumps(validation_report, indent=2)}")
 
-                if validated_data:
+                if validated_data_temp:
                     logger.info(f"[REQ {rid}] [SUCCESS] VALIDATION PASSED")
-                    validated_data["_meta_validation_report"] = validation_report
-                    validated_data["decision_path_interpretation"] = interpretation
-                    return jsonify(validated_data), 200
+                    validated_data_temp["_meta_validation_report"] = validation_report
+                    validated_data_temp["decision_path_interpretation"] = interpretation
+                    validated_data = validated_data_temp
+                    break
                 else:
                     logger.warning(f"[REQ {rid}] [FAIL] Triggering Repair Loop.")
 
@@ -259,42 +206,145 @@ def generate_module():
                 logger.exception(f"[REQ {rid}] [RETRY] Pipeline step failed")
                 time.sleep(2 ** attempt)
 
+        # Update Supabase when done
+        if not supabase_url or not supabase_key:
+            logger.error(f"[REQ {rid}] Missing SUPABASE_URL or SUPABASE_SERVICE_KEY, cannot push result.")
+            return
+
+        headers = {
+            "apikey": supabase_key,
+            "Authorization": f"Bearer {supabase_key}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        }
+        
+        payload = {
+            "is_generating": False
+        }
+        
+        if validated_data:
+            payload["modules"] = validated_data
+        else:
+            logger.error(f"[REQ {rid}] Failed to generate valid module. Reverting is_generating.")
+            
+        res = requests.patch(
+            f"{supabase_url}/rest/v1/learning_modules?result_id=eq.{test_id}", 
+            headers=headers, 
+            json=payload
+        )
+        if res.status_code >= 300:
+            logger.error(f"[REQ {rid}] Failed to update Supabase: {res.status_code} {res.text}")
+        else:
+            logger.info(f"[REQ {rid}] Successfully updated Supabase learning_modules.")
+
+    except Exception as e:
+        logger.exception(f"[REQ {rid}] Background thread critical failure")
+        # Try to clean up state
+        if supabase_url and supabase_key:
+            try:
+                requests.patch(
+                    f"{supabase_url}/rest/v1/learning_modules?result_id=eq.{test_id}", 
+                    headers={
+                        "apikey": supabase_key,
+                        "Authorization": f"Bearer {supabase_key}",
+                        "Content-Type": "application/json",
+                    }, 
+                    json={"is_generating": False}
+                )
+            except:
+                pass
+
+
+@app.route('/generate_module', methods=['POST'])
+def generate_module():
+    """
+        Generate learning path from ML diagnostic data.
+
+        Request Format:
+        {
+            "test_id": {"<string>"},
+            "diagnostic_data": {
+                "predicted_class": {"<string>"},
+                "confidence": {<float>},
+                "decision_path": [("<string>", <float>, "<string>")],
+                "domain_severity_scores": {"<string>": <float>},
+                "task_importance_scores": {"<string>": <float>}
+            }
+        }
+    """
+    try:
+        request_data = request.json
+        if not request_data: return jsonify({"error": "Invalid request"}), 400
+
+        rid = request_data.get("test_id", uuid.uuid4().hex[:6])
+        ml_data = request_data.get("diagnostic_data", None)
+
+        if not ml_data:
+            return jsonify({"error": "No ML data provided"}), 400
+
+        logger.info(f"[REQ {rid}] Decision Path: {ml_data}")
+
+        required_fields = [
+            "domain_severity_scores",
+            "task_importance_scores",
+            "confidence",
+            "predicted_class",
+            "decision_path",
+        ]
+
+        missing_fields = [
+            field for field in required_fields
+            if field not in ml_data or ml_data[field] is None
+        ]
+        if missing_fields:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+
+        domain_severity_scores = ml_data["domain_severity_scores"]
+        task_importance_scores = ml_data["task_importance_scores"]
+        confidence = ml_data["confidence"]
+        predicted_class = ml_data["predicted_class"]
+        decision_path = ml_data["decision_path"]
+
+        if not isinstance(domain_severity_scores, dict) or not domain_severity_scores:
+            return jsonify({"error": "domain_severity_scores must be a non-empty object"}), 400
+
+        if not isinstance(task_importance_scores, dict):
+            return jsonify({"error": "task_importance_scores must be an object"}), 400
+
+        if not isinstance(decision_path, list):
+            return jsonify({"error": "decision_path must be a list"}), 400
+        if decision_path and not all(
+            isinstance(item, (list, tuple)) and len(item) == 3 and isinstance(item[1], (int, float))
+            for item in decision_path
+        ):
+            return jsonify({"error": "Each item in decision_path must be a tuple/list of (domain, score, reason)"}), 400
+
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        if not supabase_url or not supabase_key:
+            logger.error("SUPABASE_URL or SUPABASE_SERVICE_KEY is not set. Cannot run in background mode.")
+            return jsonify({"error": "Backend misconfigured for Supabase"}), 500
+
+        # Start the background thread
+        thread = threading.Thread(
+            target=background_generate_module, 
+            args=(ml_data, rid, request_data.get("test_id"), supabase_url, supabase_key)
+        )
+        thread.daemon = True
+        thread.start()
+
         return jsonify({
-            "error": "Failed to generate fully valid module after retries",
-            "best_validation_report": best_report,
-            "best_candidate": best_candidate
-        }), 500
+            "success": True,
+            "message": "Module generation started in the background"
+        }), 202
 
     except Exception as e:
         logger.exception(f"[REQ {rid}] [ERROR] Critical Failure")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/generate_retest', methods=['POST'])
-def generate_retest():
-    """
-    Generate a retest set for a student's top 3 deficit tasks.
- 
-    Strategy (hybrid bank + algorithmic + LLM rationale):
-      1. Identify top 3 tasks from task_importance_scores (latest session).
-      2. For each task, sample the full original question count from the item
-         bank, excluding question IDs already asked across ALL sessions.
-      3. If the bank is exhausted:
-           - NC, DM, NS, ADD, SUB: fill algorithmically via generate_retest_items()
-           - CA only: fill via LLM gap-fill
-      4. LLM generates ONLY the rationale strings (one per task).
-      5. Teacher hints come from TASK_TEACHER_HINTS — not LLM-generated.
- 
-    Input/output schema: unchanged. See docstring of previous version.
-    """
+
+def background_generate_retest(student_history, test_result_id, missing_tests_fallback, supabase_url, supabase_key):
     try:
-        data = request.json
-        if not data:
-            return jsonify({"error": "Invalid request"}), 400
- 
-        student_history = data.get('student_history', [])
-        if not student_history or not isinstance(student_history, list):
-            return jsonify({"error": "Missing or empty student_history array"}), 400
- 
         latest_session  = student_history[-1]
         ml_data         = latest_session.get('diagnostic_data', {})
         predicted_class = ml_data.get('predicted_class', '0')
@@ -302,7 +352,9 @@ def generate_retest():
  
         task_scores = ml_data.get("task_importance_scores", {})
         if not task_scores:
-            return jsonify({"error": "Missing task_importance_scores in diagnostic_data"}), 400
+            logger.error("Missing task_importance_scores in diagnostic_data")
+            return
+
  
         filtered = {
             ACRONYM_TO_TASK[k]: v
@@ -600,25 +652,120 @@ OUTPUT RAW JSON ONLY. No markdown fences. Schema:
             "based_on_session_date":     latest_session.get("date", "Unknown"),
             "total_sessions_in_history": len(student_history),
         }
- 
-        if not short_tasks:
-            logger.info(
-                f"[{rid}] Retest PASSED — "
-                f"{report['counts']['returned']} questions across {len(top_tasks)} tasks"
+        generated_retest = base_response
+
+        # --- PORTED FRONTEND UPDATE LOGIC ---
+        combined_questions = dict(missing_tests_fallback) if missing_tests_fallback else {}
+        prefix_map = {
+            "number_comparison": "nc",
+            "dot_matching": "dm",
+            "number_series": "ns",
+            "single_addition": "sa",
+            "single_subtraction": "ss",
+            "complex_arithmetic": "ca"
+        }
+
+        retest_data = generated_retest.get("retest_data", {})
+        for key, value in retest_data.items():
+            prefix = prefix_map.get(key, "rt")
+            tests = value.get("tests", [])
+            processed_tests = []
+            for i, t in enumerate(tests):
+                t_copy = dict(t)
+                if not t_copy.get("id"):
+                    t_copy["id"] = f"{prefix}_{str(i+1).zfill(2)}"
+                processed_tests.append(t_copy)
+            
+            combined_questions[key] = {
+                "rationale": value.get("rationale"),
+                "tests": processed_tests
+            }
+
+        metadata = {
+            "based_on_session": generated_retest.get("based_on_session"),
+            "based_on_session_date": generated_retest.get("based_on_session_date"),
+            "total_sessions_in_history": generated_retest.get("total_sessions_in_history"),
+            "_meta_validation_report": generated_retest.get("_meta_validation_report"),
+            "warning": generated_retest.get("warning")
+        }
+
+        payload = {
+            "is_generating": False,
+            "description": "Dynamically generated retest based on student's historical deficit areas.",
+            "complex_arithmetic": combined_questions.get("complex_arithmetic"),
+            "dot_matching": combined_questions.get("dot_matching"),
+            "number_comparison": combined_questions.get("number_comparison"),
+            "number_series": combined_questions.get("number_series"),
+            "single_addition": combined_questions.get("single_addition"),
+            "single_subtraction": combined_questions.get("single_subtraction"),
+            "metadata": metadata
+        }
+
+        if supabase_url and supabase_key:
+            headers = {
+                "apikey": supabase_key,
+                "Authorization": f"Bearer {supabase_key}",
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            }
+            res = requests.patch(
+                f"{supabase_url}/rest/v1/assessment_questions?test_result_id=eq.{test_result_id}",
+                headers=headers,
+                json=payload
             )
-            return jsonify(base_response), 200
+            if res.status_code >= 300:
+                logger.error(f"[{rid}] Failed to update Supabase: {res.status_code} {res.text}")
+            else:
+                logger.info(f"[{rid}] Successfully updated Supabase assessment_questions for {test_result_id}.")
+
+    except Exception as e:
+        logger.exception(f"[RETEST] Critical failure in background thread: {e}")
+        if supabase_url and supabase_key:
+            try:
+                requests.patch(
+                    f"{supabase_url}/rest/v1/assessment_questions?test_result_id=eq.{test_result_id}",
+                    headers={
+                        "apikey": supabase_key,
+                        "Authorization": f"Bearer {supabase_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json={"is_generating": False, "description": "Generation failed."}
+                )
+            except:
+                pass
+
+
+@app.route('/generate_retest', methods=['POST'])
+def generate_retest():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid request"}), 400
  
-        logger.warning(
-            f"[{rid}] Retest PARTIAL — short tasks: {short_tasks}"
+        student_history = data.get('student_history', [])
+        if not student_history or not isinstance(student_history, list):
+            return jsonify({"error": "Missing or empty student_history array"}), 400
+            
+        test_result_id = data.get("test_result_id")
+        missing_tests_fallback = data.get("missing_tests_fallback", {})
+
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        if not supabase_url or not supabase_key:
+            logger.error("SUPABASE_URL or SUPABASE_SERVICE_KEY is not set. Cannot run in background mode.")
+            return jsonify({"error": "Backend misconfigured for Supabase"}), 500
+
+        thread = threading.Thread(
+            target=background_generate_retest, 
+            args=(student_history, test_result_id, missing_tests_fallback, supabase_url, supabase_key)
         )
-        base_response["warning"] = (
-            f"Some tasks returned fewer questions than the target. "
-            f"Short: {short_tasks}. Review _meta_validation_report."
-        )
-        return jsonify(base_response), 207
+        thread.daemon = True
+        thread.start()
+
+        return jsonify({"success": True, "message": "Retest generation started"}), 202
  
     except Exception as e:
-        logger.exception(f"[RETEST] Critical failure: {e}")
+        logger.exception(f"[RETEST] Failed to start: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/generate-diagnostic", methods=["POST"])
@@ -656,7 +803,16 @@ def generate_diagnostic():
 def health():
     try:
         flask_env = os.getenv("FLASK_ENV")
-        env_available = bool(flask_env) and bool(OPENROUTER_TOKEN) and bool(EXPERIMENT_MODE)
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        
+        env_available = (
+            bool(flask_env) and 
+            bool(OPENROUTER_TOKEN) and 
+            bool(EXPERIMENT_MODE) and 
+            bool(supabase_url) and 
+            bool(supabase_key)
+        )
         message = "API is running. Environment variables loaded successfully." if env_available else "API is running. Some environment variables are missing."
         
         return jsonify({
@@ -665,7 +821,9 @@ def health():
             "env_status": {
                 "FLASK_ENV": bool(flask_env),
                 "OPENROUTER_TOKEN": bool(OPENROUTER_TOKEN),
-                "EXPERIMENT_MODE": bool(EXPERIMENT_MODE)
+                "EXPERIMENT_MODE": bool(EXPERIMENT_MODE),
+                "SUPABASE_URL": bool(supabase_url),
+                "SUPABASE_SERVICE_KEY": bool(supabase_key)
             }
         }), 200
     except Exception as e:
