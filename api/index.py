@@ -652,6 +652,26 @@ def generate_diagnostic():
         logger.exception("Prediction failed")
         return jsonify({"error": str(e)}), 500
 
+@app.route("/health", methods=["GET"])
+def health():
+    try:
+        flask_env = os.getenv("FLASK_ENV")
+        env_available = bool(flask_env) and bool(OPENROUTER_TOKEN) and bool(EXPERIMENT_MODE)
+        message = "API is running. Environment variables loaded successfully." if env_available else "API is running. Some environment variables are missing."
+        
+        return jsonify({
+            "status": "healthy", 
+            "message": message,
+            "env_status": {
+                "FLASK_ENV": bool(flask_env),
+                "OPENROUTER_TOKEN": bool(OPENROUTER_TOKEN),
+                "EXPERIMENT_MODE": bool(EXPERIMENT_MODE)
+            }
+        }), 200
+    except Exception as e:
+        logger.exception("Health check failed")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     debug = os.getenv("FLASK_ENV") == "development"
     app.run(port=5000, debug=debug)
