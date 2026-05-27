@@ -1110,7 +1110,9 @@ def schema_validator(data, expected_count, allowed_domains, rid, formative_asses
             problems = [str(p.get("problem", "")) for p in clean_practice]
             sub_count = sum(1 for p in problems if '-' in p)
             add_count = sum(1 for p in problems if '+' in p)
-            if sub_count < 2 or add_count < 1:
+            min_sub = min(2, max(1, domain_expected_count - 1))
+            min_add = 1
+            if sub_count < min_sub or add_count < min_add:
                 validation_report["schema_errors"].append(f"AS module failed subtraction/addition ratio (sub={sub_count}, add={add_count}).")
                 continue
 
