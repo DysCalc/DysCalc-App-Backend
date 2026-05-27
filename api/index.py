@@ -217,8 +217,10 @@ def generate_module():
 
                     if any("AS module failed" in e for e in schema_errors):
                         correction_prompt += (
-                            "The Addition vs. Subtraction Asymmetry module must include at least "
-                            "3 subtraction problems and at least 1 addition problem. "
+                             "The Addition vs. Subtraction Asymmetry module must include both "
+                            "addition (+) and subtraction (-) equations. For a 2-item module, "
+                            "include exactly 1 subtraction and 1 addition. For larger modules, "
+                            "include at least 2 subtraction and at least 1 addition. "
                         )
 
                     if any("Practice count mismatch" in e for e in schema_errors):
