@@ -460,15 +460,28 @@ def math_validator(practice_set, rid, report, domain_name=""):
             report["counts"]["pruned"] += 1
             continue
 
+        if difflib.SequenceMatcher(None, normalize(domain_name), normalize("Symbolic vs. Non-Symbolic Processing Difference")).ratio() >= 0.70:
+            nums = [int(n) for n in re.findall(r'\d+', clean_eq)]
+            if 0 in nums:
+                report["pedagogy_errors"].append(f"SN domain cannot use zero-operand equations: {problem_str}")
+                report["counts"]["pruned"] += 1
+                continue
+
         if any(op in clean_eq for op in ['*', '/']):
             report["pedagogy_errors"].append(f"Multiplication/Division out of scope: {problem_str}")
             report["counts"]["pruned"] += 1
             continue
 
         if not any(op in clean_eq for op in ['+', '-']):
-            report["pedagogy_errors"].append(f"Non-symbolic problem: {problem_str}")
-            report["counts"]["pruned"] += 1
-            continue
+            if difflib.SequenceMatcher(None, normalize(domain_name), normalize("Symbolic vs. Non-Symbolic Processing Difference")).ratio() < 0.70:
+                report["pedagogy_errors"].append(f"Non-symbolic problem: {problem_str}")
+                report["counts"]["pruned"] += 1
+                continue
+            else:
+                valid_practice.append(item)
+                seen_equations.add(normalized_problem)
+                report["counts"]["returned"] += 1
+                continue
 
         operands_ok, operands_error = validate_operand_bounds(problem_str, domain_name)
         if not operands_ok:
@@ -541,7 +554,7 @@ def math_validator(practice_set, rid, report, domain_name=""):
 
     return valid_practice
 
-def pedagogy_validator(example, rid, report):
+def pedagogy_validator(example, rid, report, domain_name=""):
     """Validates the worked example schema and math logic."""
     required_keys = {"problem", "reasoning_steps", "final_answer"}
     if not required_keys.issubset(set(example.keys())):
@@ -564,8 +577,9 @@ def pedagogy_validator(example, rid, report):
         return False
 
     if not any(op in clean_eq for op in ['+', '-']):
-        report["pedagogy_errors"].append(f"Non-symbolic worked example problem: {problem}")
-        return False
+        if difflib.SequenceMatcher(None, normalize(domain_name), normalize("Symbolic vs. Non-Symbolic Processing Difference")).ratio() < 0.70:
+            report["pedagogy_errors"].append(f"Non-symbolic worked example problem: {problem}")
+            return False
 
     if clean_eq and any(op in clean_eq for op in ['+', '-']):
         computed = safe_eval(clean_eq)
@@ -876,7 +890,7 @@ def get_lesson_from_qwen(
     - If a domain has a HIGH severity (>0.20), provide "cognitive stretch" problems (e.g., crossing tens, 12+9 or 14-6). Avoid overly simple problems like 8-2 or 9-3.
     - If a domain is AS (Addition vs. Subtraction Asymmetry), the student likely relies on forward (addition-based) reasoning and has difficulty with mental inversion. To rehabilitate this, the practice set MUST contain BOTH addition (+) and subtraction (-) equations (e.g., at least 3 subtraction problems bridging tens, and at least 1 addition problem for scaffolding). For subtraction hints, teach make-10 or inverse-operation reasoning; avoid shallow "take away and count" hints.
     - If a domain is BC (Basic vs. Complex Arithmetic Contrast), you MUST explicitly focus on "crossing tens". Do not use generic "break down problems" phrasing. Explicitly teach breaking numbers into tens and ones (e.g., 15 + 7 -> 10 + 5 + 7).
-    - If a domain is SN (Symbolic vs. Non-Symbolic), focus on translating physical objects/visuals into digits, but practice_set.problem must still be a pure symbolic equation. Put dots/objects only in hints or explanations, never in the problem field.
+    - If a domain is SN (Symbolic vs. Non-Symbolic Processing Difference), the problem field MUST use dot notation ONLY. Use exactly this format: "Count: ●●●●● = ?" with the correct number of ● symbols matching the expected_answer. Expected answers must be integers from 1 to 10. Hints must describe counting the dots using Filipino objects. ANY arithmetic equation including "5 + 0" or "7 + 0" will be automatically rejected by the validator. You MUST use dot notation or the module will fail.
     - If a domain is Processing-Fluency Integration or Overall Processing Efficiency, focus on reducing cognitive load, using chunking strategies, and supporting flexible switching between addition and subtraction when arithmetic practice is appropriate.
     </clinical_precision>
 
@@ -907,6 +921,7 @@ def get_lesson_from_qwen(
     6. TARGETING: If the domain is 'Addition vs. Subtraction Asymmetry', your practice_set MUST contain a mix of BOTH '+' and '-' operators. Do not generate only subtraction.
     7. BOUNDS: Keep math simple but appropriate to severity. Operands <= 20. For subtraction, keep the second operand <= 9 unless the target domain is Multi-Digit Addition and Subtraction.
     8. ASSESSMENT: Provide exactly {formative_assessment_count} Formative Assessment questions at the very end. Each assessment question MUST be a symbolic equation with + or - and a single integer answer. Do not ask conceptual/open-ended questions.
+    9. SN DOMAIN ONLY: If the domain is Symbolic vs. Non-Symbolic Processing Difference, the problem field must contain dot symbols like "Count: ●●●●● = ?" — never arithmetic. Adding zero (e.g., "5 + 0") is forbidden for this domain.
     </strict_rules>
 
     {correction_prompt}
@@ -946,8 +961,8 @@ def format_with_cloud_llm(qwen_messy_text, ml_data_string, count, rid, formative
     - Every module object MUST include the exact key "practice_set". Do NOT rename it to "practice", "practice_items", "activities", or "questions".
     - practice_set counts by domain:
     {practice_count_rules}
-    - Every practice_set item MUST have a "problem" that is a symbolic equation containing + or -. Convert any object-only draft item like "8 dots" into an equation such as "8 + 0" or a better grade-appropriate equation.
-    - For Symbolic vs. Non-Symbolic modules, dots/objects belong in "hint", not in "problem".
+    - Every practice_set item MUST have a "problem" that is a symbolic equation containing + or -, EXCEPT for the Symbolic vs. Non-Symbolic Processing Difference domain which MUST use dot notation format "Count: ●●●●● = ?". Do NOT convert dot notation to arithmetic equations.
+    - For Symbolic vs. Non-Symbolic modules, the problem field MUST contain dot notation exactly as written in the Teacher Text. Do not change it.
     - Do not repeat the exact same equation within the same practice_set or formative_assessment array.
     - Keep expected_answer values varied within each practice_set; do not make every item answer to the same number.
     - Keep operands <= 20, and keep subtraction's second operand <= 9 unless the domain is Multi-Digit Addition and Subtraction.
@@ -1076,11 +1091,12 @@ def schema_validator(data, expected_count, allowed_domains, rid, formative_asses
 
         m_cleaned["teaching_strategy"] = m_cleaned.get("teaching_strategy", "").replace("High-level teacher approach:", "").strip()
 
+        domain_name = m_cleaned.get("domain_name")
+
         worked = m_cleaned.get("worked_example", {})
-        if not pedagogy_validator(worked, rid, validation_report):
+        if not pedagogy_validator(worked, rid, validation_report, domain_name):
             continue
 
-        domain_name = m_cleaned.get("domain_name")
         raw_practice = m_cleaned.get("practice_set", [])
         clean_practice = math_validator(raw_practice, rid, validation_report, domain_name)
 
