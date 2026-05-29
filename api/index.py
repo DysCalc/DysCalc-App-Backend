@@ -144,6 +144,16 @@ def background_generate_module(ml_data, rid, test_id, supabase_url, supabase_key
                     if pedagogy_errors: correction_prompt += f"Pedagogy Errors: {pedagogy_errors}. "
                     if schema_errors: correction_prompt += f"Schema Errors: {schema_errors}. "
 
+                    if any("SN domain cannot use zero-operand equations" in e for e in pedagogy_errors):
+                        correction_prompt += (
+                            "The Symbolic vs. Non-Symbolic Processing Difference module MUST use dot notation. "
+                            "The problem field must be exactly this format: 'Count: ●●●●● = ?' "
+                            "where the number of ● symbols equals the expected_answer. "
+                            "For example: problem='Count: ●●●●● = ?', expected_answer=5. "
+                            "Do NOT use any arithmetic. Do NOT use + or -. Do NOT add zero. "
+                            "Use only dot counting problems for this domain. "
+                        )
+
                     correction_prompt += (
                         "Every practice item must include a non-empty hint. "
                         "For subtraction crossing-ten items, the hint must say how to reach 10 first, "
